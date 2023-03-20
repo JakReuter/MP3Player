@@ -7,15 +7,19 @@ import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import ext.*;
 
 import java.io.File;
 
 public class MP3Player {
+    public AnchorPane added;
+    private ChartVisualizer chart;
     @FXML
     private Label testLabel;
     @FXML
@@ -34,7 +38,7 @@ public class MP3Player {
     private MediaPlayer player;
     private FileChooser fileChooser;
     private AudioSpectrumListener VisualizeListener;
-    private final int BANDS = 128;
+    private final int BANDS = 20;
     private final String X_UNIT = "";
 
 
@@ -56,6 +60,8 @@ public class MP3Player {
         if(player==null){
             welcomeText.setText("Not loaded");
         } else {
+
+            chart = new ChartVisualizer();
             player.setAudioSpectrumNumBands(BANDS);
             player.setAudioSpectrumThreshold(-100);
             player.setAudioSpectrumInterval(0.05);
@@ -126,14 +132,14 @@ public class MP3Player {
         //visualizerChart = new AreaChart<Number, Number>(new LogAxis(1, BANDS), visualizerChart.getYAxis());
         //visualizerChart.setAnimated(false);
         visualizerChart.getData().add(amplitudes);
+        //chart.setRectangles1(added);
         VisualizeListener =
-                (double timestamp, double duration, float[] magnitudes, float[] phases) -> {
-                    //System.out.println(phases[1]);
-                    //System.out.println("Timestamp: "+timestamp+"\nDuration: "+duration+"\nMagnitudes length: "+magnitudes.length+"\nphases length: "+phases.length);
+                    (double timestamp, double duration, float[] magnitudes, float[] phases) -> {
                     for(int i = 0; i< player.getAudioSpectrumNumBands(); i++) {
-                        //visualizerRectangle.getChildren().get(i).setScaleY((magnitudes[i] + 120) / 60);
-
                         magArray[i].setYValue(magnitudes[i]);
+                        visualizerRectangle.getChildren().get(i).setScaleY((magnitudes[i] + 120) / 60);
+                        chart.update(i,magnitudes[i]);
+
 
                     }
                         };

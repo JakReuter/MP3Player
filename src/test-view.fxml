@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.chart.*?>
-
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="MP3Player">
     <padding>
@@ -19,7 +18,7 @@
     </padding>
     <AreaChart prefHeight="138.0" prefWidth="136.0" fx:id="visualizerChart">
     <xAxis>
-        <CategoryAxis side="BOTTOM" />
+        <NumberAxis side="BOTTOM" />
     </xAxis>
     <yAxis>
         <NumberAxis autoRanging="false" lowerBound="-120.0" minorTickCount="0" side="LEFT" upperBound="0.0" />
