@@ -12,7 +12,6 @@ import javafx.scene.media.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import ext.LogAxis;
 
 import java.io.File;
 
@@ -27,6 +26,8 @@ public class MP3Player {
     private HBox visualizerRectangle;
     @FXML
     private AreaChart visualizerChart;
+    @FXML
+    private LogAxis X_AXIS;
 
     private String path = "C:\\Users\\breut\\Music\\sPOOKY.mp3";
     private Media song;
@@ -51,11 +52,13 @@ public class MP3Player {
     }
     @FXML
     protected void onHelloPlayClick() {
+
         if(player==null){
             welcomeText.setText("Not loaded");
         } else {
             player.setAudioSpectrumNumBands(BANDS);
-            player.setAudioSpectrumThreshold(-120);
+            player.setAudioSpectrumThreshold(-100);
+            player.setAudioSpectrumInterval(0.05);
             System.out.println(player.getAudioSpectrumThreshold());
             player.setAudioSpectrumListener(VisualizeListener);
             player.play();
@@ -114,17 +117,18 @@ public class MP3Player {
                     progress.setValue(newValue.toSeconds());
                     welcomeText.setText(newValue.toSeconds()+"s");
                 };
-        XYChart.Series<String, Integer> amplitudes = new XYChart.Series<>();
+        XYChart.Series<Number, Number> amplitudes = new XYChart.Series<>();
         XYChart.Data[] magArray = new XYChart.Data[BANDS];
         for(int i = 0; i< magArray.length; i++){
-            magArray[i] = new XYChart.Data<>((i+1)+X_UNIT, 0);
+            magArray[i] = new XYChart.Data<>((i+1), 0f);
             amplitudes.getData().add(magArray[i]);
         }
+        //visualizerChart = new AreaChart<Number, Number>(new LogAxis(1, BANDS), visualizerChart.getYAxis());
+        //visualizerChart.setAnimated(false);
         visualizerChart.getData().add(amplitudes);
-        visualizerChart.setAnimated(false);
-        visualizerChart = new AreaChart<>(new LogAxis visualizerChart.getYAxis());
         VisualizeListener =
                 (double timestamp, double duration, float[] magnitudes, float[] phases) -> {
+                    //System.out.println(phases[1]);
                     //System.out.println("Timestamp: "+timestamp+"\nDuration: "+duration+"\nMagnitudes length: "+magnitudes.length+"\nphases length: "+phases.length);
                     for(int i = 0; i< player.getAudioSpectrumNumBands(); i++) {
                         //visualizerRectangle.getChildren().get(i).setScaleY((magnitudes[i] + 120) / 60);
