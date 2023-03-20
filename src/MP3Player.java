@@ -3,26 +3,39 @@
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.HBox;
 import javafx.scene.media.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import ext.LogAxis;
 
 import java.io.File;
 
 public class MP3Player {
     @FXML
-    private Label test;
+    private Label testLabel;
     @FXML
     private Label welcomeText;
     @FXML
     private Slider progress = createProgress();
+    @FXML
+    private HBox visualizerRectangle;
+    @FXML
+    private AreaChart visualizerChart;
+
     private String path = "C:\\Users\\breut\\Music\\sPOOKY.mp3";
     private Media song;
     private MediaPlayer player;
     private FileChooser fileChooser;
+    private AudioSpectrumListener VisualizeListener;
+    private final int BANDS = 128;
+    private final String X_UNIT = "";
+
 
     private javafx.beans.value.ChangeListener<Duration> progressListener;
     private Stage stage;
@@ -41,6 +54,10 @@ public class MP3Player {
         if(player==null){
             welcomeText.setText("Not loaded");
         } else {
+            player.setAudioSpectrumNumBands(BANDS);
+            player.setAudioSpectrumThreshold(-120);
+            System.out.println(player.getAudioSpectrumThreshold());
+            player.setAudioSpectrumListener(VisualizeListener);
             player.play();
             welcomeText.setText("Playing!");
         }
@@ -54,6 +71,7 @@ public class MP3Player {
             song = new Media(file.toURI().toString());
             player = new MediaPlayer(song);
             player.currentTimeProperty().addListener(progressListener);
+            testLabel.setText("Test Value");
             //player = createPlayer(song);
         } catch (Exception e){
             System.out.println("didnt work!");
@@ -96,6 +114,26 @@ public class MP3Player {
                     progress.setValue(newValue.toSeconds());
                     welcomeText.setText(newValue.toSeconds()+"s");
                 };
+        XYChart.Series<String, Integer> amplitudes = new XYChart.Series<>();
+        XYChart.Data[] magArray = new XYChart.Data[BANDS];
+        for(int i = 0; i< magArray.length; i++){
+            magArray[i] = new XYChart.Data<>((i+1)+X_UNIT, 0);
+            amplitudes.getData().add(magArray[i]);
+        }
+        visualizerChart.getData().add(amplitudes);
+        visualizerChart.setAnimated(false);
+        visualizerChart = new AreaChart<>(new LogAxis visualizerChart.getYAxis());
+        VisualizeListener =
+                (double timestamp, double duration, float[] magnitudes, float[] phases) -> {
+                    //System.out.println("Timestamp: "+timestamp+"\nDuration: "+duration+"\nMagnitudes length: "+magnitudes.length+"\nphases length: "+phases.length);
+                    for(int i = 0; i< player.getAudioSpectrumNumBands(); i++) {
+                        //visualizerRectangle.getChildren().get(i).setScaleY((magnitudes[i] + 120) / 60);
+
+                        magArray[i].setYValue(magnitudes[i]);
+
+                    }
+                        };
+
+                }
     }
 
-}

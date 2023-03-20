@@ -9,7 +9,7 @@ public class MP3Application extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("test-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 240, 480);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
