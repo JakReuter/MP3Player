@@ -1,23 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Scene?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="MP3Player">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.stage.Stage?>
 
-    <Label fx:id="testLabel"/>
-
-
-    <Slider fx:id="progress"/>
-    <Label fx:id="welcomeText"/>
-    <Button text="Load!" onAction="#onHelloButtonClick"/>
-    <Button text="Play!" onAction="#onHelloPlayClick"/>
-</VBox>
+<Stage height="1028.0" title="MP3 Player" width="1440.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+    <scene>
+        <Scene stylesheets="@MP3.css">
+            <AnchorPane prefHeight="1028.0" prefWidth="1440.0">
+            <children>
+               <AnchorPane fx:id="footer" prefHeight="128.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                  <children>
+                     <ImageView fx:id="song_cover" fitHeight="128.0" fitWidth="128.0" layoutX="210.0" layoutY="-22.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <image>
+                           <Image url="@../../../Downloads/me&amp;urMama.png" />
+                        </image>
+                     </ImageView>
+                     <AnchorPane layoutX="107.0" layoutY="-72.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="128.0" AnchorPane.rightAnchor="925.6" AnchorPane.topAnchor="5.0">
+                        <children>
+                           <Label fx:id="song_title" layoutX="14.0" layoutY="33.0" text="Me and Your Mama" textFill="WHITE" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="16.0">
+                              <font>
+                                 <Font size="26.0" />
+                              </font>
+                           </Label>
+                           <Label fx:id="song_artist" text="Childish Gambino" textFill="WHITE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="16.0" />
+                        </children>
+                     </AnchorPane>
+                     <HBox alignment="CENTER" layoutX="559.0" layoutY="22.0" prefHeight="100.0" prefWidth="200.0" spacing="50.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="576.0" AnchorPane.rightAnchor="576.0" AnchorPane.topAnchor="5.0">
+                        <children>
+                           <Button id="play_button" fx:id="previous_button1" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-background-radius: 100%;" styleClass="media_control">
+                              <graphic>
+                                 <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                       <Image url="@../../../Downloads/previous_icon.png" />
+                                    </image>
+                                    <viewport>
+                                       <Rectangle2D height="32.0" width="32.0" />
+                                    </viewport>
+                                 </ImageView>
+                              </graphic>
+                           </Button>
+                           <Button id="play_button" fx:id="play_button1" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-background-radius: 100%;" styleClass="media_control">
+                              <graphic>
+                                 <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                       <Image url="@../../../Downloads/play_button.png" />
+                                    </image>
+                                    <viewport>
+                                       <Rectangle2D height="32.0" width="32.0" />
+                                    </viewport>
+                                 </ImageView>
+                              </graphic>
+                           </Button>
+                           <Button id="play_button" fx:id="next_button1" graphicTextGap="0.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-background-radius: 100%;" styleClass="media_control">
+                              <graphic>
+                                 <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                       <Image url="@../../../Downloads/next_icon.png" />
+                                    </image>
+                                    <viewport>
+                                       <Rectangle2D height="32.0" width="32.0" />
+                                    </viewport>
+                                 </ImageView>
+                              </graphic>
+                           </Button>
+                        </children>
+                     </HBox>
+                     <Slider layoutX="254.0" layoutY="-7.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="14.0" prefWidth="2.0" AnchorPane.leftAnchor="128.0" AnchorPane.rightAnchor="0.0" />
+                  </children>
+               </AnchorPane>
+            </children></AnchorPane>
+        </Scene>
+    </scene>
+</Stage>
