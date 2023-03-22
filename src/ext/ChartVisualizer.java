@@ -24,64 +24,36 @@ import javafx.scene.chart.NumberAxis;
 
 import java.net.URL;
 
-public class ChartVisualizer extends Stage{
+public class ChartVisualizer extends Tabable{
+
     NumberAxis dispXAxis;
     NumberAxis dispYAxis;
     double MAXV;
+
     @FXML
     public HBox Rectangles;
-    @FXML
-    public void initialize(){
-        MAXV = 60;
-        System.out.println(
-                "visualizer initialized"
-        );
-
-    }
-
-    public void setRectangles1(HBox in){
-        Rectangles = in;
-
-
-    }
 
     public void update(int index, double magnitude){
-        Rectangles.getChildren().get(index).setScaleY((magnitude+120)/60.0);
+        if(index<Rectangles.getChildren().size()) {
+            Rectangles.getChildren().get(index).setScaleY((magnitude + 120) / 60.0);
+        }
     }
 
 
 
-    public ChartVisualizer(){
+    public ChartVisualizer(int bands){
+        super("ChartVisualizer");
         Rectangles = new HBox();
         Rectangles.setAlignment(Pos.valueOf("CENTER"));
-        for(int i = 0; i < 20; i++){
-            Rectangle newRec = new Rectangle(10,60);
+        for(int i = 0; i < bands; i++){
+            Rectangle newRec = new Rectangle(180.0/bands,60);
             newRec.setFill(Paint.valueOf("DODGERBLUE"));
             newRec.setStroke(Paint.valueOf("BLACK"));
             Rectangles.getChildren().add(newRec);
         }
-        try {
-            Tab windowTest = new Tab("anal", Rectangles);
-            Tab winn = new Tab("an");
-            TabPane tabs = new TabPane(winn, windowTest);
-            windowTest.setStyle("-fx-background-color: #09C");
-            System.out.println();
-            AnchorPane root = new AnchorPane(tabs);
-            tabs.setOnMouseDragged(event -> {
-                    tabs.setLayoutX(event.getSceneX());
-                    tabs.setLayoutY(event.getSceneY());
 
-            });
-
-            root.setPrefSize(200,200);
-            Scene scene = new Scene(root, 250, 250);
-            this.setTitle("spectrum");
-            this.setScene(scene);
-            this.show();
-        } catch (Exception e){
-            System.out.println("could not load file");
-            e.printStackTrace();
-        }
+        this.getRoot().setPrefSize(200,200);
+        this.getRoot().getChildren().add(Rectangles);
     }
 
 }

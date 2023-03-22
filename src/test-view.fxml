@@ -21,7 +21,7 @@
         <NumberAxis side="BOTTOM" />
     </xAxis>
     <yAxis>
-        <NumberAxis autoRanging="false" lowerBound="-120.0" minorTickCount="0" side="LEFT" upperBound="0.0" />
+        <NumberAxis autoRanging="false" lowerBound="0" minorTickCount="0" side="LEFT" upperBound="24" />
     </yAxis>
 </AreaChart>
     <HBox alignment="CENTER" fx:id="visualizerRectangle">
@@ -54,4 +54,6 @@
     <Label fx:id="welcomeText"/>
     <Button text="Load!" onAction="#onHelloButtonClick"/>
     <Button text="Play!" onAction="#onHelloPlayClick"/>
+    <Button text="Pause!" onAction="#pausePlaySong"/>
+    <Button text="Window!" onAction="#LoadWindow"/>
 </VBox>
