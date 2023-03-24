@@ -1,12 +1,19 @@
-
-
+import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.*;
@@ -16,15 +23,36 @@ import javafx.util.Duration;
 import ext.*;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class MP3Player {
+import static java.lang.Math.floor;
+
+public class MP3Player implements Initializable {
+    @FXML
+    Button play_pause_btn;
+    @FXML
+    ImageView play_pause_btn_icon;
+
+    boolean audioPlaying = false;
+
+    @FXML
+    Button prev_btn;
+
     public AnchorPane added;
     private ChartVisualizer chart;
     @FXML
-    private Label testLabel;
+    Button next_btn;
+
+    Media audio;
+    MediaPlayer audioPlayer;
+
     @FXML
-    private Label welcomeText;
+    Label timestamp;
+    @FXML
+    Slider time_slider;
+    private ChangeListener<Number> progressListener;
+
     @FXML
     private Slider progress;
     @FXML
@@ -38,60 +66,67 @@ public class MP3Player {
     private Media song;
     private MediaPlayer player;
     private FileChooser fileChooser;
-    private AudioSpectrumListener VisualizeListener;
-    private ChangeListener<Number> slideListener;
+    //private AudioSpectrumListener VisualizeListener;
+    //private ChangeListener<Number> slideListener;
     private final int BANDS = 1024;
-    private final String X_UNIT = "";
-    private boolean testBool;
-    private Duration songLength;
+    //private final String X_UNIT = "";
+    //private boolean testBool;
+    //private Duration songLength;
 
 
-    private javafx.beans.value.ChangeListener<Duration> progressListener;
-    private Stage stage;
+    //private javafx.beans.value.ChangeListener<Duration> progressListener;
 
-    public void passStage(Stage passed){
-        stage = passed;
+
+    protected void prev_audio_event() {
+        System.out.println("prev_audio_event");
     }
 
     @FXML
-    protected void onHelloButtonClick() {
-        loadSong();
-        welcomeText.setText("Song loaded!");
-    }
-    @FXML
-    protected void onHelloPlayClick() {
-
-        if(player==null){
-            welcomeText.setText("Not loaded");
-        } else {
-
-            songLength=song.getDuration();
-
-            progress.setMin(0);
-            progress.setMax(song.getDuration().toSeconds());
-
-            player.setAudioSpectrumNumBands(BANDS);
-            player.setAudioSpectrumThreshold(-120);
-            player.setAudioSpectrumInterval(.05);
-            System.out.println(player.getAudioSpectrumThreshold());
-            player.setAudioSpectrumListener(VisualizeListener);
-            player.play();
-            welcomeText.setText("Playing!");
-        }
+    protected void next_audio_event() {
+        System.out.println("next_audio_event");
     }
 
+    /**
+     *  @FXML
+     *     protected void onHelloPlayClick() {
+     *
+     *         if(player==null){
+     *             welcomeText.setText("Not loaded");
+     *         } else {
+     *
+     *             songLength=song.getDuration();
+     *
+     *             progress.setMin(0);
+     *             progress.setMax(song.getDuration().toSeconds());
+     *
+     *             player.setAudioSpectrumNumBands(BANDS);
+     *             player.setAudioSpectrumThreshold(-120);
+     *             player.setAudioSpectrumInterval(.05);
+     *             System.out.println(player.getAudioSpectrumThreshold());
+     *             player.setAudioSpectrumListener(VisualizeListener);
+     *             player.play();
+     *             welcomeText.setText("Playing!");
+     *         }
+     *     }
+     */
     @FXML
-    protected void pausePlaySong(){
-        if(isPlayerActive()){
-            if(player.getStatus().compareTo(MediaPlayer.Status.PLAYING)==0){
-                player.pause();
+    public void play_pause_audio_event() {
+        try {
+            if (audioPlaying) {
+                audioPlayer.pause();
+                play_pause_btn_icon.setImage(new Image("resources/play_button.png"));
+                audioPlaying = false;
             } else {
-                player.play();
+                audioPlayer.play();
+                play_pause_btn_icon.setImage(new Image("resources/pause_button.png"));
+                audioPlaying = true;
             }
-
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
+
 
     @FXML
     protected void LoadWindow(){
@@ -102,29 +137,71 @@ public class MP3Player {
         tabHandler.Display();
     }
 
-    protected void loadSong(){
-        if(player==null) {
-            try {
-                fileChooser = new FileChooser();
-                File file = fileChooser.showOpenDialog(welcomeText.getScene().getWindow());
+    protected void initializeAudioPlayer(){
+        try {
+            fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(welcomeText.getScene().getWindow());
+            audio = new Media(file.toURI().toString());
+            audioPlayer = new MediaPlayer(audio);
+            time_slider.setValue(0);
+            timestamp.setText("0:0");
+            //progress listener
+            audioPlayer.currentTimeProperty().addListener((observableValue, oldDuration, newDuration) -> {
+                double total = audioPlayer.getTotalDuration().toMillis();
+                if (newDuration != oldDuration) {
+                    //update timestamp
+                    timestamp.setText(String.format("%.0f:%02.0f", floor(newDuration.toMinutes()), floor(newDuration.toSeconds() % 60)));
 
-                song = new Media(file.toURI().toString());
-                player = new MediaPlayer(song);
-                player.currentTimeProperty().addListener(progressListener);
-                testLabel.setText("testText");
-                progress.valueProperty().addListener(slideListener);
+                    //move slider
+                    time_slider.setValue((newDuration.toSeconds() /audioPlayer.getTotalDuration().toSeconds()) * 100);
+                    System.out.println((newDuration.toSeconds() /audioPlayer.getTotalDuration().toSeconds()) * 100);
+                }
+            });
 
+            //update audioPlayer if time_slider is updated
+            time_slider.valueProperty().addListener((observableValue, oldDuration, newDuration) -> {
+                if (time_slider.isPressed()) {
+                    audioPlayer.seek(Duration.seconds((time_slider.getValue() / 100) * (long) audioPlayer.getTotalDuration().toSeconds()));
+                }
+            });
 
-                //player = createPlayer(song);
-            } catch (Exception e) {
-                System.out.println("didnt work!");
-                e.printStackTrace();
+            audioPlayer.setOnEndOfMedia(() -> {
+                //TODO: queue next song
+            });
+
+            /**
+             * JavaFX
+             */
+            XYChart.Series<Number, Number> amplitudes = new XYChart.Series<>();
+            XYChart.Data[] magArray = new XYChart.Data[BANDS];
+            for(int i = 0; i< magArray.length; i++){
+                magArray[i] = new XYChart.Data<>(Math.log10(i+1), 0f);
+                amplitudes.getData().add(magArray[i]);
             }
+            //visualizerChart = new AreaChart<Number, Number>(new LogAxis(1, BANDS), visualizerChart.getYAxis());
+            visualizerChart.setAnimated(false);
+            visualizerChart.getData().add(amplitudes);
+            visualizerChart.setCreateSymbols(false);
 
-        } else {
+            //chart.setRectangles1(added);
+            VisualizeListener =
+                    (double timestamp, double duration, float[] magnitudes, float[] phases) -> {
 
-            System.out.println("Is enabled: " +player.getAudioEqualizer().isEnabled());
-            System.out.println("0: " +player.getAudioEqualizer().getBands().get(0).getGain());
+
+                        for(int i = 0; i< player.getAudioSpectrumNumBands(); i++) {
+                            magArray[i].setYValue((magnitudes[i]+120)/5);
+                            //visualizerRectangle.getChildren().get(i).setScaleY((magnitudes[i] + 120) / 60);
+                            if(chart!=null) {
+                                chart.update(i, magnitudes[i]);
+                            }
+                        }
+                    };
+
+        }
+
+        } catch (Exception e) {
+            System.out.println("Exception in initalizeAudioPlayer");
+            e.printStackTrace();
         }
     }
 
@@ -147,60 +224,22 @@ public class MP3Player {
 
 
 
-    @FXML
-    public void initialize() {
-
-        /**
-         * Adjusts mediaplayer position with user-slider input
-         */
-        slideListener =
-                (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-                    if(player!=null&&player.getStatus()!=MediaPlayer.Status.UNKNOWN)
-                    if (progress.isPressed()) {
-                        System.out.println("Old value: "+oldValue+" new value: "+newValue);
-                        long dur = newValue.intValue() * 1000;
-
-                        player.seek(new Duration(dur));
-                    }
-                };
-        /**
-         * Adjusts Progress bar value with mediaplayer position
-         */
-        progressListener =
-                (ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
-
-                    progress.setValue(newValue.toSeconds());
-                    welcomeText.setText(String.format("%2.0f:%02.0f / %2.0f:%02.0f",newValue.toMinutes(),newValue.toSeconds()%60, songLength.toMinutes(), songLength.toSeconds()%60));
-                };
-
-        /**
-         * JavaFX
-         */
-        XYChart.Series<Number, Number> amplitudes = new XYChart.Series<>();
-        XYChart.Data[] magArray = new XYChart.Data[BANDS];
-        for(int i = 0; i< magArray.length; i++){
-            magArray[i] = new XYChart.Data<>(Math.log10(i+1), 0f);
-            amplitudes.getData().add(magArray[i]);
-        }
-        //visualizerChart = new AreaChart<Number, Number>(new LogAxis(1, BANDS), visualizerChart.getYAxis());
-        visualizerChart.setAnimated(false);
-        visualizerChart.getData().add(amplitudes);
-        visualizerChart.setCreateSymbols(false);
-
-        //chart.setRectangles1(added);
-        VisualizeListener =
-                    (double timestamp, double duration, float[] magnitudes, float[] phases) -> {
 
 
-                            for(int i = 0; i< player.getAudioSpectrumNumBands(); i++) {
-                                magArray[i].setYValue((magnitudes[i]+120)/5);
-                                //visualizerRectangle.getChildren().get(i).setScaleY((magnitudes[i] + 120) / 60);
-                                if(chart!=null) {
-                                    chart.update(i, magnitudes[i]);
-                                }
-                            }
-                        };
+        @Override
+        public void initialize(URL url, ResourceBundle resourceBundle) {
+            prev_btn = new Button();
+            next_btn = new Button();
+            play_pause_btn = new Button();
+            play_pause_btn_icon = new ImageView(new Image("resources/pause_button.png"));
+            initalizeAudioPlayer();
+            /**progressListener =
+             (ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
+             progress.setValue(newValue.toSeconds());
+             welcomeText.setText(newValue.toSeconds()+"s");
+             }; **/
 
-                }
+
     }
 
+}
