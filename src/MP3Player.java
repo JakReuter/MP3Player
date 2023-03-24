@@ -1,8 +1,4 @@
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,17 +11,30 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import static java.lang.Math.floor;
 
+
 public class MP3Player implements Initializable {
+    //Initalizer
+
+    //Media control
     @FXML
     Button play_pause_btn;
     @FXML
     ImageView play_pause_btn_icon;
 
     boolean audioPlaying = false;
+    ArrayList<File> queue = new ArrayList<File>(){
+        {
+            add(new File("C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\resources\\MeAndYourMama.mp3"));
+            add(new File("C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\resources\\Soul smile.mp3"));
+        }
+    };
+
+    int queueNumber = 1;
 
     @FXML
     Button prev_btn;
@@ -33,6 +42,8 @@ public class MP3Player implements Initializable {
     @FXML
     Button next_btn;
 
+
+    //Media Player
     Media audio;
     MediaPlayer audioPlayer;
 
@@ -40,16 +51,58 @@ public class MP3Player implements Initializable {
     Label timestamp;
     @FXML
     Slider time_slider;
-    private ChangeListener<Number> progressListener;
+
+
+    //Metadata
+
+
+
 
     @FXML
     protected void prev_audio_event() {
+        //TODO: slider dragger dissapears (bug)
         System.out.println("prev_audio_event");
+        try{
+            //go to beginning of song if more than 5 seconds in
+            if(audioPlayer.getCurrentTime().toSeconds() > 5 || 0 == queueNumber){
+                audioPlayer.seek(Duration.millis(0));
+            }else if (audioPlayer.getCurrentTime().toSeconds() <= 5 && queueNumber > 0){
+                queueNumber--;
+                audioPlayer.stop();
+                audio = new Media(queue.get(queueNumber).toURI().toString());
+                audioPlayer = new MediaPlayer(audio);
+
+                //keep playing status
+                if(audioPlaying)
+                    audioPlayer.play();
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
     protected void next_audio_event() {
+        //TODO: slider dragger dissapears (bug)
+
+        //Go to next song
+        if(queueNumber < queue.size() - 1){
+            queueNumber++;
+        //go to first song if at the end of the queue
+        }else{
+            queueNumber = 0;
+        }
+
+        audioPlayer.stop();
+        audio = new Media(queue.get(queueNumber).toURI().toString());
+        audioPlayer = new MediaPlayer(audio);
+
+        //keep playing status
+        if(audioPlaying)
+            audioPlayer.play();
         System.out.println("next_audio_event");
+
+
     }
 
     @FXML
@@ -57,6 +110,7 @@ public class MP3Player implements Initializable {
         try {
             if (audioPlaying) {
                 audioPlayer.pause();
+                //TODO: switch icon to pause when playing audio
                 play_pause_btn_icon.setImage(new Image("resources/play_button.png"));
                 audioPlaying = false;
             } else {
@@ -84,12 +138,18 @@ public class MP3Player implements Initializable {
 
     private void initalizeAudioPlayer() {
         try {
-            File file = new File("C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\resources\\MeAndYourMama.mp3");
+            File file = queue.get(queueNumber);
             audio = new Media(file.toURI().toString());
             audioPlayer = new MediaPlayer(audio);
             time_slider.setValue(0);
             timestamp.setText("0:0");
 
+            setMetaData(file);
+//            updateMetadata(audio);
+            System.out.println(audio.getMetadata().toString());
+            audioPlayer.setOnReady(() ->{
+
+            });
 
             //progress listener
             audioPlayer.currentTimeProperty().addListener((observableValue, oldDuration, newDuration) -> {
@@ -100,7 +160,6 @@ public class MP3Player implements Initializable {
 
                     //move slider
                     time_slider.setValue((newDuration.toSeconds() /audioPlayer.getTotalDuration().toSeconds()) * 100);
-                    System.out.println((newDuration.toSeconds() /audioPlayer.getTotalDuration().toSeconds()) * 100);
                 }
             });
 
@@ -115,11 +174,34 @@ public class MP3Player implements Initializable {
                 //TODO: queue next song
             });
 
+
         } catch (Exception e) {
             System.out.println("Exception in initalizeAudioPlayer");
             e.printStackTrace();
         }
 
+    }
+
+
+
+    private void setMetaData(File file){
+        //TODO: get metadata from files or media
+        //get file extension
+        String extension = "";
+
+        int i = file.getName().lastIndexOf('.');
+        if(i > 0)
+            extension = file.getName().substring(i + 1);
+
+        //
+        switch (extension){
+            case "mp3":
+
+                break;
+
+            case "flack":
+                break;
+        }
     }
 
 
