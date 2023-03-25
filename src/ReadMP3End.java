@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 import java.nio.*;
 
-public class ReadMP3Tag{
+public class ReadMP3End {
     public static void main(String[] args) {
         try {
             // Open the MP3 file for reading
