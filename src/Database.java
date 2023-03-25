@@ -254,10 +254,12 @@ public class Database {
      * @return ResultSet This ResultSet contains a single row with the stored attributes for the given song
      */
     public static ResultSet getSongInfo(String name) {
-        String sql = "SELECT * FROM Song";
+        String sql = "SELECT * FROM Song WHERE name = ?";
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            //Statement stmt = conn.createStatement();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,name);
+            ResultSet rs = stmt.executeQuery();
             return rs;
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
