@@ -254,7 +254,7 @@ public class Database {
      * @return ResultSet This ResultSet contains a single row with the stored attributes for the given song
      */
     public static ResultSet getSongInfo(String name) {
-        String sql = "SELECT ";
+        String sql = "SELECT *";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
