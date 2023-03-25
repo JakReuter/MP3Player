@@ -236,7 +236,7 @@ public class Database {
      * @return ResultSet This ResultSet contains every playlist
      */
     public static ResultSet selectAllPlaylists() {
-        String sql = "";
+        String sql = "SELECT * FROM Playlist";
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
