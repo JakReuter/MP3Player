@@ -31,8 +31,8 @@ import static java.lang.Math.floor;
 public class MP3Player implements Initializable {
 
     private final String PATH_DEFAULT = System.getProperty("user.dir");
-    private final String PATH_MVMT = PATH_DEFAULT+"\\src\\resources\\4th Mvmt.mp3";
-    private final String PATH_MAMA = PATH_DEFAULT+"\\src\\resources\\meAndUrMama.mp3";
+//    private final String PATH_MVMT = PATH_DEFAULT+"/src/resources\\4th Mvmt.mp3";
+    private final String PATH_MAMA = PATH_DEFAULT+"/src/resources/MeAndYourMama.mp3";
 
     @FXML
     Button play_pause_btn;
@@ -147,7 +147,7 @@ public class MP3Player implements Initializable {
             fileChooser = new FileChooser();
             timestamp.setText("0:0");
             //File file = fileChooser.showOpenDialog(prev_btn.getScene().getWindow()); null pointer here, i give up.
-            File file = new File(PATH_MVMT);
+            File file = new File(PATH_MAMA);
             audio = new Media(file.toURI().toString());
             audioPlayer = new MediaPlayer(audio);
             time_slider.setValue(0);
