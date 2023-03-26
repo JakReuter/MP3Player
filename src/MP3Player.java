@@ -80,13 +80,18 @@ public class MP3Player implements Initializable {
 
     //private javafx.beans.value.ChangeListener<Duration> progressListener;
 
+    //this should hopefully be initialized after the audio player
+    TimeControl timeControl = new TimeControl(audioPlayer);
+
     @FXML
     protected void prev_audio_event() {
+        timeControl.rewind(audioPlayer, 5);
         System.out.println("prev_audio_event");
     }
 
     @FXML
     protected void next_audio_event() {
+        timeControl.fastForward(audioPlayer, 5);
         System.out.println("next_audio_event");
     }
 

@@ -26,6 +26,13 @@ import javafx.util.Duration;
 
 public class TimeControl
 {
+    MediaPlayer mediaPlayer = null;
+
+    TimeControl(MediaPlayer mp)
+    {
+        mediaPlayer = mp;
+    }
+
     //does a time skip forward in seconds
     public void fastForward(MediaPlayer mp, double seconds)
     {
