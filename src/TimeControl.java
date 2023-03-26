@@ -34,23 +34,35 @@ public class TimeControl
     }
 
     //does a time skip forward in seconds
-    public void fastForward(MediaPlayer mp, double seconds)
+    public void fastForward(double seconds)
     {
         //adds the required skip time to whatever the current time is and then converts that to a duration
-        double newTime = mp.getCurrentTime().toSeconds() + seconds;
+        double newTime = mediaPlayer.getCurrentTime().toSeconds() + seconds;
         Duration asDuration = Duration.seconds(newTime);
 
-        mp.seek(asDuration);
+        mediaPlayer.seek(asDuration);
     }
 
     //does a time skip backward in seconds
-    public void rewind(MediaPlayer mp, double seconds)
+    public void rewind(double seconds)
     {
         //adds the required skip time to whatever the current time is and then converts that to a duration
-        double newTime = mp.getCurrentTime().toSeconds() - seconds;
+        double newTime = mediaPlayer.getCurrentTime().toSeconds() - seconds;
         Duration asDuration = Duration.seconds(newTime);
 
-        mp.seek(asDuration);
+        mediaPlayer.seek(asDuration);
+    }
+
+    public void changePlaybackSpeed(double speed)
+    {
+        //negative values aren't allowed
+        if(speed < 0)
+        {
+            System.err.println("Negative playback speeds aren't allowed, please choose a value greater than or equal to 0");
+            speed = .1;
+        }
+
+        mediaPlayer.setRate(speed);
     }
 
     /*
