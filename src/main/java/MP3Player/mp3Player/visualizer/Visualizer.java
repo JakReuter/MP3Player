@@ -1,26 +1,15 @@
-package ext;
+package MP3Player.mp3Player.visualizer;
 
-import javafx.collections.ObservableList;
-
-import java.util.ArrayList;
-import java.util.Observable;
+import MP3Player.mp3Player.visualizer.core.Axis;
 
 public abstract class Visualizer {
     private double[] realData;
     private int bands;
-    private final double MAXFREQ = 16000.0;
+    private final double MAXFREQ = 22050;
     private double currentScale;
 
-    public interface IndexAxis{
-        double get(int index, double coordinate, double scale);
-    }
-
-    private IndexAxis logAxis = (int index, double coordinate, double scale)->{
-        return currentScale;
-    };
-    private IndexAxis linearAxis = (int index, double coordinate, double scale)->{
-        return 0;
-    };
+    private Axis XAxis;
+    private Axis YAxis;
 
     public Visualizer(int bands){
 
@@ -34,7 +23,7 @@ return 0;
     }
 
     public void update(int xIndex, double yValue){
-
+        //linearAxis.
     }
 
     protected boolean validate(int index){
@@ -45,6 +34,10 @@ return 0;
         return false;
     }
 
+    /**
+     * If autoranging, change range when outlier is reached
+     * @param outLier
+     */
     abstract protected void adjustRange(int outLier);
 
 }

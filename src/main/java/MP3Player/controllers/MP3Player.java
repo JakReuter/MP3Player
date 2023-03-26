@@ -1,13 +1,14 @@
-import javafx.beans.InvalidationListener;
+package MP3Player.controllers;
+
+import MP3Player.mp3Player.equalizer.Equalizer;
+import MP3Player.mp3Player.visualizer.RectangleVisualizer;
+import MP3Player.mp3Player.visualizer.XYChartVisualizer;
+import MP3Player.util.general.TabHandler;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
@@ -15,12 +16,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.media.*;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.util.Duration;
-import ext.*;
 
 import java.io.File;
 import java.net.URL;
@@ -31,54 +29,51 @@ import static java.lang.Math.floor;
 public class MP3Player implements Initializable {
 
     private final String PATH_DEFAULT = System.getProperty("user.dir");
-    private final String PATH_MVMT = PATH_DEFAULT+"\\src\\resources\\4th Mvmt.mp3";
-    private final String PATH_MAMA = PATH_DEFAULT+"\\src\\resources\\meAndUrMama.mp3";
+    private final String PATH_MVMT = "/song/4th Mvmt.mp3";
+    private final String PATH_MAMA = "\\song\\meAndUrMama.mp3";
 
-    @FXML
-    Button play_pause_btn;
-    @FXML
-    ImageView play_pause_btn_icon;
 
     boolean audioPlaying = false;
 
     @FXML
+    Label isTesting;
+    @FXML
+    Label timestamp;
+    @FXML
+    ImageView play_pause_btn_icon;
+    @FXML
+    Slider time_slider;
+    @FXML
     Button prev_btn;
-
-    public AnchorPane added;
-    private ChartVisualizer chart;
     @FXML
     Button next_btn;
+    @FXML
+    Button play_pause_btn;
+    @FXML
+    private AnchorPane visDispPane;
+    @FXML
+    private AreaChart visualizerChart;
+
+    public AnchorPane added;
+    private RectangleVisualizer chart;
+    private XYChartVisualizer areaChart;
 
     Media audio;
     MediaPlayer audioPlayer;
 
-    @FXML
-    Label timestamp;
-    @FXML
-    Slider time_slider;
-    private ChangeListener<Number> progressListener;
 
-    //@FXML
-    //private Slider progress;
-    @FXML
-    private HBox visualizerRectangle;
-    @FXML
-    private AreaChart visualizerChart;
-    @FXML
-    private LogAxis X_AXIS;
-
-    //private Media song;
-    //private MediaPlayer player;
-    private FileChooser fileChooser;
+    /**
+     * Listeners
+     */
+    private ChangeListener<Duration> progressListener;
     private AudioSpectrumListener VisualizeListener;
-    //private ChangeListener<Number> slideListener;
+    private ChangeListener<Number> slideListener;
+
+
+    private FileChooser fileChooser;
     private final int BANDS = 1024;
-    //private final String X_UNIT = "";
-    //private boolean testBool;
     //private Duration songLength;
 
-
-    //private javafx.beans.value.ChangeListener<Duration> progressListener;
 
     @FXML
     protected void prev_audio_event() {
@@ -91,6 +86,7 @@ public class MP3Player implements Initializable {
     }
 
     /**
+     * The following code is necessary for displaying accurate specturm
      *  @FXML
      *     protected void onHelloPlayClick() {
      *
@@ -118,11 +114,11 @@ public class MP3Player implements Initializable {
         try {
             if (audioPlayer.getStatus().compareTo(MediaPlayer.Status.PLAYING)==0) {
                 audioPlayer.pause();
-                play_pause_btn_icon.setImage(new Image("resources/play_button.png"));
+                play_pause_btn_icon.setImage(new Image("image/play_button.png"));
                 audioPlaying = false;
             } else {
                 audioPlayer.play();
-                play_pause_btn_icon.setImage(new Image("resources/pause_button.png"));
+                play_pause_btn_icon.setImage(new Image("image/pause_button.png"));
                 audioPlaying = true;
             }
         } catch (Exception e) {
@@ -134,11 +130,26 @@ public class MP3Player implements Initializable {
     //brendan window
     @FXML
     protected void LoadWindow(){
+        audioPlayer.setAudioSpectrumThreshold(-100);
         Equalizer newEQ = new Equalizer(audioPlayer.getAudioEqualizer());
-        chart = new ChartVisualizer(32);
+        chart = new RectangleVisualizer(32);
+        areaChart = new XYChartVisualizer("chart", audioPlayer.getAudioSpectrumNumBands());
+        newEQ.setListener(areaChart.getEQListener());
         TabHandler tabHandler = new TabHandler();
-        tabHandler.addApp(newEQ, chart);
-        tabHandler.Display();
+        tabHandler.addApp(newEQ, areaChart, chart);
+        visDispPane.getChildren().add(tabHandler.getPane());
+        audioPlayer.setAudioSpectrumListener((double timestamp, double duration, float[] magnitudes, float[] phases) -> {
+
+
+            for(int i = 0; i< audioPlayer.getAudioSpectrumNumBands(); i++) {
+                //magArray[i].setYValue((magnitudes[i]+120)/5); javaFX movde
+                //visualizerRectangle.getChildren().get(i).setScaleY((magnitudes[i] + 120) / 60);
+
+                    //System.out.println("her");
+                    areaChart.update(i, magnitudes[i]);
+
+            }
+        });
     }
 
     protected void initializeAudioPlayer(){
@@ -147,7 +158,7 @@ public class MP3Player implements Initializable {
             fileChooser = new FileChooser();
             timestamp.setText("0:0");
             //File file = fileChooser.showOpenDialog(prev_btn.getScene().getWindow()); null pointer here, i give up.
-            File file = new File(PATH_MVMT);
+            File file = new File(getClass().getClassLoader().getResource("song/4th Mvmt.mp3").getPath());
             audio = new Media(file.toURI().toString());
             audioPlayer = new MediaPlayer(audio);
             time_slider.setValue(0);
@@ -156,26 +167,8 @@ public class MP3Player implements Initializable {
             /**All of intializeAudioPlayer will run whenever a new Media Player is needed
              * a new mediaplayer might be required with each different song we play
              * might want to create listeners as global variables? **/
-            audioPlayer.currentTimeProperty().addListener((observableValue, oldDuration, newDuration) -> {
-                double total = audioPlayer.getTotalDuration().toMillis();
-                if (newDuration != oldDuration) { /**Would newDuration ever = oldDuration if we are listening for update?**/
-                    //update timestamp
-                    timestamp.setText(String.format("%.0f:%02.0f", floor(newDuration.toMinutes()), floor(newDuration.toSeconds() % 60)));
-
-                    //move slider
-                    /**Note: slider max value can be set to song duration, removing the math between slider and player.
-                     * Total Slider Duration might also give wrong number if repeated? not sure what cycles means**/
-                    time_slider.setValue((newDuration.toSeconds() /audioPlayer.getTotalDuration().toSeconds()) * 100);
-                    System.out.println((newDuration.toSeconds() /audioPlayer.getTotalDuration().toSeconds()) * 100);
-                }
-            });
-
-            //update audioPlayer if time_slider is updated
-            time_slider.valueProperty().addListener((observableValue, oldDuration, newDuration) -> {
-                if (time_slider.isPressed()) {
-                    audioPlayer.seek(Duration.seconds((time_slider.getValue() / 100) * (long) audioPlayer.getTotalDuration().toSeconds()));
-                }
-            });
+            audioPlayer.currentTimeProperty().addListener(progressListener);
+            time_slider.valueProperty().addListener(slideListener); //update audioPlayer if time_slider is updated
 
             audioPlayer.setOnEndOfMedia(() -> {
                 //TODO: queue next song
@@ -207,8 +200,9 @@ public class MP3Player implements Initializable {
                         for(int i = 0; i< audioPlayer.getAudioSpectrumNumBands(); i++) {
                             //magArray[i].setYValue((magnitudes[i]+120)/5); javaFX movde
                             //visualizerRectangle.getChildren().get(i).setScaleY((magnitudes[i] + 120) / 60);
-                            if(chart!=null) {
-                                chart.update(i, magnitudes[i]);
+                            if(areaChart!=null) {
+                                System.out.println("her");
+                                areaChart.update(i, magnitudes[i]);
                             }
                         }
                     };
@@ -233,25 +227,51 @@ public class MP3Player implements Initializable {
         return (audioPlayer!=null&&audioPlayer.getStatus().compareTo(MediaPlayer.Status.UNKNOWN)!=0);
     }
 
-
-
-
-
-
         @Override
         public void initialize(URL url, ResourceBundle resourceBundle) {
 
             prev_btn = new Button();
             next_btn = new Button();
             play_pause_btn = new Button();
-            play_pause_btn_icon = new ImageView(new Image("resources/pause_button.png"));
-            initializeAudioPlayer();
-            /**progressListener =
-             (ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
-             progress.setValue(newValue.toSeconds());
-             welcomeText.setText(newValue.toSeconds()+"s");
-             }; **/
+            play_pause_btn_icon = new ImageView(new Image("image/pause_button.png"));
+            initializeListeners();
+            //Will not run given the Testing Condition
+            if(isTesting==null) {
+                initializeAudioPlayer();
+            } else {
 
+                System.out.println("Testing layout...");
+            }
+    }
+
+    protected void initializeListeners(){
+        slideListener = (observableValue, oldDuration, newDuration) -> {
+            if (time_slider.isPressed()) {
+                audioPlayer.seek(Duration.seconds((time_slider.getValue() / 100) * (long) audioPlayer.getTotalDuration().toSeconds()));
+            }};
+
+        progressListener = (observableValue, oldDuration, newDuration) -> {
+            if (newDuration != oldDuration) { /**Would newDuration ever = oldDuration if we are listening for update?**/
+                //update timestamp
+                timestamp.setText(String.format("%.0f:%02.0f", floor(newDuration.toMinutes()), floor(newDuration.toSeconds() % 60)));
+
+                //move slider
+                /**Note: slider max value can be set to song duration, removing the math between slider and player.
+                 * Total Slider Duration might also give wrong number if repeated? not sure what cycles means**/
+                time_slider.setValue((newDuration.toSeconds() /audioPlayer.getTotalDuration().toSeconds()) * 100);
+            }};
+
+    }
+
+    @FXML
+    protected void debugSongLoader(){
+        fileChooser = new FileChooser();
+        //timestamp.setText("0:0");
+        File file = fileChooser.showOpenDialog(timestamp.getScene().getWindow());
+        audio = new Media(file.toURI().toString());
+        audioPlayer = new MediaPlayer(audio);
+        audioPlayer.currentTimeProperty().addListener(progressListener);
+        time_slider.valueProperty().addListener(slideListener); //update audioPlayer if time_slider is updated
 
     }
 

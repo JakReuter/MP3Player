@@ -1,4 +1,4 @@
-package ext;
+package MP3Player.util.general;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
