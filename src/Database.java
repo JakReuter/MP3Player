@@ -1,8 +1,10 @@
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
+
 
 public class Database {
     static Connection conn = null;
@@ -352,11 +354,11 @@ public class Database {
      */
     public static void main(String[] args) {
         connect();
-        testing();
+        /*testing();
         addNewSong("testname", "testpath", "testauthor", "testalbum");
         testing();
         removeSong("testname");
         testing();
-        close();
+        */close();
     }
 }
