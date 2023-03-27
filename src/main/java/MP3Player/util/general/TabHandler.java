@@ -9,6 +9,10 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ *
+ * @Authors Brendan Reuter
+ */
 public class TabHandler {
     private TabPane mainPane;
     private ArrayList<Tabable> apps;

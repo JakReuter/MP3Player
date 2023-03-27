@@ -1,8 +1,17 @@
 package MP3Player.mp3Player.visualizer;
 
 import MP3Player.mp3Player.visualizer.core.Axis;
+import MP3Player.util.general.Tabable;
+import javafx.animation.Animation;
+import javafx.animation.Timeline;
+import javafx.scene.media.AudioSpectrumListener;
 
-public abstract class Visualizer {
+/**
+ *
+ * @Authors Brendan Reuter
+ */
+public abstract class Visualizer extends Tabable {
+    public Timeline timeline;
     private double[] realData;
     private int bands;
     private final double MAXFREQ = 22050;
@@ -11,10 +20,14 @@ public abstract class Visualizer {
     private Axis XAxis;
     private Axis YAxis;
 
-    public Visualizer(int bands){
-
+    public Visualizer(int bands, String name){
+        super(name);
         this.bands=bands;
         realData = new double[bands];
+
+    }
+
+    protected void logVisualizer(){
 
     }
 
@@ -22,8 +35,12 @@ public abstract class Visualizer {
 return 0;
     }
 
-    public void update(int xIndex, double yValue){
+    public void update(float[] newValues){
         //linearAxis.
+    }
+
+    protected void setXDrawBound(Number max){
+        XAxis.setDrawBound((int)max);
     }
 
     protected boolean validate(int index){
@@ -39,5 +56,11 @@ return 0;
      * @param outLier
      */
     abstract protected void adjustRange(int outLier);
+
+
+
+    public void drawUp(){
+
+    }
 
 }

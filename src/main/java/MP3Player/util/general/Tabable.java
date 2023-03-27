@@ -8,6 +8,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ *
+ * @Authors Brendan Reuter
+ */
 public abstract class Tabable extends Stage{
     public String getTabName() {
         return tabName;

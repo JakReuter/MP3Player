@@ -20,6 +20,10 @@ import java.util.ArrayList;
 
 //possibly a tabable element interface? one that has a concrete display, getTab and maybe getWindow kind of thing
 
+/**
+ *
+ * @Authors Brendan Reuter
+ */
 public class Equalizer extends Tabable {
     private String tabName = "h";
     private HBox Sliders;
@@ -33,7 +37,7 @@ public class Equalizer extends Tabable {
         super("Equalizer");
         EQ = mediaEQ;
         Sliders = new HBox();
-        Sliders.setPrefSize(200,200);
+        Sliders.setPrefSize(500,200);
         Sliders.setAlignment(Pos.valueOf("CENTER"));
 
         sliderArrayList = new ArrayList<>();

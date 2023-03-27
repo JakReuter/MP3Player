@@ -15,4 +15,13 @@ public class Axis {
         }
     }
 
+    public void setDrawBound(int max){
+
+    }
+
+    public double getDrawPoint(){
+        //Xlog2(maxfrequency) = maxPoint
+        return 0.0;
+    }
+
 }
