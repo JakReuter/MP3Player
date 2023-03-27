@@ -1,5 +1,6 @@
 import MP3Player.controllers.MP3Player;
 import MP3Player.mp3Player.equalizer.Equalizer;
+import MP3Player.mp3Player.time.TimeControl;
 import MP3Player.mp3Player.visualizer.RectangleVisualizer;
 import MP3Player.mp3Player.visualizer.XYChartVisualizer;
 import MP3Player.util.general.TabHandler;
@@ -69,4 +70,5 @@ public class TestMP3Controller extends MP3Player {
         time_slider.valueProperty().addListener(slideListener); //update audioPlayer if time_slider is updated
 
     }
+
 }

@@ -1,5 +1,9 @@
 package MP3Player.mp3Player.visualizer.core;
 
+/**
+ * Axis for Visualizer class
+ * @Authors
+ */
 public class Axis {
     private boolean isLog;
     private double translation;

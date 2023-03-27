@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- *
+ * Holds and handles a bunch of tabs.
+ * Turns into windows
  * @Authors Brendan Reuter
  */
 public class TabHandler {

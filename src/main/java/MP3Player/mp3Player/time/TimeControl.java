@@ -1,3 +1,5 @@
+package MP3Player.mp3Player.time;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -28,7 +30,7 @@ public class TimeControl
 {
     MediaPlayer mediaPlayer = null;
 
-    TimeControl(MediaPlayer mp)
+    public TimeControl(MediaPlayer mp)
     {
         mediaPlayer = mp;
     }

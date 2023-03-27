@@ -7,6 +7,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Path;
 
+/**
+ * This class serves to replace AreaChart/XYChart. Will
+ * be able to display log axis for visualizer. Made
+ * abstract to not throw errors for now.
+ */
 public abstract class ChartVisualizer extends Visualizer {
     private Path mainPath;
     private Path eqPath;

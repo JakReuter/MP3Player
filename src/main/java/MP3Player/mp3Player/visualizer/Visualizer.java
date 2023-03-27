@@ -7,7 +7,9 @@ import javafx.animation.Timeline;
 import javafx.scene.media.AudioSpectrumListener;
 
 /**
- *
+ * Abstract visualizer class that serves to
+ *  handle the visuals of more complex visualizers
+ *  in the future.
  * @Authors Brendan Reuter
  */
 public abstract class Visualizer extends Tabable {

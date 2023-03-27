@@ -22,6 +22,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import MP3Player.mp3Player.time.*;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,8 +34,8 @@ import static java.lang.Math.floor;
 public class MP3Player implements Initializable {
 
     private final String PATH_DEFAULT = System.getProperty("user.dir");
-    private final String PATH_MVMT = "/song/4th Mvmt.mp3";
-    private final String PATH_MAMA = "\\song\\meAndUrMama.mp3";
+    private final String PATH_MVMT = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/4th Mvmt.mp3";
+    private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/MeAndYourMama.mp3";
 
 
     boolean audioPlaying = false;
@@ -56,6 +58,7 @@ public class MP3Player implements Initializable {
 
     protected Media audio;
     protected MediaPlayer audioPlayer;
+    protected TimeControl timeControl;
 
     /**
      * Listeners
@@ -101,17 +104,17 @@ public class MP3Player implements Initializable {
     protected void initializeAudioPlayer() {
         try {
 
-            File file = new File(getClass().getClassLoader().getResource("song/4th Mvmt.mp3").getPath());
-            System.out.println("file:/C:/Users/Brendan%20Reuter/eclipse-workspace/MP3Player/out/production/AnotherMp3Test/song/4th%20Mvmt.mp3");
-            System.out.println(file.toURI());
+            File file = new File(PATH_MAMA);
             audio = new Media(file.toURI().toString());
             audioPlayer = new MediaPlayer(audio);
 
             timestamp.setText("0:0");
             time_slider.setValue(0);
 
+            timeControl = new TimeControl(audioPlayer);
+
             audioPlayer.currentTimeProperty().addListener(progressListener);
-            time_slider.valueProperty().addListener(slideListener); //update audioPlayer if time_slider is updated
+            time_slider.valueProperty().addListener(slideListener);
 
             audioPlayer.setOnEndOfMedia(() -> {
                 //TODO: queue next song
@@ -133,19 +136,11 @@ public class MP3Player implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         prev_btn = new Button();
         next_btn = new Button();
         play_pause_btn = new Button();
         play_pause_btn_icon = new ImageView(new Image("image/pause_button.png"));
         initializeListeners();
-        //Will not run given the Testing Condition
-        if(isTesting==null) {
-            initializeAudioPlayer();
-        } else {
-
-            System.out.println("Testing layout...");
-        }
     }
 
     protected void initializeListeners(){
@@ -155,13 +150,11 @@ public class MP3Player implements Initializable {
             }};
 
         progressListener = (observableValue, oldDuration, newDuration) -> {
-            if (newDuration != oldDuration) { /**Would newDuration ever = oldDuration if we are listening for update?**/
+            if (newDuration != oldDuration) {
                 //update timestamp
                 timestamp.setText(String.format("%.0f:%02.0f", floor(newDuration.toMinutes()), floor(newDuration.toSeconds() % 60)));
 
                 //move slider
-                /**Note: slider max value can be set to song duration, removing the math between slider and player.
-                 * Total Slider Duration might also give wrong number if repeated? not sure what cycles means**/
                 time_slider.setValue((newDuration.toSeconds() /audioPlayer.getTotalDuration().toSeconds()) * 100);
             }};
 

@@ -9,8 +9,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
- *
- * @Authors Brendan Reuter
+ * Acts as a tab that can transfer to a
+ *  window or another tab pane while preserve
+ *  its contents. Unless a ui element is created
+ *  in a bad scope like eq sliders.
+ * @Authors
  */
 public abstract class Tabable extends Stage{
     public String getTabName() {

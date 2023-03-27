@@ -18,9 +18,10 @@ import javafx.scene.media.EqualizerBand;
 
 import java.util.ArrayList;
 
-//possibly a tabable element interface? one that has a concrete display, getTab and maybe getWindow kind of thing
 
 /**
+ * Provides UI control over the sound/frequency response of music
+ * as vertical sliders.
  *
  * @Authors Brendan Reuter
  */

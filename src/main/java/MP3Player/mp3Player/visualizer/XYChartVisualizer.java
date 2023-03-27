@@ -8,8 +8,9 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.layout.AnchorPane;
 
 /**
+ *  JavaFX AreaChart within a Tabable object.
  *
- * @Authors Brendan Reuter
+ * @Authors
  */
 public class XYChartVisualizer extends Tabable {
 

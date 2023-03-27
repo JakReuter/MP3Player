@@ -9,8 +9,10 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 /**
- *
- * @Authors Brendan Reuter
+ * Classic Rectangles in a Tabable node.
+ *  could be used to make EQ look fancy.
+ *  todo: Should switch to averages
+ * @Authors
  */
 public class RectangleVisualizer extends Tabable {
 

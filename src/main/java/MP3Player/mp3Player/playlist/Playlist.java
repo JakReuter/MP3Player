@@ -1,3 +1,5 @@
+package MP3Player.mp3Player.playlist;
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
