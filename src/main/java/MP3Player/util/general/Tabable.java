@@ -1,4 +1,4 @@
-package ext;
+package MP3Player.util.general;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -8,6 +8,13 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+/**
+ * Acts as a tab that can transfer to a
+ *  window or another tab pane while preserve
+ *  its contents. Unless a ui element is created
+ *  in a bad scope like eq sliders.
+ * @Authors
+ */
 public abstract class Tabable extends Stage{
     public String getTabName() {
         return tabName;

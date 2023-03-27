@@ -11,14 +11,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="1028.0" prefWidth="1440.0" style="-fx-background-color: #FAFAFA;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="1028.0" prefWidth="1440.0" style="-fx-background-color: #FAFAFA;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player.controllers.MP3Player">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2B2B2B;" AnchorPane.bottomAnchor="128.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <HBox layoutX="476.0" layoutY="610.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="128.0" prefWidth="200.0" style="-fx-background-color: #000000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <ImageView fx:id="audio_cover" fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@resources/meAndUrMama.png" />
+                  <Image url="@../image/meAndUrMama.png" />
                </image>
             </ImageView>
             <VBox maxHeight="-Infinity" prefHeight="128.0">
@@ -55,7 +55,7 @@
                                  <graphic>
                                     <ImageView fx:id="prev_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@resources/previous_icon.png" />
+                                          <Image url="@../image/previous_icon.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -63,7 +63,7 @@
                               <Button fx:id="play_pause_btn" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#play_pause_audio_event" prefHeight="64.0" prefWidth="64.0" style="-fx-background-color: #F6CB27; -fx-background-radius: 100%;">
                                  <graphic>
                                     <ImageView fx:id="play_pause_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                       <Image url="@resources/play_button.png" />
+                                       <Image url="@../image/play_button.png" />
                                     </ImageView>
                                  </graphic>
                               </Button>
@@ -71,7 +71,7 @@
                                  <graphic>
                                     <ImageView fx:id="next_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@resources/next_icon.png" />
+                                          <Image url="@../image/next_icon.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>

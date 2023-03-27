@@ -1,16 +1,19 @@
-package ext;
+package MP3Player.util.general;
 
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Holds and handles a bunch of tabs.
+ * Turns into windows
+ * @Authors Brendan Reuter
+ */
 public class TabHandler {
     private TabPane mainPane;
     private ArrayList<Tabable> apps;
@@ -43,7 +46,7 @@ public class TabHandler {
 
     }
 
-    public void Display(){
+    public void DisplayNewWindow(){
         if(mainStage==null){
             mainStage = new Stage();
             mainStage.setTitle("Main");
@@ -57,6 +60,16 @@ public class TabHandler {
 
         mainStage.setScene(new Scene(mainPane,250, 250));
         mainStage.show();
+    }
+
+    public TabPane getPane(){
+        Tab[] temp = new Tab[apps.size()];
+        for(int i=0; i< apps.size();i++){
+            temp[i]=apps.get(i).getTab();
+        }
+
+        mainPane = new TabPane(temp);
+        return mainPane;
     }
 
 }
