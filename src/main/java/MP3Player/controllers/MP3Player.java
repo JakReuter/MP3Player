@@ -141,6 +141,7 @@ public class MP3Player implements Initializable {
         play_pause_btn = new Button();
         play_pause_btn_icon = new ImageView(new Image("image/pause_button.png"));
         initializeListeners();
+        initializeAudioPlayer();
     }
 
     protected void initializeListeners(){
