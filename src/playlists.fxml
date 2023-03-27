@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextField ?>
+
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<VBox prefHeight="839.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="PLVis">
+   <HBox prefHeight="37.0" prefWidth="613.0">
+      <children>
+         <Button fx:id="newButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="56.0" text="New" onAction="#handleNewButton">
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+         <Button fx:id="removeButton" prefHeight="24.0" prefWidth="82.0" text="Remove" onAction="#handleRemoveButton">
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+         <Button fx:id="renameButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="101.0" text="Rename" onAction="#handleRenameButton">
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+         <TextField fx:id="textField" prefHeight="24.0" prefWidth="178.0" visible="false">
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </TextField>
+         <Button fx:id="descriptionButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="184.0" text="Add/Change Description" onAction="#handleDescriptionButton">
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
+      </children>
+   </HBox>
+   <TableView fx:id="tableView" prefHeight="861.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+      <columns>
+         <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Name" >
+            <cellValueFactory>
+               <PropertyValueFactory property="name"/>
+            </cellValueFactory>
+         </TableColumn>
+         <TableColumn fx:id="songCountColumn" prefWidth="96.0" text="#Songs">
+            <cellValueFactory>
+               <PropertyValueFactory property="numSongs"/>
+            </cellValueFactory>
+         </TableColumn>
+         <TableColumn fx:id="durationColumn" prefWidth="113.0" text="Duration">
+            <cellValueFactory>
+               <PropertyValueFactory property="duration"/>
+            </cellValueFactory>
+         </TableColumn>
+         <TableColumn fx:id="descriptionColumn" prefWidth="203.0" text="Description">
+            <cellValueFactory>
+               <PropertyValueFactory property="description"/>
+            </cellValueFactory>
+         </TableColumn>
+      </columns>
+   </TableView>
+
+</VBox>

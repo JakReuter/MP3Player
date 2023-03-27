@@ -1,10 +1,11 @@
-package MP3Player.database;
 
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
+import java.util.Objects;
+
 
 public class Database {
     static Connection conn = null;
@@ -45,10 +46,11 @@ public class Database {
      * @param name name of the new Playlist
      */
     public static void createNewPlaylist(String name) {
-        String sql = "";
+        String sql = "INSERT INTO Playlist VALUES(?,0, current_date)";
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,name);
+            stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -102,11 +104,14 @@ public class Database {
      * @param playlistName name of the playlist the song is to be added to
      * @param position     position in the playlist for the song to be added to
      */
-    public static void addSongToPlaylist(String songName, String playlistName, int position) {
-        String sql = "";
+    public static void addSongToPlaylist(String playlistName, String songName, int position) {
+        String sql = "INSERT INTO Songs_In_Playlist VALUES(?,?,?)";
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,songName);
+            stmt.setString(2,playlistName);
+            stmt.setInt(3,position);
+            stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -119,11 +124,14 @@ public class Database {
      * @param songName     name of the Song to be added
      * @param playlistName name of the playlist the song is to be added to
      */
-    public static void addSongToPlaylist(String songName, String playlistName) {
-        String sql = "";
+    public static void addSongToPlaylist(String playlistName, String songName) {
+        String sql = "INSERT INTO Songs_In_Playlist VALUES(?,?,(SELECT ifnull(max(position),-1) FROM Songs_In_Playlist WHERE playlist_name = ?)+1)";
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,playlistName);
+            stmt.setString(2,songName);
+            stmt.setString(3,playlistName);
+            stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -137,7 +145,7 @@ public class Database {
      * @param playlistName name of the playlist the song is in
      * @param position     position in the playlist for the song to be moved to
      */
-    public static void moveSongInPlaylist(String songName, String playlistName, int position) {
+    public static void moveSongInPlaylist(String playlistName, String songName, int position) {
         String sql = "";
         try {
             Statement stmt = conn.createStatement();
@@ -153,7 +161,7 @@ public class Database {
      * @param songName     name of the Song to be removed
      * @param playlistName name of the playlist the song is to be removed from
      */
-    public static void removeSongFromPlaylist(String songName, String playlistName) {
+    public static void removeSongFromPlaylist(String playlistName, String songName) {
         String sql = "";
         try {
             Statement stmt = conn.createStatement();
@@ -188,10 +196,11 @@ public class Database {
      * @param name name of the Playlist to be removed
      */
     public static void removePlaylist(String name) {
-        String sql = "";
+        String sql = "DELETE FROM Playlist WHERE name = ?";
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,name);
+            stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -221,10 +230,23 @@ public class Database {
      * @return ResultSet This ResultSet contains every song from the given playlist
      */
     public static ResultSet selectSongsFromPlaylist(String name) {
-        String sql = "";
+        String sql = "SELECT * FROM Songs_In_Playlist WHERE playlist_name = ?";
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,name);
+            ResultSet rs = stmt.executeQuery();
+            return rs;
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            return null;
+        }
+    }
+
+    public static ResultSet selectAllSongsInPlaylist() {
+        String sql = "SELECT * FROM Songs_In_Playlist";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
             return rs;
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -258,7 +280,6 @@ public class Database {
     public static ResultSet getSongInfo(String name) {
         String sql = "SELECT * FROM Song WHERE name = ?";
         try {
-            //Statement stmt = conn.createStatement();
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1,name);
             ResultSet rs = stmt.executeQuery();
@@ -276,10 +297,11 @@ public class Database {
      * @return ResultSet This ResultSet contains a single row with the stored attributes for the given playlist
      */
     public static ResultSet getPlaylistInfo(String name) {
-        String sql = "";
+        String sql = "SELECT * FROM Playlist WHERE name = ?";
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1,name);
+            ResultSet rs = stmt.executeQuery();
             return rs;
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -327,12 +349,99 @@ public class Database {
         }
     }*/
 
-    public static void testing() {
-        ResultSet rs = selectAllSongs();
+    public static void testing(String type) {
+        ResultSet rs;
+        if (type.equals("Song") ){
+            rs = selectAllSongs();
+        }else if (type.equals("Playlist")){
+            rs = selectAllPlaylists();
+        } else{
+            rs = selectAllSongsInPlaylist();
+        }
+        if (rs == null) {
+            System.out.println("no rows found");
+        } else {
+            if (type.equals("Song")){
+                try {
+                    int i = 0;
+                    while (rs.next()) {
+                        System.out.println(
+                                "name: " + rs.getObject("name") + "\t" +
+                                        "path: " + rs.getObject("filepath") + "\t" +
+                                        "author: " + rs.getObject("author") + "\t" +
+                                        "album: " + rs.getObject("album") + "\t" +
+                                        "date: " + rs.getObject("date_added") + "\t");
+                        i++;
+                    }
+                    if (i == 0) {
+                        System.out.println("No output");
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            else if(type.equals("Playlist")){
+                try {
+                    int i = 0;
+                    while (rs.next()) {
+                        System.out.println(
+                                "name: " + rs.getObject("name") + "\t" +
+                                        "position: " + rs.getObject("position") + "\t" +
+                                        "date: " + rs.getObject("date_created") + "\t");
+                        i++;
+                    }
+                    if (i == 0) {
+                        System.out.println("No output");
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            else {
+                try {
+                    int i = 0;
+                    while (rs.next()) {
+                        System.out.println(
+                                "PlaylistName: " + rs.getObject("playlist_name") + "\t" +
+                                        "SongName: " + rs.getObject("song_name") + "\t" +
+                                        "Position: " + rs.getObject("position") + "\t");
+                        i++;
+                    }
+                    if (i == 0) {
+                        System.out.println("No output");
+                    }
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+        }
+    }
+
+    public static void addRemoveTests(){
+        System.out.println("Add/Remove Song Test");
+        testing("Song");
+        addNewSong("testname", "testpath", "testauthor", "testalbum");
+        testing("Song");
+        removeSong("testname");
+        testing("Song");
+        System.out.println("Add/Remove Playlist Test");
+        testing("Playlist");
+        createNewPlaylist("testplaylist");
+        testing("Playlist");
+        removePlaylist("testplaylist");
+        testing("Playlist");
+    }
+
+    public static void getSongInfoTest(){
+        testing("Song");
+        addNewSong("testname", "testpath", "testauthor", "testalbum");
+        addNewSong("testname2", "testpath", "testauthor", "testalbum");
+        ResultSet rs = getSongInfo("testname");
         if (rs == null) {
             System.out.println("no rows found");
         } else {
             try {
+                int i = 0;
                 while (rs.next()) {
                     System.out.println(
                             "name: " + rs.getObject("name") + "\t" +
@@ -340,13 +449,49 @@ public class Database {
                                     "author: " + rs.getObject("author") + "\t" +
                                     "album: " + rs.getObject("album") + "\t" +
                                     "date: " + rs.getObject("date_added") + "\t");
-
+                    i++;
                 }
-                System.out.println("Finished printing");
+                if (i == 0) {
+                    System.out.println("No output");
+                }
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
         }
+        testing("Song");
+        removeSong("testname2");
+        removeSong("testname");
+        testing("Song");
+    }
+
+    public static void getPlaylistInfoTest(){
+        testing("Playlist");
+        createNewPlaylist("testplaylist");
+        createNewPlaylist("testplaylist2");
+        ResultSet rs = getPlaylistInfo("testplaylist");
+        if (rs == null) {
+            System.out.println("no rows found");
+        } else {
+            try {
+                int i = 0;
+                while (rs.next()) {
+                    System.out.println(
+                            "name: " + rs.getObject("name") + "\t" +
+                                    "position: " + rs.getObject("position") + "\t" +
+                                    "date: " + rs.getObject("date_created") + "\t");
+                    i++;
+                }
+                if (i == 0) {
+                    System.out.println("No output");
+                }
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        testing("Playlist");
+        removePlaylist("testplaylist");
+        removePlaylist("testplaylist2");
+        testing("Playlist");
     }
 
     /**
@@ -354,11 +499,11 @@ public class Database {
      */
     public static void main(String[] args) {
         connect();
-        testing();
-        addNewSong("testname", "testpath", "testauthor", "testalbum");
-        testing();
-        removeSong("testname");
-        testing();
+        testing("Song");
+        testing("Playlist");
+        removePlaylist("testname");
+        addSongToPlaylist("testplaylist","testname");
+        testing("Both");
         close();
     }
 }
