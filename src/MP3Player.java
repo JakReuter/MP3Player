@@ -83,11 +83,13 @@ public class MP3Player implements Initializable {
 
     @FXML
     protected void prev_audio_event() {
+        timeControl.rewind(5);
         System.out.println("prev_audio_event");
     }
 
     @FXML
     protected void next_audio_event() {
+        timeControl.fastForward(5);
         System.out.println("next_audio_event");
     }
 
