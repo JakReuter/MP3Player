@@ -60,6 +60,16 @@ public class MP3Player implements Initializable {
     protected MediaPlayer audioPlayer;
     protected TimeControl timeControl;
 
+    ArrayList<File> queue = new ArrayList<File>(){
+        {
+            add(new File(PATH_MAMA));
+            add(new File(PATH_MVMT));
+        }
+    };
+
+    int queueNumber = 0;
+
+
     /**
      * Listeners
      */
@@ -73,13 +83,51 @@ public class MP3Player implements Initializable {
 
     @FXML
     protected void prev_audio_event() {
+        //TODO: slider dragger dissapears (bug)
         System.out.println("prev_audio_event");
+        try{
+            //go to beginning of song if more than 5 seconds in
+            if(audioPlayer.getCurrentTime().toSeconds() > 5 || 0 == queueNumber){
+                audioPlayer.seek(Duration.millis(0));
+            }else if (audioPlayer.getCurrentTime().toSeconds() <= 5 && queueNumber > 0){
+                queueNumber--;
+                audioPlayer.stop();
+                audio = new Media(queue.get(queueNumber).toURI().toString());
+                audioPlayer = new MediaPlayer(audio);
+
+                //keep playing status
+                if(audioPlaying)
+                    audioPlayer.play();
+            }
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
     protected void next_audio_event() {
+        //TODO: slider dragger dissapears (bug)
+
+        //Go to next song
+        if(queueNumber < queue.size() - 1){
+            queueNumber++;
+            //go to first song if at the end of the queue
+        }else{
+            queueNumber = 0;
+        }
+
+        audioPlayer.stop();
+        audio = new Media(queue.get(queueNumber).toURI().toString());
+        audioPlayer = new MediaPlayer(audio);
+
+        //keep playing status
+        if(audioPlaying)
+            audioPlayer.play();
         System.out.println("next_audio_event");
+
+
     }
+
 
     @FXML
     public void play_pause_audio_event() {
@@ -104,7 +152,7 @@ public class MP3Player implements Initializable {
     protected void initializeAudioPlayer() {
         try {
 
-            File file = new File(PATH_MAMA);
+            File file = queue.get(queueNumber);
             audio = new Media(file.toURI().toString());
             audioPlayer = new MediaPlayer(audio);
 
