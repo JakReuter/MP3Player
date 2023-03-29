@@ -64,8 +64,11 @@ public abstract class Visualizer extends Tabable {
 
     public void changedData(Series.Data changed){
         //System.out.println("changed!");
-        changed.setyPosition(YAxis.getDrawPoint(changed.getyValue(), 400));
-        changed.setxPosition(XAxis.getDrawPoint(changed.getxValue(), bands));
+        Number newX = XAxis.getDrawPoint(changed.getxValue(), bands);
+        Number newY = YAxis.getDrawPoint(changed.getyValue(), 400);
+        System.out.println("setting: ("+newX+", "+newY+")");
+        changed.setyPosition(newY);
+        changed.setxPosition(newX);
     }
 
     protected void setXDrawBound(Number max){

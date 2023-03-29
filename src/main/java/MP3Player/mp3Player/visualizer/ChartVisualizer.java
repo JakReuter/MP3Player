@@ -27,8 +27,8 @@ public class ChartVisualizer extends Visualizer {
     protected Pane canvas;
     protected HBox XAxis;
 
-    private Axis xAxis;
-    private Axis yAxis;
+    protected Axis xAxis;
+    protected Axis yAxis;
 
     private XYChart.Series<Number, Number> data;
 
@@ -71,7 +71,7 @@ public class ChartVisualizer extends Visualizer {
 
     }
 
-    private void getBindedCurve(){
+    protected void getBindedCurve(){
 
         for(int i = 0; i<bands; i++){
             double xRet = xAxis.getDrawPoint(i,bands).doubleValue();
@@ -83,8 +83,10 @@ public class ChartVisualizer extends Visualizer {
             newCurve.controlX2Property().bind(series.getData(i).xPositionProperty());
 
             if(i+1<bands){
-                newCurve.controlX1Property().bind(series.getData(i+1).yPositionProperty());
-                newCurve.controlY2Property().bind(series.getData(i+1).xPositionProperty());
+                newCurve.controlX1Property().bind(series.getData(i+1).xPositionProperty());
+                newCurve.controlY2Property().bind(series.getData(i+1).yPositionProperty());
+                newCurve.yProperty().bind(series.getData(i+1).yPositionProperty());
+                newCurve.xProperty().bind(series.getData(i+1).xPositionProperty());
             }
             curves.add(newCurve);
         }

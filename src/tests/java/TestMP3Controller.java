@@ -60,12 +60,8 @@ public class TestMP3Controller extends MP3Player {
         eqDispPane.getChildren().add(EQtabHandler.getPane());
         audioPlayer.setAudioSpectrumListener((double timestamp, double duration, float[] magnitudes, float[] phases) -> {
 
-                File output = new File(PATH_DEFAULT+"/out/production/AnotherMp3Test/stampedSpectrum.csv");
-                try {
-                    FileWriter writer = new FileWriter(output);
-                    if(output.exists()){
-                        //writer.write("X, Y\n");
-                    }
+
+
 
                 for (int i = 0; i < audioPlayer.getAudioSpectrumNumBands(); i++) {
                     //magArray[i].setYValue((magnitudes[i]+120)/5); javaFX movde
@@ -81,12 +77,6 @@ public class TestMP3Controller extends MP3Player {
                         //chartVisualizer.update(i, magnitudes[i]);
                    // }
                 }
-                writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Stamped!");
-                stamp=false;
 
         });
 
