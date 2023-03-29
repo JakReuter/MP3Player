@@ -33,7 +33,7 @@ import static java.lang.Math.floor;
 
 public class MP3Player implements Initializable {
 
-    private final String PATH_DEFAULT = System.getProperty("user.dir");
+    protected final String PATH_DEFAULT = System.getProperty("user.dir");
     private final String PATH_MVMT = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/4th Mvmt.mp3";
     private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/MeAndYourMama.mp3";
 
@@ -45,6 +45,7 @@ public class MP3Player implements Initializable {
     @FXML
     protected Label timestamp;
     @FXML
+    protected
     ImageView play_pause_btn_icon;
     @FXML
     protected

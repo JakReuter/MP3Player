@@ -1,8 +1,10 @@
-package MP3Player.mp3Player.visualizer;
+package MP3Player.mp3Player.visualizer.core;
 
 import MP3Player.mp3Player.visualizer.core.Axis;
 import MP3Player.util.general.Tabable;
 import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.media.AudioSpectrumListener;
 
@@ -15,9 +17,12 @@ import javafx.scene.media.AudioSpectrumListener;
 public abstract class Visualizer extends Tabable {
     public Timeline timeline;
     private double[] realData;
-    private int bands;
+    protected int bands;
     private final double MAXFREQ = 22050;
     private double currentScale;
+    private boolean animationEnabled = false;
+
+    protected Series series;
 
     private Axis XAxis;
     private Axis YAxis;
@@ -26,19 +31,41 @@ public abstract class Visualizer extends Tabable {
         super(name);
         this.bands=bands;
         realData = new double[bands];
+        series = new Series(bands, this);
 
+    }
+
+    public Series getSeries() {
+        return series;
+    }
+
+    public void setEnabled(boolean enable){
+        this.animationEnabled=true;
+        timeline=new Timeline();
     }
 
     protected void logVisualizer(){
 
     }
 
-    public int linearScalar(double maxIndex, double maxValue){
-return 0;
+    protected Axis getXAxis(){
+        if(XAxis==null){
+            XAxis= new Axis(0,1,bands,22050,false);
+        }
+        return XAxis;
+    }
+    protected Axis getYAxis(){
+        if(YAxis==null){
+            YAxis= new Axis(-100,0,0,24,false);
+        }
+        return YAxis;
     }
 
-    public void update(float[] newValues){
-        //linearAxis.
+
+    public void changedData(Series.Data changed){
+        //System.out.println("changed!");
+        changed.setyPosition(YAxis.getDrawPoint(changed.getyValue(), 400));
+        changed.setxPosition(XAxis.getDrawPoint(changed.getxValue(), bands));
     }
 
     protected void setXDrawBound(Number max){
@@ -65,4 +92,7 @@ return 0;
 
     }
 
+    public void drawRefresh(){
+
+    }
 }
