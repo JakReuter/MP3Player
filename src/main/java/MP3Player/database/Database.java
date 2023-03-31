@@ -1,16 +1,35 @@
 package MP3Player.database;
 
+import org.sqlite.SQLiteConfig;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
-import java.util.Objects;
 
+//TODO: Add protection against unresonable positions in AddSongToPlaylist and MoveSongInPlaylist
+//TODO: Design potential error returning
+//TODO: Add position changing in Playlist table
+//TODO: Add flag in Song table for invalid filepaths
 
 public class Database {
     static Connection conn = null;
 
+    public static final String DB_URL = "jdbc:sqlite:mp3db.db";
+    public static final String DRIVER = "org.sqlite.JDBC";
+
+    public static Connection getConnection() throws ClassNotFoundException {
+        Class.forName(DRIVER);
+        Connection connection = null;
+        try {
+            SQLiteConfig config = new SQLiteConfig();
+            config.enforceForeignKeys(true);
+            connection = DriverManager.getConnection(DB_URL,config.toProperties());
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return connection;
+    }
     /**
      * Connect to the database
      */
@@ -18,11 +37,12 @@ public class Database {
 
         try {
             // db parameters
-            String url = "jdbc:sqlite:mp3db.db";
+            //String url = "jdbc:sqlite:mp3db.db";
+            conn = getConnection();
             // create a connection to the database
-            conn = DriverManager.getConnection(url);
+            //conn = DriverManager.getConnection(url);
             System.out.println("Connection to SQLite has been established.");
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -50,8 +70,8 @@ public class Database {
         String sql = "INSERT INTO Playlist VALUES(?,0, current_date, 0,?,0)";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
-            stmt.setString(2,description);
+            stmt.setString(1, name);
+            stmt.setString(2, description);
             stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -68,15 +88,15 @@ public class Database {
      */
     public static void addNewSong(String name, String path, String author, String album, int duration) {
 
-        String sql = "INSERT INTO Song VALUES(?,?,?,?, current_date, ?)";
+        String sql = "INSERT INTO Song VALUES(?,?,?,?, current_date, ?, 1)";
         try {
             //Statement stmt = conn.createStatement();
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
-            stmt.setString(2,path);
-            stmt.setString(3,author);
-            stmt.setString(4,album);
-            stmt.setInt(5,duration);
+            stmt.setString(1, name);
+            stmt.setString(2, path);
+            stmt.setString(3, author);
+            stmt.setString(4, album);
+            stmt.setInt(5, duration);
             stmt.executeUpdate();
             //ResultSet rs = stmt.executeQuery(sql);
         } catch (SQLException ex) {
@@ -112,17 +132,22 @@ public class Database {
         String sql = "INSERT INTO Songs_In_Playlist VALUES(?,?,?)";
         String sqlflip = "UPDATE Songs_In_Playlist SET position = (position)*-1 WHERE position < 0";
         try {
+            int i = operationCheck("Both");
             PreparedStatement stmt = conn.prepareStatement(sql1);
-            stmt.setString(1,playlistName);
-            stmt.setInt(2,position);
+            stmt.setString(1, playlistName);
+            stmt.setInt(2, position);
             stmt.executeUpdate();
             stmt = conn.prepareStatement(sql);
-            stmt.setString(1,playlistName);
-            stmt.setString(2,songName);
-            stmt.setInt(3,position);
+            stmt.setString(1, playlistName);
+            stmt.setString(2, songName);
+            stmt.setInt(3, position);
             stmt.executeUpdate();
             stmt = conn.prepareStatement(sqlflip);
             stmt.executeUpdate();
+            int j = operationCheck("Both");
+            if (i != j) {
+                updatePlaylist(playlistName, songName, 1);
+            }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -138,11 +163,16 @@ public class Database {
     public static void addSongToPlaylist(String playlistName, String songName) {
         String sql = "INSERT INTO Songs_In_Playlist VALUES(?,?,(SELECT ifnull(max(position),-1) FROM Songs_In_Playlist WHERE playlist_name = ?)+1)";
         try {
+            int i = operationCheck("Both");
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,playlistName);
-            stmt.setString(2,songName);
-            stmt.setString(3,playlistName);
+            stmt.setString(1, playlistName);
+            stmt.setString(2, songName);
+            stmt.setString(3, playlistName);
             stmt.executeUpdate();
+            int j = operationCheck("Both");
+            if (i != j) {
+                updatePlaylist(playlistName, songName, 1);
+            }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -154,9 +184,9 @@ public class Database {
      *
      * @param songName     name of the Song to be moved
      * @param playlistName name of the playlist the song is in
-     * @param position     position in the playlist for the song to be moved to
+     * @param newPosition     position in the playlist for the song to be moved to
      */
-    public static void moveSongInPlaylist(String playlistName, String songName, int position) {
+    public static void moveSongInPlaylist(String playlistName, String songName, int newPosition) {
         String sqlstart = "SELECT position FROM Songs_In_Playlist WHERE playlist_name = ? AND song_name = ?";
         String sqlpreset = "UPDATE Songs_In_Playlist SET position = ? WHERE playlist_name = ? AND song_name = ?";
         String sqlorig = "UPDATE Songs_In_Playlist SET position = (position + -1)*-1 WHERE playlist_name = ? AND position > ? AND position <= ?";
@@ -165,35 +195,33 @@ public class Database {
         String sqlflip = "UPDATE Songs_In_Playlist SET position = (position)*-1 WHERE position < 0";
         try {
             PreparedStatement stmt = conn.prepareStatement(sqlstart);
-            stmt.setString(1,playlistName);
-            stmt.setString(2,songName);
+            stmt.setString(1, playlistName);
+            stmt.setString(2, songName);
             ResultSet rs = stmt.executeQuery();
             rs.next();
             int originalpos = (int) rs.getObject("position");
             stmt = conn.prepareStatement(sqlpreset);
-            stmt.setInt(1,Integer.MIN_VALUE);
-            stmt.setString(2,playlistName);
-            stmt.setString(3,songName);
+            stmt.setInt(1, Integer.MIN_VALUE);
+            stmt.setString(2, playlistName);
+            stmt.setString(3, songName);
             stmt.executeUpdate();
-            if (originalpos<position){ //original position is before the new position
+            if (originalpos < newPosition) { //original position is before the new position
                 stmt = conn.prepareStatement(sqlorig);
-                stmt.setString(1,playlistName);
-                stmt.setInt(2,originalpos);
-                stmt.setInt(3,position);
-                System.out.println("hit2");
+                stmt.setString(1, playlistName);
+                stmt.setInt(2, originalpos);
+                stmt.setInt(3, newPosition);
                 stmt.executeUpdate();
-            }else {
+            } else {
                 stmt = conn.prepareStatement(sqlnew);
-                stmt.setString(1,playlistName);
-                stmt.setInt(2,originalpos);
-                stmt.setInt(3,position);
-                System.out.println("hit3");
+                stmt.setString(1, playlistName);
+                stmt.setInt(2, originalpos);
+                stmt.setInt(3, newPosition);
                 stmt.executeUpdate();
             }
             stmt = conn.prepareStatement(sqlset);
-            stmt.setInt(1,position);
-            stmt.setString(2,playlistName);
-            stmt.setString(3,songName);
+            stmt.setInt(1, newPosition);
+            stmt.setString(2, playlistName);
+            stmt.setString(3, songName);
             stmt.executeUpdate();
             stmt = conn.prepareStatement(sqlflip);
             stmt.executeUpdate();
@@ -215,26 +243,31 @@ public class Database {
         String sqlflip = "UPDATE Songs_In_Playlist SET position = (position)*-1 WHERE position < 0";
 
         try {
+            int i = operationCheck("Both");
             PreparedStatement stmt = conn.prepareStatement(sqlstart);
-            stmt.setString(1,playlistName);
-            stmt.setString(2,songName);
+            stmt.setString(1, playlistName);
+            stmt.setString(2, songName);
             ResultSet rs = stmt.executeQuery();
             rs.next();
             int originalpos = (int) rs.getObject("position");
             stmt = conn.prepareStatement(sqldelete);
-            stmt.setString(1,playlistName);
-            stmt.setString(2,songName);
+            stmt.setString(1, playlistName);
+            stmt.setString(2, songName);
             stmt.executeUpdate();
             stmt = conn.prepareStatement(sqlupdate);
-            stmt.setString(1,playlistName);
-            stmt.setInt(2,originalpos);
+            stmt.setString(1, playlistName);
+            stmt.setInt(2, originalpos);
             stmt.executeUpdate();
             stmt = conn.prepareStatement(sqldelete);
-            stmt.setString(1,playlistName);
-            stmt.setString(2,songName);
+            stmt.setString(1, playlistName);
+            stmt.setString(2, songName);
             stmt.executeUpdate();
             stmt = conn.prepareStatement(sqlflip);
             stmt.executeUpdate();
+            int j = operationCheck("Both");
+            if (i > j) {
+                updatePlaylist(playlistName, songName, -1);
+            }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -251,7 +284,7 @@ public class Database {
         try {
             //Statement stmt = conn.createStatement();
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
+            stmt.setString(1, name);
             stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -268,7 +301,7 @@ public class Database {
         String sql = "DELETE FROM Playlist WHERE name = ?";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
+            stmt.setString(1, name);
             stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -302,7 +335,7 @@ public class Database {
         String sql = "SELECT * FROM Songs_In_Playlist JOIN Song S on S.name = Songs_In_Playlist.song_name WHERE playlist_name = ?";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
+            stmt.setString(1, name);
             ResultSet rs = stmt.executeQuery();
             return rs;
         } catch (SQLException ex) {
@@ -312,7 +345,7 @@ public class Database {
     }
 
     public static ResultSet selectAllSongsInPlaylists() {
-        String sql = "SELECT * FROM Songs_In_Playlist SP JOIN Song S on S.name = SP.song_name UNION SELECT playlist_name, song_name, position, 0,0,0,0,0,0 FROM Songs_In_Playlist";
+        String sql = "SELECT * FROM Songs_In_Playlist SP JOIN Song S on S.name = SP.song_name";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
@@ -350,7 +383,7 @@ public class Database {
         String sql = "SELECT * FROM Song WHERE name = ?";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
+            stmt.setString(1, name);
             ResultSet rs = stmt.executeQuery();
             return rs;
         } catch (SQLException ex) {
@@ -369,7 +402,7 @@ public class Database {
         String sql = "SELECT * FROM Playlist WHERE name = ?";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
+            stmt.setString(1, name);
             ResultSet rs = stmt.executeQuery();
             return rs;
         } catch (SQLException ex) {
@@ -378,28 +411,77 @@ public class Database {
         }
     }
 
-    public static void editSong(String name, String path, String author, String album){
-        String sql = "UPDATE Song SET name = ?, filepath = ?, author = ?, album = ? WHERE name = ?";
+    public static void editSong(String name, String path, String author, String album) {
+        String sql = "UPDATE Song SET filepath = ?, author = ?, album = ? WHERE name = ?";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
-            stmt.setString(2,path);
-            stmt.setString(3,author);
-            stmt.setString(4,album);
-            stmt.setString(5,name);
+            stmt.setString(1, path);
+            stmt.setString(2, author);
+            stmt.setString(3, album);
+            stmt.setString(4, name);
+            stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    public static void editPlaylist(String name, String description){
+    public static void editPlaylist(String name, String description) {
         String sql = "UPDATE Playlist SET name = ?, description = ? WHERE name = ?";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
-            stmt.setString(2,description);
-            stmt.setString(3,name);
+            stmt.setString(1, name);
+            stmt.setString(2, description);
+            stmt.setString(3, name);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
 
+    private static void updatePlaylist(String playlistName, String songName, int direction) {
+        String sql = "UPDATE Playlist SET duration = (duration + (SELECT duration FROM Song WHERE Song.name = ?))*?, num_songs = num_songs + ? WHERE name = ?";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, songName);
+            stmt.setInt(2, direction);
+            stmt.setInt(3, direction);
+            stmt.setString(4, playlistName);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private static int operationCheck(String type) {
+        ResultSet rs;
+        if (type.equals("Song")) {
+            rs = selectAllSongs();
+        } else if (type.equals("Playlist")) {
+            rs = selectAllPlaylists();
+        } else if (type.equals("Both")) {
+            rs = selectAllSongsInPlaylists();
+        } else {
+            return -1;
+        }
+
+        int i = 0;
+        try {
+            while (rs.next()) {
+                i++;
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return i;
+    }
+
+    public static void changeSongActive(String name, int active){
+        String sql = "UPDATE Song SET active = ? WHERE name = ?";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, active);
+            stmt.setString(2, name);
+            stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -465,7 +547,8 @@ public class Database {
                                         "path: " + rs.getObject("filepath") + "\t" +
                                         "author: " + rs.getObject("author") + "\t" +
                                         "album: " + rs.getObject("album") + "\t" +
-                                        "date: " + rs.getObject("date_added") + "\t");
+                                        "date: " + rs.getObject("date_added") + "\t" +
+                                        "duration: " + rs.getObject("duration") + "\t");
                         i++;
                     }
                     if (i == 0) {
@@ -481,7 +564,10 @@ public class Database {
                         System.out.println(
                                 "name: " + rs.getObject("name") + "\t" +
                                         "position: " + rs.getObject("position") + "\t" +
-                                        "date: " + rs.getObject("date_created") + "\t");
+                                        "date: " + rs.getObject("date_created") + "\t" +
+                                        "duration: " + rs.getObject("duration") + "\t" +
+                                        "description: " + rs.getObject("description") + "\t" +
+                                        "num_songs: " + rs.getObject("num_songs") + "\t");
                         i++;
                     }
                     if (i == 0) {
@@ -513,16 +599,18 @@ public class Database {
             }
         }
     }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         connect();
-        testing("Song");
-        System.out.println();
-        //addSongToPlaylist("testplaylist", "testsong");
+        //addNewSong("testsong", "testpath", "testauthor", "testalbum", 15);
+        //removePlaylist("testplaylist");
+        //createNewPlaylist("testplaylist", "test description");
+        //addSongToPlaylist("testplaylist", "testapple");
         //removeSongFromPlaylist("testplaylist", "testsong");
-        //addSongToPlaylist("testplaylist", "testfruit", 0);
+        //addSongToPlaylist("testplaylist", "testsong");
         //moveSongInPlaylist("testplaylist", "testfruit", 5);
         /*String sql1 = "UPDATE Songs_In_Playlist SET position = ? WHERE playlist_name = ? AND song_name = ?";
         try {
@@ -534,6 +622,8 @@ public class Database {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }*/
+        testing("Song");
+        System.out.println();
         testing("Both");
         System.out.println();
         testing("Playlist");
