@@ -1,0 +1,41 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SongParser {
+
+    public List<Song> parse(File file) throws IOException {
+
+        List<Song> songs = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                Song song = new Song(parts[0], parts[1]);
+                songs.add(song);
+            }
+
+        }
+
+        return songs;
+
+    }
+
+    public static class Song {
+
+        public String name;
+        public String artist;
+
+        public Song(String name, String artist) {
+            this.name = name;
+            this.artist = artist;
+        }
+
+    }
+
+}
+

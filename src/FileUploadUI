@@ -1,0 +1,23 @@
+import javafx.application.Application;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import java.io.File;
+
+public class FileUploadUI extends Application {
+
+    public void start(Stage stage) {
+
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            // Code to upload file goes here
+        }
+
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+}
