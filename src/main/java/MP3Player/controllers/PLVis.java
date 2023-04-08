@@ -1,5 +1,6 @@
 package MP3Player.controllers;
 
+import MP3Player.database.Database;
 import MP3Player.mp3Player.playlist.Playlist;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -10,8 +11,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.sql.ResultSet;
 
 
+// TODO: Connect buttons to database
 public class PLVis {
 
     @FXML private Button newButton;
@@ -27,14 +30,38 @@ public class PLVis {
 
     private ObservableList<Playlist> playlists;
 
+    private PLSongs plSongs;
+
     public void initialize() {
-        this.playlists = FXCollections.observableArrayList(
-                new Playlist("Playlist 1", 10, "1:00:00", "This is a playlist."),
-                new Playlist("Playlist 2", 5, "0:30:00", "This is another playlist.")
-        );
+        this.playlists = FXCollections.observableArrayList();
+        // Get all playlists from database
+        ResultSet rs = Database.selectAllPlaylists();
+        // Loop through all playlists, adding them to the observableArrayList (getting the appropriate values from the database)
+        try {
+            int i = 0;
+            while (rs.next()) {
+                this.playlists.add(new Playlist(
+                        (String) rs.getObject("name"),
+                        (int) rs.getObject("num_songs"),
+                        (String) rs.getObject("duration"),
+                        (String) rs.getObject("description")
+                ));
+                i++;
+            }
+            if (i == 0) {
+                System.out.println("No output");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
 
         tableView.setItems(playlists);
         tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    }
+
+    // This needs to be called when the UI is created.
+    public void setPLSongs(PLSongs plSongs) {
+        this.plSongs = plSongs;
 
     }
 
@@ -82,5 +109,12 @@ public class PLVis {
         else {
             textField.setVisible(true);
         }
+    }
+
+    @FXML
+    private void handlePlaylistSelection(ActionEvent event) {
+        // When a playlist is selected, tell the PLSongs, and give it the name of the playlist
+        String plName = tableView.getSelectionModel().getSelectedItem().getName();
+        this.plSongs.update(plName);
     }
 }

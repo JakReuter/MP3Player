@@ -39,7 +39,7 @@
          </Button>
       </children>
    </HBox>
-   <TableView fx:id="tableView" prefHeight="861.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <TableView fx:id="tableView" prefHeight="861.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" onKeyPressed="#handlePlaylistSelection">
       <columns>
          <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Name" >
             <cellValueFactory>
