@@ -20,6 +20,7 @@ public class MP3Application extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
+        Database.verifyAllSongs();
         stage.setOnCloseRequest((event) -> {
             Database.close();
         });

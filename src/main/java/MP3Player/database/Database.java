@@ -1,16 +1,17 @@
 package MP3Player.database;
 
 import org.sqlite.SQLiteConfig;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
 
-//TODO: Add protection against unresonable positions in AddSongToPlaylist and MoveSongInPlaylist
+//TODO: Fully Test protection against unresonable positions in AddSongToPlaylist and MoveSongInPlaylist
 //TODO: Design potential error returning
 //TODO: Add position changing in Playlist table
-//TODO: Add flag in Song table for invalid filepaths
+//TODO: Implement Playlist integration with invalid filepaths
 
 public class Database {
     static Connection conn = null;
@@ -24,12 +25,13 @@ public class Database {
         try {
             SQLiteConfig config = new SQLiteConfig();
             config.enforceForeignKeys(true);
-            connection = DriverManager.getConnection(DB_URL,config.toProperties());
+            connection = DriverManager.getConnection(DB_URL, config.toProperties());
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
         return connection;
     }
+
     /**
      * Connect to the database
      */
@@ -128,6 +130,10 @@ public class Database {
      * @param position     position in the playlist for the song to be added to
      */
     public static void addSongToPlaylist(String playlistName, String songName, int position) {
+        int count = checkPosition(playlistName,position);
+        if (0 == count){
+            throw new IndexOutOfBoundsException("This position is not valid");
+        }
         String sql1 = "UPDATE Songs_In_Playlist SET position = (position + 1)*-1 WHERE playlist_name = ? and position >= ?";
         String sql = "INSERT INTO Songs_In_Playlist VALUES(?,?,?)";
         String sqlflip = "UPDATE Songs_In_Playlist SET position = (position)*-1 WHERE position < 0";
@@ -184,9 +190,13 @@ public class Database {
      *
      * @param songName     name of the Song to be moved
      * @param playlistName name of the playlist the song is in
-     * @param newPosition     position in the playlist for the song to be moved to
+     * @param newPosition  position in the playlist for the song to be moved to
      */
     public static void moveSongInPlaylist(String playlistName, String songName, int newPosition) {
+        int count = checkPosition(playlistName,newPosition);
+        if (0 == count){
+            throw new IndexOutOfBoundsException("This position is not valid");
+        }
         String sqlstart = "SELECT position FROM Songs_In_Playlist WHERE playlist_name = ? AND song_name = ?";
         String sqlpreset = "UPDATE Songs_In_Playlist SET position = ? WHERE playlist_name = ? AND song_name = ?";
         String sqlorig = "UPDATE Songs_In_Playlist SET position = (position + -1)*-1 WHERE playlist_name = ? AND position > ? AND position <= ?";
@@ -425,6 +435,18 @@ public class Database {
         }
     }
 
+    public static void editSongName(String oldName, String newName) {
+        String sql = "UPDATE Song SET name = ? WHERE name = ?";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, newName);
+            stmt.setString(2, oldName);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
     public static void editPlaylist(String name, String description) {
         String sql = "UPDATE Playlist SET name = ?, description = ? WHERE name = ?";
         try {
@@ -475,13 +497,50 @@ public class Database {
         return i;
     }
 
-    public static void changeSongActive(String name, int active){
+    public static void changeSongActiveStatus(String name, int active) {
         String sql = "UPDATE Song SET active = ? WHERE name = ?";
         try {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, active);
             stmt.setString(2, name);
             stmt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private static int checkPosition(String playlistName, int position){
+        String sql = "SELECT count(position) as num FROM Songs_In_Playlist WHERE playlist_name = ?";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, playlistName);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            int count = rs.getInt("num");
+            if (position<0 || position>count){
+                return 0;
+            }
+            return 1;
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return 0;
+    }
+
+    public static void verifyAllSongs(){
+        ResultSet rs = selectAllSongs();
+        try {
+            while(rs.next()){
+                String path = (String) rs.getObject("filepath");
+                String name = (String) rs.getObject("name");
+                File file = new File(path);
+
+                if(file.canExecute()){
+                    changeSongActiveStatus(name, 1);
+                }else{
+                    changeSongActiveStatus(name, 0);
+                }
+            }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
@@ -548,6 +607,7 @@ public class Database {
                                         "author: " + rs.getObject("author") + "\t" +
                                         "album: " + rs.getObject("album") + "\t" +
                                         "date: " + rs.getObject("date_added") + "\t" +
+                                        "active: " + rs.getObject("active") + "\t" +
                                         "duration: " + rs.getObject("duration") + "\t");
                         i++;
                     }
@@ -587,6 +647,7 @@ public class Database {
                                         "path: " + rs.getObject("filepath") + "\t" +
                                         "author: " + rs.getObject("author") + "\t" +
                                         "album: " + rs.getObject("album") + "\t" +
+                                        "active: " + rs.getObject("active") + "\t" +
                                         "date: " + rs.getObject("date_added") + "\t");
                         i++;
                     }
@@ -622,11 +683,22 @@ public class Database {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }*/
+        addNewSong("4th Mvmt", "C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\4th Mvmt.mp3", "testauthor", "testalbum", 20);
+        addNewSong("Alvin", "C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\Iko_Iko_From__Alvin_And_The_Chipmunks__The_Road_Chip__Soundtrack.mp3", "testauthor", "testalbum", 20);
+        addNewSong("MeAndYourMama", "C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\MeAndYourMama.mp3", "testauthor", "testalbum", 20);
+        changeSongActiveStatus("Alvin", 0);
+        changeSongActiveStatus("MeAndYourMama", 0);
+        verifyAllSongs();
         testing("Song");
         System.out.println();
         testing("Both");
         System.out.println();
         testing("Playlist");
+        File file = new File("C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song", "4th Mvmt.mp3");
+        System.out.println("CanExecute: " + file.canExecute());
+        removeSong("4th Mvmt");
+        removeSong("Alvin");
+        removeSong("MeAndYourMama");
         close();
     }
 }

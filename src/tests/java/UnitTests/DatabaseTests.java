@@ -958,6 +958,39 @@ public class DatabaseTests {
     }
 
     @Test
+    public void moveSongInPlaylistException1() throws SQLException {
+        //arrange
+        Database.connect();
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream stderr = System.err;
+        System.setErr(new PrintStream(outContent));
+        String error = "This position is not valid";
+        Database.createNewPlaylist("database_test_playlist_1", "test description");
+        Database.addNewSong("database_test_song_1", "testpath", "testauthor", "testalbum", 0);
+        Database.addNewSong("database_test_song_2", "pathtest", "authortest", "albumtest", 150);
+        Database.addNewSong("database_test_song_3", "path test", "author test", "album test", 20);
+        Database.addNewSong("database_test_song_4", "testingpath", "testingauthor", "testingalbum", 70);
+        //act
+        Database.addSongToPlaylist("database_test_playlist_1", "database_test_song_1", 0);
+        Database.addSongToPlaylist("database_test_playlist_1", "database_test_song_2", 1);
+        Database.addSongToPlaylist("database_test_playlist_1", "database_test_song_3", 2);
+        Database.addSongToPlaylist("database_test_playlist_1", "database_test_song_4", 3);
+        try {
+            Database.moveSongInPlaylist("database_test_playlist_1", "database_test_song_4", 7);
+        }catch (IndexOutOfBoundsException e){
+            Assert.assertEquals(error, e.getMessage());
+        }
+        Database.removePlaylist("database_test_playlist_1");
+        Database.removeSong("database_test_song_1");
+        Database.removeSong("database_test_song_2");
+        Database.removeSong("database_test_song_3");
+        Database.removeSong("database_test_song_4");
+        //cleanup
+        System.setErr(stderr);
+        Database.close();
+    }
+
+    @Test
     public void removeSongInPlaylist1() throws SQLException {
         //arrange
         Database.connect();
