@@ -225,7 +225,12 @@ public class MP3Player implements Initializable {
         seriesArray = new ArrayList<>();
         Label testLabel = new Label("Play View Here");
         testLabel.setFont(Font.font("Comic Sans MS", 40));
-        playView.setCenter(testLabel);
+        try{
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         mainVisualizer = new ChartVisualizer(SPEC_BANDS, new Stage());
         //Load each tabpane with right click context menu
