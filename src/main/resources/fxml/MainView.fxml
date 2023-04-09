@@ -3,91 +3,136 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="1028.0" prefWidth="1440.0" style="-fx-background-color: #FAFAFA;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player.controllers.MP3Player">
+
+<VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player.controllers.MP3Player">
    <children>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2B2B2B;" AnchorPane.bottomAnchor="128.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <HBox layoutX="476.0" layoutY="610.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="128.0" prefWidth="200.0" style="-fx-background-color: #000000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <MenuBar fx:id="menuBar">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="View">
+            <items>
+              <MenuItem fx:id="viewToggle" mnemonicParsing="false" text="Toggle View" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <StackPane fx:id="root" prefHeight="1028.0" prefWidth="1440.0">
          <children>
-            <ImageView fx:id="audio_cover" fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../image/meAndUrMama.png" />
-               </image>
-            </ImageView>
-            <VBox maxHeight="-Infinity" prefHeight="128.0">
+            <AnchorPane fx:id="MasterView" prefHeight="1028.0" prefWidth="1440.0" style="-fx-background-color: #2B2B2B;">
                <children>
-                  <Slider fx:id="time_slider" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" />
-                  <HBox maxWidth="1.7976931348623157E308" prefHeight="123.0" prefWidth="1627.0">
+                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="1028.0" prefWidth="1440.0">
                      <children>
-                        <VBox minHeight="50.0" prefHeight="123.0" prefWidth="398.0">
-                           <padding>
-                              <Insets left="16.0" />
-                           </padding>
+                        <SplitPane fx:id="mainSplit" dividerPositions="0.25, 0.75" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="1028.0" prefWidth="1440.0" style="-fx-background-color: #2B2B2B;" stylesheets="@../css/test.css">
+                          <items>
+                            <AnchorPane fx:id="mainLeftSplit" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #2B2B1B;" />
+                            <AnchorPane fx:id="mainCenterSplit" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                              <AnchorPane fx:id="mainRightSplit" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="389.0" style="-fx-background-color: #2B2B1B;" />
+                          </items>
+                        </SplitPane>
+                        <HBox alignment="BOTTOM_CENTER" maxHeight="128.0" maxWidth="1.7976931348623157E308" prefHeight="128.0" prefWidth="1440.0" style="-fx-background-color: #000000;">
                            <children>
-                              <Label fx:id="audio_title" text="Me and Your Mama" textFill="#fafafa">
-                                 <font>
-                                    <Font size="26.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="12.0" left="16.0" top="16.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <Label fx:id="audio_artist" text="Childish Gambino" textFill="#fafafa">
-                                 <VBox.margin>
-                                    <Insets left="16.0" />
-                                 </VBox.margin>
-                                 <font>
-                                    <Font size="16.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                        <HBox alignment="CENTER" minHeight="64.0" prefHeight="123.0" prefWidth="390.0" spacing="50.0">
-                           <children>
-                              <Button fx:id="prev_btn" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#prev_audio_event" prefHeight="64.0" prefWidth="64.0" style="-fx-background-color: #F6CB27; -fx-background-radius: 100%;">
-                                 <graphic>
-                                    <ImageView fx:id="prev_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../image/previous_icon.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
-                              <Button fx:id="play_pause_btn" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#play_pause_audio_event" prefHeight="64.0" prefWidth="64.0" style="-fx-background-color: #F6CB27; -fx-background-radius: 100%;">
-                                 <graphic>
-                                    <ImageView fx:id="play_pause_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                       <Image url="@../image/play_button.png" />
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
-                              <Button fx:id="next_btn" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#next_audio_event" prefHeight="64.0" prefWidth="64.0" style="-fx-background-color: #F6CB27; -fx-background-radius: 100%;">
-                                 <graphic>
-                                    <ImageView fx:id="next_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../image/next_icon.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
+                              <ImageView fx:id="audio_cover" fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/meAndUrMama.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox maxHeight="-Infinity" prefHeight="128.0">
+                                 <children>
+                                    <Slider fx:id="time_slider" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" />
+                                    <HBox maxWidth="1.7976931348623157E308" prefHeight="123.0" prefWidth="1627.0">
+                                       <children>
+                                          <VBox minHeight="50.0" prefHeight="123.0" prefWidth="398.0">
+                                             <padding>
+                                                <Insets left="16.0" />
+                                             </padding>
+                                             <children>
+                                                <Label fx:id="audio_title" text="Me and Your Mama" textFill="#fafafa">
+                                                   <font>
+                                                      <Font size="26.0" />
+                                                   </font>
+                                                   <VBox.margin>
+                                                      <Insets bottom="12.0" left="16.0" top="16.0" />
+                                                   </VBox.margin>
+                                                </Label>
+                                                <Label fx:id="audio_artist" text="Childish Gambino" textFill="#fafafa">
+                                                   <VBox.margin>
+                                                      <Insets left="16.0" />
+                                                   </VBox.margin>
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </VBox>
+                                          <HBox alignment="CENTER" minHeight="64.0" prefHeight="123.0" prefWidth="390.0" spacing="50.0">
+                                             <children>
+                                                <Button fx:id="prev_btn" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#prev_audio_event" prefHeight="64.0" prefWidth="64.0" style="-fx-background-color: #F6CB27; -fx-background-radius: 100%;">
+                                                   <graphic>
+                                                      <ImageView fx:id="prev_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../image/previous_icon.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                                <Button fx:id="play_pause_btn" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#play_pause_audio_event" prefHeight="64.0" prefWidth="64.0" style="-fx-background-color: #F6CB27; -fx-background-radius: 100%;">
+                                                   <graphic>
+                                                      <ImageView fx:id="play_pause_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                                         <Image url="@../image/play_button.png" />
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                                <Button fx:id="next_btn" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#next_audio_event" prefHeight="64.0" prefWidth="64.0" style="-fx-background-color: #F6CB27; -fx-background-radius: 100%;">
+                                                   <graphic>
+                                                      <ImageView fx:id="next_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../image/next_icon.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                          <Label fx:id="timestamp" text="Label" textFill="#fafafa">
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </Label>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
-                        <Label fx:id="timestamp" text="Label" textFill="#fafafa">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                        </Label>
                      </children>
-                  </HBox>
+                  </VBox>
                </children>
-            </VBox>
+            </AnchorPane>
+            <BorderPane fx:id="playView" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #000000;" visible="false" StackPane.alignment="BOTTOM_CENTER" />
          </children>
-      </HBox>
+      </StackPane>
    </children>
-</AnchorPane>
+</VBox>

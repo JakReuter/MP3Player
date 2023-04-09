@@ -14,6 +14,10 @@ import javafx.scene.media.AudioSpectrumListener;
  *  in the future.
  * @Authors Brendan Reuter
  */
+
+//TODO: have visualizer class handle parent boundary (implement in tabable?)
+    //TODO: make appropriate axis function
+    //TODO: add animation functionality
 public abstract class Visualizer extends Tabable {
     public Timeline timeline;
     private double[] realData;
@@ -38,6 +42,10 @@ public abstract class Visualizer extends Tabable {
     public Series getSeries() {
         return series;
     }
+    public void setSeries(Series series){
+        series.bindNewVisualizer(this);
+        this.series=series;
+    }
 
     public void setEnabled(boolean enable){
         this.animationEnabled=true;
@@ -50,23 +58,26 @@ public abstract class Visualizer extends Tabable {
 
     protected Axis getXAxis(){
         if(XAxis==null){
-            XAxis= new Axis(0,1,bands,22050,false);
+            XAxis= new Axis(0,1,bands,22050,null);
         }
         return XAxis;
     }
     protected Axis getYAxis(){
         if(YAxis==null){
-            YAxis= new Axis(-100,0,0,24,false);
+            YAxis= new Axis(-100,0,0,24,((in, translate, scale) -> -1*(in.doubleValue()*scale)));
         }
         return YAxis;
     }
 
-
+    //Animate here
     public void changedData(Series.Data changed){
         //System.out.println("changed!");
-        Number newX = XAxis.getDrawPoint(changed.getxValue(), bands);
+        //System.out.println(getRoot().getWidth());
+        Number newX = XAxis.getDrawPoint(changed.getxValue(), 700);
         Number newY = YAxis.getDrawPoint(changed.getyValue(), 400);
-        System.out.println("setting: ("+newX+", "+newY+")");
+        //System.out.println("x: " +changed.getxValue()+"->"+newX.doubleValue());
+        //System.out.println("y: " +changed.getyValue()+"->"+newY.doubleValue());
+        //System.out.println("setting: ("+newX+", "+newY+")");
         changed.setyPosition(newY);
         changed.setxPosition(newX);
     }

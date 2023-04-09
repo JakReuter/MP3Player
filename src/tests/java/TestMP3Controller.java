@@ -101,6 +101,10 @@ public class TestMP3Controller extends MP3Player {
         }
 
     }
+    @Override
+    protected void initializeWindow(){
+
+    }
 
 
     @FXML

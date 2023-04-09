@@ -36,7 +36,7 @@ public class ChartVisualizer extends Visualizer {
     private final int numYticks = 3;
 
 
-
+//TODO: clean up messy code
     public ChartVisualizer(int bands, Window stage) {
         super(bands,"Chart");
         curves = new ArrayList<>();
@@ -48,21 +48,17 @@ public class ChartVisualizer extends Visualizer {
 
         //xAxis.getWindowSize().bind(canvas.widthProperty());
         //yAxis.getWindowSize().bind(canvas.heightProperty());
-        stage.widthProperty().addListener(xAxis.getWindowSizeListner());
-        canvas.heightProperty().addListener(yAxis.getWindowSizeListner());
+        //stage.widthProperty().addListener(xAxis.getWindowSizeListner());
+        //canvas.heightProperty().addListener(yAxis.getWindowSizeListner());
         canvas.setMaxHeight(1200);
         //System.out.println(getWindow().getWidth());
         getBindedCurve();
         MoveTo moveTo = new MoveTo(0,yAxis.getWindowSize().get());
         LineTo lineTo = new LineTo(0, 100);
         mainPath.getElements().addAll(moveTo, lineTo);
-        Slider newSlider = new Slider();
-        newSlider.setMin(-100);
-        newSlider.setMax(0);
-        newSlider.valueProperty().bind(series.getData(0).yPositionProperty());
         mainPath.getElements().addAll(curves);
         canvas.getChildren().add(mainPath);
-        borderPane = new BorderPane(canvas, null, null, newSlider, null );
+        borderPane = new BorderPane(canvas, null, null, null, null );
         //canvas.heightProperty().addListener((observable, oldValue, newValue) -> );
         this.getRoot().getChildren().add(borderPane);
     }
@@ -74,7 +70,7 @@ public class ChartVisualizer extends Visualizer {
     protected void getBindedCurve(){
 
         for(int i = 0; i<bands; i++){
-            double xRet = xAxis.getDrawPoint(i,bands).doubleValue();
+            double xRet = xAxis.getDrawPoint(i,700).doubleValue();
             double yRet = 100;
            // System.out.println("x: " + i);
             CubicCurveTo newCurve = new CubicCurveTo(xRet, yRet, xRet, yRet, xRet, yRet);

@@ -5,9 +5,15 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.shape.Circle;
 
+import java.util.ArrayList;
+
+//TODO: add functionality to round data into buckets
+//TODO: Impact functionality - time dependent that visualizes spikes
+    //Could be done with buckets, assign weights to ranges and just add them together
 public class Series {
 
     private Visualizer visualizer;
+    private ArrayList<Visualizer> visualizers; //used for updating multiple charts at once
 
     private int arraySize;
     private Data[] dataArray;
@@ -66,6 +72,15 @@ public class Series {
         initEmptyArray();
     }
 
+    public void bindNewVisualizer(Visualizer vis){
+        if(visualizers==null){
+            visualizers=new ArrayList<>();
+            visualizers.add(visualizer);
+        }
+        visualizers.add(vis);
+    }
+
+    //possibly taking intervals of data instead of averages for performance
     public Series(Number[] arr, int size, double bucketFactor){
         //this(arr, size);
         //bucket=bucketFactor;
@@ -82,9 +97,18 @@ public class Series {
         return dataArray[index];
     }
 
+    //TODO: undo multiple series attempt
     public void change(int index, Number y){
         dataArray[index].setyValue(y);
-        visualizer.changedData(dataArray[index]);
+        if(visualizers==null) {
+            visualizer.changedData(dataArray[index]);
+        } else {
+            for(Visualizer v : visualizers){
+                v.changedData(dataArray[index]);
+            }
+            System.out.println(visualizers.size());
+        }
+
     }
 
     public void updateAll(Number[] array){

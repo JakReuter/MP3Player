@@ -13,7 +13,7 @@ public class ConeChart extends ChartVisualizer{
     protected void getBindedCurve(){
 
         for(int i = 0; i<bands; i++){
-            double xRet = xAxis.getDrawPoint(i,bands).doubleValue();
+            double xRet = xAxis.getDrawPoint(i,700).doubleValue();
             double yRet = 100;
             // System.out.println("x: " + i);
             CubicCurveTo newCurve = new CubicCurveTo(xRet, yRet, xRet, yRet, xRet, yRet);
