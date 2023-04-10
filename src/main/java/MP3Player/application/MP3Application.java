@@ -10,8 +10,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MP3Application extends Application {
+    private Stage s = null;
+
     @Override
     public void start(Stage stage) throws IOException {
+        s = stage;
+
         Database.connect();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/MainView.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1440, 1028);
@@ -23,6 +27,11 @@ public class MP3Application extends Application {
         stage.setOnCloseRequest((event) -> {
             Database.close();
         });
+    }
+
+    public Stage getStage()
+    {
+        return s;
     }
 
     public static void main(String[] args) {
