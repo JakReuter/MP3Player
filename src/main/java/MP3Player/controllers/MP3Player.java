@@ -64,6 +64,7 @@ public class MP3Player implements Initializable {
     @FXML MenuItem viewToggle;
     @FXML BorderPane playView;
     @FXML MenuBar menuBar;
+    @FXML Label playViewLabel;
 
     //Split Plane panes
     @FXML SplitPane mainSplit;
@@ -182,11 +183,11 @@ public class MP3Player implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         prev_btn = new Button();
         next_btn = new Button();
-        play_pause_btn = new Button();
-        play_pause_btn_icon = new ImageView(new Image("image/pause_button.png"));
+//        play_pause_btn = new Button();
+//        play_pause_btn_icon = new ImageView(new Image("image/pause_button.png"));
+//        playViewLabel.setText("Childish Gambino: Me and Your Mama");
         animater = new Timeline();
         tabToDrag = new SimpleObjectProperty<>();
-
         initializeWindow();
         initializeListeners();
         initializeAudioPlayer();

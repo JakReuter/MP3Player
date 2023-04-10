@@ -156,9 +156,9 @@
                                           <Image url="@../image/meAndUrMama.png" />
                                        </image>
                                     </ImageView>
-                                    <Label text="Play View Here" textFill="WHITE">
+                                    <Label fx:id="playViewLable" text="Childish Gambino: Me and Your Mama" textFill="WHITE">
                                        <font>
-                                          <Font name="Comic Sans MS" size="27.0" />
+                                          <Font size="27.0" />
                                        </font>
                                     </Label>
                                  </children>
