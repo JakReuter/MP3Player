@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -98,5 +99,8 @@ public class PLVis extends Tabable {
         else {
             textField.setVisible(true);
         }
+    }
+
+    public void handlePlaylistSelection(KeyEvent keyEvent) {
     }
 }

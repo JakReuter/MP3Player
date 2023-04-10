@@ -1,5 +1,16 @@
 package MP3Player.controllers;
 
+import MP3Player.mp3Player.visualizer.ChartVisualizer;
+import MP3Player.mp3Player.visualizer.ConeChart;
+import MP3Player.mp3Player.visualizer.core.Series;
+import MP3Player.mp3Player.visualizer.core.Visualizer;
+import MP3Player.util.general.TabHandler;
+import MP3Player.util.general.Tabable;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -39,6 +51,10 @@ public class MP3Player implements Initializable {
     private final String PATH_MVMT = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/4th Mvmt.mp3";
     private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/MeAndYourMama.mp3";
 
+
+    Image playBtn = new Image("\\img\\play_button.png");
+    Image pauseBtn = new Image("\\img\\pause_button.png");
+
     //Thomas's test thing, please ignore
     //private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/TestFiles/NotLegit.mp3";
 
@@ -61,7 +77,8 @@ public class MP3Player implements Initializable {
 
     //Split Plane panes
     @FXML SplitPane mainSplit;
-    @FXML AnchorPane mainLeftSplit;
+    @FXML
+    AnchorPane mainLeftSplit;
     TabHandler leftTabPane;
     @FXML AnchorPane mainCenterSplit;
     TabHandler centerTabPane;
