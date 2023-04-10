@@ -1,10 +1,16 @@
 package MP3Player.util.general;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -28,8 +34,26 @@ public abstract class Tabable extends Stage{
         tabName = name;
     }
 
-    public Tab getTab(){
+    public Tabable(String name, Node toTabable){
+
+        root = new AnchorPane(toTabable);
+        tabName = name;
+    }
+
+    public Tab getTab(ObjectProperty<Tab> dragTabProp){
         Tab outTab = new Tab(tabName, root);
+        Label label = new Label(tabName);
+        outTab.setGraphic(label);
+
+        label.setOnDragDetected(event -> {
+            Dragboard dragboard = label.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent cB = new ClipboardContent();
+            cB.putString("tab");
+            dragboard.setContent(cB);
+            dragTabProp.set(outTab);
+            event.consume();
+        });
+
         return outTab;
     }
     public Stage getWindow()//pose a new stage and show it ?
