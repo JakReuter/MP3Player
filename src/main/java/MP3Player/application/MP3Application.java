@@ -34,6 +34,7 @@ public class MP3Application extends Application {
         stage.setTitle("Mp3 Player");
         stage.setScene(scene);
         stage.show();
+        Database.verifyAllSongs();
         stage.setOnCloseRequest((event) -> {
             Database.close();
         });
