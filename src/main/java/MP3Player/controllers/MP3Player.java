@@ -135,13 +135,13 @@ public class MP3Player implements Initializable {
 
                 System.out.println(PATH_DEFAULT + "\\src\\main\\resources\\image\\pause_button.png");
 //                Image playBtn = new Image(getClass().getResourceAsStream(PATH_DEFAULT + "\\src\\main\\resources\\image\\pause_button.png"));
-                play_pause_btn_icon.setImage(pauseBtn);
+                play_pause_btn_icon.setImage(playBtn);
                 audioPlaying = false;
             } else {
                 audioPlayer.play();
 //                System.out.println(PATH_DEFAULT + "\\src\\main\\resources\\image\\play_button.png");
 
-                play_pause_btn_icon.setImage(playBtn);
+                play_pause_btn_icon.setImage(pauseBtn);
                 System.out.println(play_pause_btn_icon.getImage().toString());
                 audioPlaying = true;
             }
