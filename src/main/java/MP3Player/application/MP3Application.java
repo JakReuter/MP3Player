@@ -17,7 +17,7 @@ public class MP3Application extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 1440, 1028);
 //        Font.loadFont(getClass().getResourceAsStream("fonts/RobotoMono-Regular.ttf"), 16);
         //scene.getStylesheets().add(getClass().getResource("MP3.css").toExternalForm());
-        stage.setTitle("Hello!");
+        stage.setTitle("Mp3 Player");
         stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest((event) -> {

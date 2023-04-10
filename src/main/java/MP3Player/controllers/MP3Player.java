@@ -28,6 +28,9 @@ public class MP3Player implements Initializable {
     private final String PATH_MVMT = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/4th Mvmt.mp3";
     private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/MeAndYourMama.mp3";
 
+    //Thomas's test thing, please ignore
+    //private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/TestFiles/executable.exe";
+
 
     boolean audioPlaying = false;
 
