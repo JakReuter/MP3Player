@@ -3,16 +3,20 @@ package UnitTests;
 import MP3Player.application.MP3Application;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
 import javafx.stage.Stage;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class FileTypeTests
 {
     MP3Application mp3Application = new MP3Application();
+    private String PATH_DEFAULT = new File(System.getProperty("user.dir")).toURI().toString();
 
     @Before
     //ok so I don't really understand this part, but it's what's needed to get the application open for unit testing
@@ -39,7 +43,7 @@ public class FileTypeTests
             }
         });
 
-        //keeps the application open for 5 seconds to run tests (can make it longer if needed)
+        //keeps the application open for the duration
         thread.start();
         try {
             Thread.sleep(5000);
@@ -48,18 +52,48 @@ public class FileTypeTests
         }
     }
 
-    //accepted file types
+    //a legit mp3 file
     @Test
-    public void mp3()
+    public void mp3_1()
     {
-        System.out.println(mp3Application.getStage().getTitle());
-        assert false;
+        String expected = "READY";
+
+        //set media
+        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/Legit.mp3";
+        mp3Application.setMediaPlayer(path);
+
+        String actual = mp3Application.getMediaPlayer().getStatus().toString();
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    //youtube to mp3 file
+    @Test
+    public void mp3_2()
+    {
+        String expected = "READY";
+
+        //set media
+        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/NotLegit.mp3";
+        mp3Application.setMediaPlayer(path);
+
+        String actual = mp3Application.getMediaPlayer().getStatus().toString();
+
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void mp4()
     {
-        assert false;
+        String expected = "READY";
+
+        //set media
+        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/video.mp4";
+        mp3Application.setMediaPlayer(path);
+
+        String actual = mp3Application.getMediaPlayer().getStatus().toString();
+
+        Assert.assertEquals(expected, actual);
     }
 
 
@@ -68,12 +102,44 @@ public class FileTypeTests
     @Test
     public void exe()
     {
-        assert false;
+        String expected = "UNKOWN";
+
+        //set media
+        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/executable.exe";
+        mp3Application.setMediaPlayer(path);
+
+        String actual = mp3Application.getMediaPlayer().getStatus().toString();
+
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void jpeg()
     {
-        assert false;
+        String expected = "UNKOWN";
+
+        //set media
+        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/image.jpeg";
+        mp3Application.setMediaPlayer(path);
+
+        String actual = mp3Application.getMediaPlayer().getStatus().toString();
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void invalidPath()
+    {
+        {
+            String expected = "UNKOWN";
+
+            //set media
+            String path = PATH_DEFAULT + "lolNope";
+            mp3Application.setMediaPlayer(path);
+
+            String actual = mp3Application.getMediaPlayer().getStatus().toString();
+
+            Assert.assertEquals(expected, actual);
+        }
     }
 }

@@ -29,7 +29,7 @@ import static java.lang.Math.floor;
 public class MP3Player implements Initializable {
 
     private final String PATH_DEFAULT = System.getProperty("user.dir");
-//    private final String PATH_MVMT = PATH_DEFAULT+"/src/resources\\4th Mvmt.mp3";
+    //private final String PATH_MVMT = PATH_DEFAULT+"/src/resources\\4th Mvmt.mp3";
     private final String PATH_MAMA = PATH_DEFAULT+"/src/resources/song/MeAndYourMama.mp3";
 
     //Initalizer

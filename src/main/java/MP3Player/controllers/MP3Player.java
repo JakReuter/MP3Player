@@ -29,7 +29,7 @@ public class MP3Player implements Initializable {
     private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/MeAndYourMama.mp3";
 
     //Thomas's test thing, please ignore
-    //private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/TestFiles/executable.exe";
+    //private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/TestFiles/NotLegit.mp3";
 
 
     boolean audioPlaying = false;
@@ -57,6 +57,17 @@ public class MP3Player implements Initializable {
     protected Media audio;
     protected MediaPlayer audioPlayer;
     protected TimeControl timeControl;
+
+    //used to pass audioPlayer to main application which uses it for unit tests
+    public MediaPlayer getAudioPlayer()
+    {
+        return  audioPlayer;
+    }
+
+    public void setAudioPlayer(String filePath)
+    {
+        audioPlayer = new MediaPlayer(new Media(filePath));
+    }
 
     ArrayList<File> queue = new ArrayList<File>(){
         {
