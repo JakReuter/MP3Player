@@ -96,8 +96,6 @@ public class FileTypeTests
         Assert.assertEquals(expected, actual);
     }
 
-
-
     //not accepted file types
     @Test
     public void exe()
@@ -130,16 +128,42 @@ public class FileTypeTests
     @Test
     public void invalidPath()
     {
-        {
-            String expected = "UNKOWN";
+        String expected = "UNKOWN";
 
-            //set media
-            String path = PATH_DEFAULT + "lolNope";
-            mp3Application.setMediaPlayer(path);
+        //set media
+        String path = PATH_DEFAULT + "lolNope";
+        mp3Application.setMediaPlayer(path);
 
-            String actual = mp3Application.getMediaPlayer().getStatus().toString();
+        String actual = mp3Application.getMediaPlayer().getStatus().toString();
 
-            Assert.assertEquals(expected, actual);
-        }
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void m4a()
+    {
+        String expected = "READY";
+
+        //set media
+        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/legit2.m4a";
+        mp3Application.setMediaPlayer(path);
+
+        String actual = mp3Application.getMediaPlayer().getStatus().toString();
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void audioBook()
+    {
+        String expected = "READY";
+
+        //set media
+        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/audioBook.mp3";
+        mp3Application.setMediaPlayer(path);
+
+        String actual = mp3Application.getMediaPlayer().getStatus().toString();
+
+        Assert.assertEquals(expected, actual);
     }
 }
