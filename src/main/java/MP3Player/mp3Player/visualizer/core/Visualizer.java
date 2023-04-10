@@ -69,7 +69,15 @@ public abstract class Visualizer extends Tabable {
         return YAxis;
     }
 
+    protected void setXAxis(Axis newAxis){
+        XAxis=newAxis;
+    }
+    protected void setYAxis(Axis newAxis){
+        YAxis=newAxis;
+    }
+
     //Animate here
+    //change to pass data into xvalue
     public void changedData(Series.Data changed){
         //System.out.println("changed!");
         //System.out.println(getRoot().getWidth());

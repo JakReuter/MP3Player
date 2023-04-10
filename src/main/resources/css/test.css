@@ -1,0 +1,4 @@
+.split-pane:horizontal .split-pane-divider {
+	-fx-padding: 0.1;
+	-fx-opacity: 0.5;
+}

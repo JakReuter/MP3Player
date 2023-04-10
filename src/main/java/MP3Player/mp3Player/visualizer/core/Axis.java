@@ -8,6 +8,10 @@ import javafx.beans.value.ChangeListener;
  * Axis for Visualizer class
  * @Authors
  */
+
+//TODO: change current output method to versatile using axisFunction
+//TODO: begin circular axis for circle chart
+//TODO: take Data as parameter for axisfunction/update
 public class Axis {
     private boolean isLog;
     private SimpleDoubleProperty WindowSize;
@@ -21,8 +25,6 @@ public class Axis {
     private double translate;
     private double scale;
 
-    //TODO: change current output method to versatile using axisFunction
-    //TODO: begin circular axis for circle chart
     /**
      * Calculates the coordinate on given function
      * Scale: multiplier for size, assume scale is adjusted for window elsewhere

@@ -225,12 +225,7 @@ public class MP3Player implements Initializable {
         seriesArray = new ArrayList<>();
         Label testLabel = new Label("Play View Here");
         testLabel.setFont(Font.font("Comic Sans MS", 40));
-        try{
 
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
         mainVisualizer = new ChartVisualizer(SPEC_BANDS, new Stage());
         //Load each tabpane with right click context menu
@@ -238,7 +233,7 @@ public class MP3Player implements Initializable {
         centerTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(centerTabPane)));
         rightTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(rightTabPane)));
 
-        //Bind width of anchor pane with corresponding tabPane
+        //TODO: Bind width of anchor pane with corresponding tabPane
 
         mainLeftSplit.getChildren().add(leftTabPane.getPane());
         mainCenterSplit.getChildren().add(centerTabPane.getPane());
@@ -290,6 +285,7 @@ public class MP3Player implements Initializable {
     }
 
     public void toggleMasterView(){
+
         animater.getKeyFrames().clear();
         if(playView.isVisible()){
             animater.getKeyFrames().addAll(
