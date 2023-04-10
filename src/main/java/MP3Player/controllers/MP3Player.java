@@ -1,25 +1,16 @@
 package MP3Player.controllers;
 
-import MP3Player.mp3Player.equalizer.Equalizer;
-import MP3Player.mp3Player.visualizer.RectangleVisualizer;
-import MP3Player.mp3Player.visualizer.XYChartVisualizer;
-import MP3Player.util.general.TabHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.chart.AreaChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.*;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import MP3Player.mp3Player.time.*;
@@ -44,17 +35,21 @@ public class MP3Player implements Initializable {
     Label isTesting;
     @FXML
     protected Label timestamp;
-    @FXML
-    ImageView play_pause_btn_icon;
+    @FXML ImageView play_pause_btn_icon;
+
+
+
     @FXML
     protected
     Slider time_slider;
-    @FXML
-    Button prev_btn;
-    @FXML
-    Button next_btn;
-    @FXML
-    Button play_pause_btn;
+    @FXML Button prev_btn;
+    @FXML Button next_btn;
+    @FXML Button play_pause_btn;
+    Image playBtn = new Image("\\img\\play_button.png");
+//    Image playBtn = new Image(getClass().getResourceAsStream("play_button/png"));
+    Image pauseBtn = new Image("\\img\\pause_button.png");
+//Image pauseBtn = new Image(getClass().getResourceAsStream("pause_button/png"));
+
 
     protected Media audio;
     protected MediaPlayer audioPlayer;
@@ -67,7 +62,7 @@ public class MP3Player implements Initializable {
         }
     };
 
-    int queueNumber = 0;
+    int queueNumber = 1;
 
 
     /**
@@ -92,8 +87,8 @@ public class MP3Player implements Initializable {
             }else if (audioPlayer.getCurrentTime().toSeconds() <= 5 && queueNumber > 0){
                 queueNumber--;
                 audioPlayer.stop();
-                audio = new Media(queue.get(queueNumber).toURI().toString());
-                audioPlayer = new MediaPlayer(audio);
+                initializeAudioPlayer();
+
 
                 //keep playing status
                 if(audioPlaying)
@@ -117,8 +112,10 @@ public class MP3Player implements Initializable {
         }
 
         audioPlayer.stop();
-        audio = new Media(queue.get(queueNumber).toURI().toString());
-        audioPlayer = new MediaPlayer(audio);
+        initializeAudioPlayer();
+//        audio = new Media(queue.get(queueNumber).toURI().toString());
+//        audioPlayer = new MediaPlayer(audio);
+//        initializeListeners();
 
         //keep playing status
         if(audioPlaying)
@@ -135,11 +132,17 @@ public class MP3Player implements Initializable {
         try {
             if (audioPlayer.getStatus().compareTo(MediaPlayer.Status.PLAYING)==0) {
                 audioPlayer.pause();
-                play_pause_btn_icon.setImage(new Image("image/play_button.png"));
+
+                System.out.println(PATH_DEFAULT + "\\src\\main\\resources\\image\\pause_button.png");
+//                Image playBtn = new Image(getClass().getResourceAsStream(PATH_DEFAULT + "\\src\\main\\resources\\image\\pause_button.png"));
+                play_pause_btn_icon.setImage(pauseBtn);
                 audioPlaying = false;
             } else {
                 audioPlayer.play();
-                play_pause_btn_icon.setImage(new Image("image/pause_button.png"));
+//                System.out.println(PATH_DEFAULT + "\\src\\main\\resources\\image\\play_button.png");
+
+                play_pause_btn_icon.setImage(playBtn);
+                System.out.println(play_pause_btn_icon.getImage().toString());
                 audioPlaying = true;
             }
         } catch (Exception e) {
@@ -186,16 +189,23 @@ public class MP3Player implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         prev_btn = new Button();
         next_btn = new Button();
-        play_pause_btn = new Button();
-        play_pause_btn_icon = new ImageView(new Image("image/pause_button.png"));
+//        play_pause_btn = new Button();
+//        play_pause_btn_icon = new ImageView(new Image("img/pause_button.png"));
+        //THIS STUPID LINE OF CODE COST ME 2 HOURS OF HAIR PULLING
+        //I COULDN'T FIGURE OUT WHY THE IMAGE WOULDN'T CHANGE
         initializeListeners();
         initializeAudioPlayer();
     }
 
     protected void initializeListeners(){
+
+
+//        audioPlayerValue.bind(Duration.seconds((timeSliderValue.doubleValue() / 100) * (long) audioPlayer.getTotalDuration().toSeconds());
+
         slideListener = (observableValue, oldDuration, newDuration) -> {
             if (time_slider.isPressed()) {
                 audioPlayer.seek(Duration.seconds((time_slider.getValue() / 100) * (long) audioPlayer.getTotalDuration().toSeconds()));
+
             }};
 
         progressListener = (observableValue, oldDuration, newDuration) -> {
@@ -205,6 +215,7 @@ public class MP3Player implements Initializable {
 
                 //move slider
                 time_slider.setValue((newDuration.toSeconds() /audioPlayer.getTotalDuration().toSeconds()) * 100);
+
             }};
 
     }

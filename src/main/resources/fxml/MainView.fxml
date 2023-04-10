@@ -18,12 +18,12 @@
          <children>
             <ImageView fx:id="audio_cover" fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../image/meAndUrMama.png" />
+                  <Image url="@../img/meAndUrMama.png" />
                </image>
             </ImageView>
-            <VBox maxHeight="-Infinity" prefHeight="128.0">
+            <VBox maxHeight="-Infinity" prefHeight="128.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Slider fx:id="time_slider" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" />
+                  <Slider fx:id="time_slider" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="5.0" />
                   <HBox maxWidth="1.7976931348623157E308" prefHeight="123.0" prefWidth="1627.0">
                      <children>
                         <VBox minHeight="50.0" prefHeight="123.0" prefWidth="398.0">
@@ -55,7 +55,7 @@
                                  <graphic>
                                     <ImageView fx:id="prev_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../image/previous_icon.png" />
+                                          <Image url="@../img/previous_icon.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
@@ -63,7 +63,7 @@
                               <Button fx:id="play_pause_btn" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#play_pause_audio_event" prefHeight="64.0" prefWidth="64.0" style="-fx-background-color: #F6CB27; -fx-background-radius: 100%;">
                                  <graphic>
                                     <ImageView fx:id="play_pause_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                                       <Image url="@../image/play_button.png" />
+                                       <Image url="@../img/play_button.png" />
                                     </ImageView>
                                  </graphic>
                               </Button>
@@ -71,7 +71,7 @@
                                  <graphic>
                                     <ImageView fx:id="next_btn_icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../image/next_icon.png" />
+                                          <Image url="@../img/next_icon.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>

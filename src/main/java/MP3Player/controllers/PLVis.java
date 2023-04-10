@@ -30,7 +30,7 @@ public class PLVis {
 
     private ObservableList<Playlist> playlists;
 
-    private PLSongs plSongs;
+//    private PLSongs plSongs;
 
     public void initialize() {
         this.playlists = FXCollections.observableArrayList();
@@ -60,10 +60,10 @@ public class PLVis {
     }
 
     // This needs to be called when the UI is created.
-    public void setPLSongs(PLSongs plSongs) {
+    /*public void setPLSongs(PLSongs plSongs) {
         this.plSongs = plSongs;
 
-    }
+    } had to comment this out to remove errors*/
 
     @FXML
     private void handleNewButton(ActionEvent event) {
@@ -115,6 +115,6 @@ public class PLVis {
     private void handlePlaylistSelection(ActionEvent event) {
         // When a playlist is selected, tell the PLSongs, and give it the name of the playlist
         String plName = tableView.getSelectionModel().getSelectedItem().getName();
-        this.plSongs.update(plName);
+        //this.plSongs.update(plName);
     }
 }
