@@ -32,6 +32,10 @@ public class PLVis {
 
     private PLSongs plSongs;
 
+    public PLVis(PLSongs plSongs) {
+        this.plSongs = plSongs;
+    }
+
     public void initialize() {
         this.playlists = FXCollections.observableArrayList();
         // Get all playlists from database
@@ -57,12 +61,6 @@ public class PLVis {
 
         tableView.setItems(playlists);
         tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    }
-
-    // This needs to be called when the UI is created.
-    public void setPLSongs(PLSongs plSongs) {
-        this.plSongs = plSongs;
-
     }
 
     @FXML
