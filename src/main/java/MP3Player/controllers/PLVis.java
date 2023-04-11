@@ -8,10 +8,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 
+import java.net.URL;
 import java.sql.ResultSet;
+import java.util.ResourceBundle;
 
 
 // TODO: Connect buttons to database
@@ -32,11 +36,13 @@ public class PLVis {
 
     private PLSongs plSongs;
 
+    public PLVis(){ this(null);}
+
     public PLVis(PLSongs plSongs) {
         this.plSongs = plSongs;
     }
 
-    public void initialize() {
+    public void initialize(){
         this.playlists = FXCollections.observableArrayList();
         // Get all playlists from database
         ResultSet rs = Database.selectAllPlaylists();
@@ -47,7 +53,7 @@ public class PLVis {
                 this.playlists.add(new Playlist(
                         (String) rs.getObject("name"),
                         (int) rs.getObject("num_songs"),
-                        (String) rs.getObject("duration"),
+                        rs.getObject("duration").toString(),
                         (String) rs.getObject("description")
                 ));
                 i++;
@@ -110,9 +116,11 @@ public class PLVis {
     }
 
     @FXML
-    private void handlePlaylistSelection(ActionEvent event) {
+    private void handlePlaylistSelection(KeyEvent event) {
         // When a playlist is selected, tell the PLSongs, and give it the name of the playlist
         String plName = tableView.getSelectionModel().getSelectedItem().getName();
         this.plSongs.update(plName);
     }
+
+
 }

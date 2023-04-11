@@ -61,7 +61,7 @@ public class PLSongs {
                         (String) rs.getObject("name"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
-                        (String) rs.getObject("duration")
+                        rs.getObject("duration").toString()
                 ));
                 i++;
             }

@@ -9,7 +9,7 @@
 <?import javafx.scene.control.TextField ?>
 
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<VBox fx:id="vRoot" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player.controllers.PLVis">
+<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player.controllers.PLVis">
    <HBox prefHeight="37.0" prefWidth="613.0">
       <children>
          <Button fx:id="newButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="56.0" text="New" onAction="#handleNewButton">

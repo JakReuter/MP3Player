@@ -97,7 +97,7 @@ public class MP3Player implements Initializable {
     protected Visualizer mainVisualizer;
     protected Series visualizerSeries;
     protected ArrayList<Series> seriesArray;
-    protected final double SPEC_INTERVAL = .04;
+    protected final double SPEC_INTERVAL = .1;
     protected final int SPEC_THRESH = -100;
     protected final int SPEC_BANDS = 256;
 
@@ -318,7 +318,7 @@ public class MP3Player implements Initializable {
     }
 
     protected MenuItem[] getWindowsMenu(TabHandler targetTab){
-        MenuItem[] windows = new MenuItem[3];
+        MenuItem[] windows = new MenuItem[4];
         windows[0] = new MenuItem("Playlist");
         windows[0].setOnAction(event -> {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/playlists.fxml"));
@@ -326,13 +326,39 @@ public class MP3Player implements Initializable {
                 fxmlLoader.load();
                 targetTab.addApp(new Tabable("Playlist", fxmlLoader.getRoot()) {
                 });
-            } catch (IOException e) {
+            } catch (Exception e) {
+                System.out.println(e);
                 e.printStackTrace();
             }
             targetTab.refresh();
         });
-        windows[1] = new MenuItem("Other stuff");
-        windows[2] = new Menu("Visualizers",null,getVisualizers(targetTab));
+        windows[1] = new MenuItem("PlaylistSongs");
+        windows[1].setOnAction(event -> {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/playlistSongs.fxml"));
+            try {
+                fxmlLoader.load();
+                targetTab.addApp(new Tabable("PlaylistSongs", fxmlLoader.getRoot()) {
+                });
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+            targetTab.refresh();
+        });
+        windows[2] = new MenuItem("PlaylistSongs");
+        windows[2].setOnAction(event -> {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/masterSongs.fxml"));
+            try {
+                fxmlLoader.load();
+                targetTab.addApp(new Tabable("Songs", fxmlLoader.getRoot()) {
+                });
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+            targetTab.refresh();
+        });
+        windows[3] = new Menu("Visualizers",null,getVisualizers(targetTab));
         return windows;
     }
 
