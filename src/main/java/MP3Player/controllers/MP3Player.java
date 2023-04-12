@@ -52,8 +52,8 @@ public class MP3Player implements Initializable {
     private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/song/MeAndYourMama.mp3";
 
 
-    Image playBtn = new Image("\\img\\play_button.png");
-    Image pauseBtn = new Image("\\img\\pause_button.png");
+    Image playBtn = new Image("/img/play_button.png");
+    Image pauseBtn = new Image("/img/pause_button.png");
 
     //Thomas's test thing, please ignore
     //private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/TestFiles/NotLegit.mp3";
@@ -187,7 +187,7 @@ public class MP3Player implements Initializable {
             if (audioPlayer.getStatus().compareTo(MediaPlayer.Status.PLAYING)==0) {
                 audioPlayer.pause();
 
-                System.out.println(PATH_DEFAULT + "\\src\\main\\resources\\image\\pause_button.png");
+                System.out.println(PATH_DEFAULT + "/src/main/resources/image/pause_button.png");
 //                Image playBtn = new Image(getClass().getResourceAsStream(PATH_DEFAULT + "\\src\\main\\resources\\image\\pause_button.png"));
                 play_pause_btn_icon.setImage(playBtn);
                 audioPlaying = false;
@@ -304,9 +304,13 @@ public class MP3Player implements Initializable {
 
         mainVisualizer = new ChartVisualizer(SPEC_BANDS, new Stage());
         //Load each tabpane with right click context menu
-        leftTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(leftTabPane)));
-        centerTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(centerTabPane)));
-        rightTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(rightTabPane)));
+
+        PLSongs plSongs = new PLSongs();
+        PLVis plVis = new PLVis(plSongs);
+
+        leftTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(leftTabPane, plSongs, plVis)));
+        centerTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(centerTabPane,plSongs, plVis)));
+        rightTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(rightTabPane, plSongs, plVis)));
 
         //TODO: Bind width of anchor pane with corresponding tabPane
 
@@ -317,41 +321,43 @@ public class MP3Player implements Initializable {
 
     }
 
-    protected MenuItem[] getWindowsMenu(TabHandler targetTab){
+    protected MenuItem[] getWindowsMenu(TabHandler targetTab, PLSongs plSongs, PLVis plVis) {
         MenuItem[] windows = new MenuItem[4];
         windows[0] = new MenuItem("Playlist");
-        windows[0].setOnAction(event -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/playlists.fxml"));
-            try {
-                fxmlLoader.load();
-                targetTab.addApp(new Tabable("Playlist", fxmlLoader.getRoot()) {
-                });
-            } catch (Exception e) {
-                System.out.println(e);
-                e.printStackTrace();
-            }
-            targetTab.refresh();
-        });
         windows[1] = new MenuItem("PlaylistSongs");
-        windows[1].setOnAction(event -> {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/playlistSongs.fxml"));
+
+
+        windows[0].setOnAction(event -> {
             try {
-                fxmlLoader.load();
-                targetTab.addApp(new Tabable("PlaylistSongs", fxmlLoader.getRoot()) {
-                });
+                FXMLLoader plLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/playlists.fxml"));
+                plLoader.setController(plVis);
+                plLoader.load();
+                targetTab.addApp(new Tabable("Playlist", plLoader.getRoot()) {});
             } catch (Exception e) {
                 System.out.println(e);
                 e.printStackTrace();
             }
             targetTab.refresh();
         });
-        windows[2] = new MenuItem("PlaylistSongs");
+
+        windows[1].setOnAction(event -> {
+            try {
+                FXMLLoader plSongsLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/playlistSongs.fxml"));
+                plSongsLoader.setController(plSongs);
+                plSongsLoader.load();
+                targetTab.addApp(new Tabable("PlaylistSongs", plSongsLoader.getRoot()) {});
+            } catch (Exception e) {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+            targetTab.refresh();
+        });
+        windows[2] = new MenuItem("AllSongs");
         windows[2].setOnAction(event -> {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/masterSongs.fxml"));
             try {
                 fxmlLoader.load();
-                targetTab.addApp(new Tabable("Songs", fxmlLoader.getRoot()) {
-                });
+                targetTab.addApp(new Tabable("Songs", fxmlLoader.getRoot()) {});
             } catch (Exception e) {
                 System.out.println(e);
                 e.printStackTrace();
@@ -361,6 +367,7 @@ public class MP3Player implements Initializable {
         windows[3] = new Menu("Visualizers",null,getVisualizers(targetTab));
         return windows;
     }
+
 
     //TODO: stop updating a chart after sending it to the ether
     protected MenuItem[] getVisualizers(TabHandler targetTab){

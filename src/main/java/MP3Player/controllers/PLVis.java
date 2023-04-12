@@ -36,7 +36,7 @@ public class PLVis {
 
     private PLSongs plSongs;
 
-    public PLVis(){ this(null);}
+    //public PLVis(){ this(null);}
 
     public PLVis(PLSongs plSongs) {
         this.plSongs = plSongs;

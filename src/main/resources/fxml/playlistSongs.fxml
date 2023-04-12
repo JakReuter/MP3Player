@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="839.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player.controllers.PLSongs">
+<VBox prefHeight="839.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <HBox prefHeight="37.0" prefWidth="613.0">
       <children>
          <Button fx:id="removeButton" onAction="#handleRemoveButton" prefHeight="24.0" prefWidth="169.0" text="Remove From Playlist">

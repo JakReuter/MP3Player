@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import org.w3c.dom.ls.LSOutput;
 
 import java.sql.ResultSet;
 
@@ -52,12 +54,12 @@ public class PLSongs {
 
     // Called by PLVis, when a new playlist is selected, to populate the list here.
     public void update(String plName) {
+        songs.clear();
         ResultSet rs = Database.selectSongsFromPlaylist(plName);
-        tableView.getItems().clear();
         try {
             int i = 0;
             while (rs.next()) {
-                this.songs.add(new Song(
+                songs.add(new Song(
                         (String) rs.getObject("name"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
@@ -71,7 +73,7 @@ public class PLSongs {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-
+        tableView.setItems(songs);
         tableView.refresh();
     }
 
