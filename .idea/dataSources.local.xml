@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="dataSourceStorageLocal" created-in="IU-211.7442.40">
+  <component name="dataSourceStorageLocal" created-in="IU-213.7172.25">
     <data-source name="mp3db" uuid="5a00fc88-dc1a-4d8c-b225-62be58da5976">
       <database-info product="SQLite" version="3.40.1" jdbc-version="4.2" driver-name="SQLite JDBC" driver-version="3.40.1.0" dbms="SQLITE" exact-version="3.40.1" exact-driver-version="3.40">
         <identifier-quote-string>&quot;</identifier-quote-string>
@@ -15,7 +15,6 @@
     </data-source>
     <data-source name="mp3db [2]" uuid="2302ea30-8204-4c3d-ad9b-64430a5a71c7">
       <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="SQLITE" exact-version="0" />
-      <auth-provider>no-auth</auth-provider>
       <schema-mapping />
     </data-source>
   </component>

@@ -1438,81 +1438,109 @@
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <index id="509" parent="502" name="sqlite_autoindex_Playlist_1">
+    <column id="509" parent="502" name="duration">
+      <DataType>INT|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="510" parent="502" name="description">
+      <DataType>TEXT|0s</DataType>
+      <Position>5</Position>
+    </column>
+    <column id="511" parent="502" name="num_songs">
+      <DataType>INT|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <index id="512" parent="502" name="sqlite_autoindex_Playlist_1">
       <ColNames>name</ColNames>
       <ColumnCollations></ColumnCollations>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <key id="510" parent="502">
+    <key id="513" parent="502">
       <ColNames>name</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>sqlite_autoindex_Playlist_1</UnderlyingIndexName>
     </key>
-    <column id="511" parent="503" name="name">
+    <column id="514" parent="503" name="name">
       <DataType>TEXT|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="512" parent="503" name="filepath">
+    <column id="515" parent="503" name="filepath">
       <DataType>TEXT|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="513" parent="503" name="author">
+    <column id="516" parent="503" name="author">
       <DataType>TEXT|0s</DataType>
       <Position>3</Position>
     </column>
-    <column id="514" parent="503" name="album">
+    <column id="517" parent="503" name="album">
       <DataType>TEXT|0s</DataType>
       <Position>4</Position>
     </column>
-    <column id="515" parent="503" name="date_added">
+    <column id="518" parent="503" name="date_added">
       <DataType>DATE|0s</DataType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <index id="516" parent="503" name="sqlite_autoindex_Song_1">
+    <column id="519" parent="503" name="duration">
+      <DataType>INT|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+    </column>
+    <column id="520" parent="503" name="active">
+      <DataType>INT|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+    </column>
+    <index id="521" parent="503" name="sqlite_autoindex_Song_1">
       <ColNames>name</ColNames>
       <ColumnCollations></ColumnCollations>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <key id="517" parent="503">
+    <key id="522" parent="503">
       <ColNames>name</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>sqlite_autoindex_Song_1</UnderlyingIndexName>
     </key>
-    <column id="518" parent="504" name="playlist_name">
+    <column id="523" parent="504" name="playlist_name">
       <DataType>TEXT|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="519" parent="504" name="song_name">
+    <column id="524" parent="504" name="song_name">
       <DataType>TEXT|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="520" parent="504" name="position">
+    <column id="525" parent="504" name="position">
       <DataType>INT|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <foreign-key id="521" parent="504">
+    <foreign-key id="526" parent="504">
       <ColNames>playlist_name</ColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>name</RefColNames>
       <RefTableName>Playlist</RefTableName>
     </foreign-key>
-    <foreign-key id="522" parent="504">
+    <foreign-key id="527" parent="504">
       <ColNames>song_name</ColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>name</RefColNames>
       <RefTableName>Song</RefTableName>
     </foreign-key>
-    <index id="523" parent="504" name="sqlite_autoindex_Songs_In_Playlist_1">
+    <index id="528" parent="504" name="sqlite_autoindex_Songs_In_Playlist_1">
       <ColNames>playlist_name
 song_name</ColNames>
       <ColumnCollations>
@@ -1520,36 +1548,36 @@ song_name</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <index id="524" parent="504" name="Songs_In_Playlist_uindex">
+    <index id="529" parent="504" name="Songs_In_Playlist_uindex">
       <ColNames>playlist_name
 position</ColNames>
       <ColumnCollations>
 </ColumnCollations>
       <Unique>1</Unique>
     </index>
-    <key id="525" parent="504" name="Songs_In_Playlist_pk">
+    <key id="530" parent="504" name="Songs_In_Playlist_pk">
       <ColNames>playlist_name
 song_name</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>sqlite_autoindex_Songs_In_Playlist_1</UnderlyingIndexName>
     </key>
-    <column id="526" parent="505" name="type">
+    <column id="531" parent="505" name="type">
       <DataType>TEXT|0s</DataType>
       <Position>1</Position>
     </column>
-    <column id="527" parent="505" name="name">
+    <column id="532" parent="505" name="name">
       <DataType>TEXT|0s</DataType>
       <Position>2</Position>
     </column>
-    <column id="528" parent="505" name="tbl_name">
+    <column id="533" parent="505" name="tbl_name">
       <DataType>TEXT|0s</DataType>
       <Position>3</Position>
     </column>
-    <column id="529" parent="505" name="rootpage">
+    <column id="534" parent="505" name="rootpage">
       <DataType>INT|0s</DataType>
       <Position>4</Position>
     </column>
-    <column id="530" parent="505" name="sql">
+    <column id="535" parent="505" name="sql">
       <DataType>TEXT|0s</DataType>
       <Position>5</Position>
     </column>

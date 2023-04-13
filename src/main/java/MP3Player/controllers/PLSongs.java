@@ -13,6 +13,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.w3c.dom.ls.LSOutput;
 
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 
 /*
@@ -29,7 +30,12 @@ public class PLSongs {
     @FXML private TableColumn<Song, String> albumColumn;
     @FXML private TableColumn<Song, String> durationColumn;
     private ObservableList<Song> songs;
+    private String currentPL;
+    private ActionListener refreshListener;
 
+
+    public PLSongs(){
+    }
 
     public void initialize() {
         this.songs = FXCollections.observableArrayList();
@@ -54,8 +60,9 @@ public class PLSongs {
 
     // Called by PLVis, when a new playlist is selected, to populate the list here.
     public void update(String plName) {
+        currentPL=plName;
         songs.clear();
-        ResultSet rs = Database.selectSongsFromPlaylist(plName);
+        ResultSet rs = Database.selectSongsFromPlaylist(currentPL);
         try {
             int i = 0;
             while (rs.next()) {
@@ -75,6 +82,50 @@ public class PLSongs {
         }
         tableView.setItems(songs);
         tableView.refresh();
+    }
+
+    /**
+     * Called to refresh the information in the UI
+     * When database is updated
+     */
+    public void refreshInformation(){
+        if(currentPL!=null){
+            songs.clear();
+            ResultSet rs = Database.selectSongsFromPlaylist(currentPL);
+            try {
+                int i = 0;
+                while (rs.next()) {
+                    songs.add(new Song(
+                            (String) rs.getObject("name"),
+                            (String) rs.getObject("author"),
+                            (String) rs.getObject("album"),
+                            rs.getObject("duration").toString()
+                    ));
+                    i++;
+                }
+                if (i == 0) {
+                    System.out.println("No output");
+                }
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+    }
+
+    /**
+     * Sets the event triggered when database is updated
+     * @param l event that refreshes all other UIs
+     */
+    public void setOnRefresh(ActionListener l){
+        this.refreshListener = l;
+    }
+
+    /**
+     * Triggers
+     */
+    public void refreshSendEvent(){
+        this.refreshListener.actionPerformed(new java.awt.event.ActionEvent(this, 1001, "Refresh"));
     }
 
 

@@ -31,6 +31,11 @@
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </HBox.margin>
          </Button>
+         <Button fx:id="newButton" mnemonicParsing="false" onAction="#handleNewSongButton" prefHeight="24.0" prefWidth="101.0" text="New Song">
+            <HBox.margin>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </HBox.margin>
+         </Button>
       </children>
    </HBox>
    <TableView fx:id="tableView" prefHeight="861.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">

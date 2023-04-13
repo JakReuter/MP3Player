@@ -2,6 +2,7 @@ package MP3Player.controllers;
 
 import MP3Player.database.Database;
 import MP3Player.mp3Player.playlist.Playlist;
+import MP3Player.mp3Player.song.Song;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 
+import java.awt.event.ActionListener;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.util.ResourceBundle;
@@ -35,10 +37,15 @@ public class PLVis {
     private ObservableList<Playlist> playlists;
 
     private PLSongs plSongs;
+    private ActionListener refreshListener;
 
-    //public PLVis(){ this(null);}
+    public PLVis(){ this(null);}
 
     public PLVis(PLSongs plSongs) {
+        this.plSongs = plSongs;
+    }
+
+    public void setPLSongs(PLSongs plSongs) {
         this.plSongs = plSongs;
     }
 
@@ -120,6 +127,50 @@ public class PLVis {
         // When a playlist is selected, tell the PLSongs, and give it the name of the playlist
         String plName = tableView.getSelectionModel().getSelectedItem().getName();
         this.plSongs.update(plName);
+    }
+    /**
+     * Called to refresh the information in the UI
+     * When database is updated
+     */
+    public void refreshInformation(){
+
+        this.playlists = FXCollections.observableArrayList();
+        // Get all playlists from database
+        ResultSet rs = Database.selectAllPlaylists();
+        // Loop through all playlists, adding them to the observableArrayList (getting the appropriate values from the database)
+        try {
+            int i = 0;
+            while (rs.next()) {
+                this.playlists.add(new Playlist(
+                        (String) rs.getObject("name"),
+                        (int) rs.getObject("num_songs"),
+                        rs.getObject("duration").toString(),
+                        (String) rs.getObject("description")
+                ));
+                i++;
+            }
+            if (i == 0) {
+                System.out.println("No output");
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+    /**
+     * Sets the event triggered when database is updated
+     * @param l event that refreshes all other UIs
+     */
+    public void setOnRefresh(ActionListener l){
+        this.refreshListener = l;
+    }
+
+    /**
+     * Triggers
+     */
+    public void refreshSendEvent(){
+        this.refreshListener.actionPerformed(new java.awt.event.ActionEvent(this, 1001, "Refresh"));
     }
 
 

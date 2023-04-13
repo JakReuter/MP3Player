@@ -128,6 +128,13 @@ public class TabHandler {
             temp[i]=apps.get(i).getTab(draggedTab);
         }
         mainPane.getTabs().setAll(temp);
+        mainPane.getSelectionModel().select(mainPane.getTabs().size()-1);
+    }
+
+    public void testApps(){
+        System.out.println(
+                //mainPane.getTabs().get(0).getContent().getParent()
+        );
     }
 
     public double getTabHeight(){

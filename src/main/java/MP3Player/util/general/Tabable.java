@@ -41,7 +41,7 @@ public abstract class Tabable extends Stage{
     }
 
     public Tab getTab(ObjectProperty<Tab> dragTabProp){
-        Tab outTab = new Tab(tabName, root);
+        Tab outTab = new Tab("", root);
         Label label = new Label(tabName);
         outTab.setGraphic(label);
 
