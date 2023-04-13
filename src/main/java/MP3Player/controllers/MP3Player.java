@@ -1,5 +1,6 @@
 package MP3Player.controllers;
 
+import MP3Player.mp3Player.equalizer.Equalizer;
 import MP3Player.mp3Player.visualizer.ChartVisualizer;
 import MP3Player.mp3Player.visualizer.ConeChart;
 import MP3Player.mp3Player.visualizer.core.Series;
@@ -21,9 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.*;
@@ -32,6 +31,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import MP3Player.mp3Player.time.*;
+import org.farng.mp3.MP3File;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -43,6 +43,7 @@ import java.util.ResourceBundle;
 import static java.lang.Math.floor;
 
 //TODO: make nodes fill size of split panes
+//TODO: add advertisements in random positions of playlist $$$
 public class MP3Player implements Initializable {
 
     protected final String PATH_DEFAULT = System.getProperty("user.dir");
@@ -102,7 +103,7 @@ public class MP3Player implements Initializable {
     protected Visualizer mainVisualizer;
     protected Series visualizerSeries;
     protected ArrayList<Series> seriesArray;
-    protected final double SPEC_INTERVAL = .1;
+    protected final double SPEC_INTERVAL = .04;
     protected final int SPEC_THRESH = -100;
     protected final int SPEC_BANDS = 256;
 
@@ -117,15 +118,15 @@ public class MP3Player implements Initializable {
         audioPlayer = new MediaPlayer(new Media(filePath));
     }
 
+    //TODO: make default queue a playlist or have playlist hold arraylist?
     ArrayList<File> queue = new ArrayList<File>(){
         {
             add(new File(PATH_MAMA));
             add(new File(PATH_MVMT));
-            add(new File("C:\\Users\\Brendan Reuter\\Music\\audio.mp3"));
         }
     };
 
-    int queueNumber = 2;
+    int queueNumber = 1;
 
 
     /**
@@ -134,10 +135,6 @@ public class MP3Player implements Initializable {
     protected ChangeListener<Duration> progressListener;
     protected AudioSpectrumListener VisualizeListener;
     protected ChangeListener<Number> slideListener;
-
-    private final int BANDS = 1024;
-    //private Duration songLength;
-
 
     @FXML
     protected void prev_audio_event() {
@@ -216,6 +213,9 @@ public class MP3Player implements Initializable {
         try {
 
             File file = queue.get(queueNumber);
+            MP3File mp3File = new MP3File(file);
+            mp3File.seekMP3Frame();
+            System.out.println(file.getName() + ": "+mp3File.getFrequency()+" kHz");
             audio = new Media(file.toURI().toString());
             audioPlayer = new MediaPlayer(audio);
 
@@ -364,17 +364,19 @@ public class MP3Player implements Initializable {
 
 
         windows[0].setOnAction(event -> {
+            refreshTabs(playListsLoader.getRoot().toString());
             targetTab.addApp(new Tabable("Playlist", playListsLoader.getRoot()) {});
             targetTab.refresh();
-            refreshTabs();
         });
 
         windows[1].setOnAction(event -> {
+            refreshTabs(playListSongsLoader.getRoot().toString());
             targetTab.addApp(new Tabable("Songs in Playlists", playListSongsLoader.getRoot()) {});
             targetTab.refresh();
         });
         windows[2] = new MenuItem("AllSongs");
         windows[2].setOnAction(event -> {
+            refreshTabs(masterSongsLoader.getRoot().toString());
             targetTab.addApp(new Tabable("Songs", masterSongsLoader.getRoot()) {});
             targetTab.refresh();
         });
@@ -383,11 +385,11 @@ public class MP3Player implements Initializable {
     }
 
 
-    //TODO: stop updating a chart after sending it to the ether
     protected MenuItem[] getVisualizers(TabHandler targetTab){
-        MenuItem[] windows = new MenuItem[2];
+        MenuItem[] windows = new MenuItem[3];
         windows[0] = new MenuItem("Basic Chart");
-        windows[1] = new MenuItem("Cone Chart");
+        windows[1] = new MenuItem("Basic Chart w/ eq");
+        windows[2] = new MenuItem("Cone Chart");
         windows[0].setOnAction(event -> {
             ChartVisualizer newChart = new ChartVisualizer(SPEC_BANDS, new Stage());
             seriesArray.add(newChart.getSeries());
@@ -395,8 +397,16 @@ public class MP3Player implements Initializable {
             targetTab.addApp(newChart);
             targetTab.refresh();
         });
-
         windows[1].setOnAction(event -> {
+            ChartVisualizer newChart = new ChartVisualizer(SPEC_BANDS, new Stage());
+            seriesArray.add(newChart.getSeries());
+            newChart.getRoot().setMinHeight(500);
+            VBox t = new VBox(newChart.getRoot(), (new Equalizer(audioPlayer.getAudioEqualizer())).getRoot());
+            targetTab.addApp(new Tabable("", t) {});
+            targetTab.refresh();
+        });
+
+        windows[2].setOnAction(event -> {
             ConeChart newChart = new ConeChart(SPEC_BANDS, new Stage());
             seriesArray.add(newChart.getSeries());
 
@@ -406,10 +416,13 @@ public class MP3Player implements Initializable {
         return windows;
     }
 
-    public void refreshTabs(){
-        leftTabPane.testApps();
-        rightTabPane.testApps();
-        centerTabPane.testApps();
+    public void refreshTabs(String nodeId){
+        leftTabPane.refresh(nodeId);
+        leftTabPane.refresh();
+        rightTabPane.refresh(nodeId);
+        rightTabPane.refresh();
+        centerTabPane.refresh(nodeId);
+        centerTabPane.refresh();
     }
 
     public void toggleMasterView(){

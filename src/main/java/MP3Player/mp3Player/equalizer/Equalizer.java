@@ -12,6 +12,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioEqualizer;
 import javafx.scene.media.EqualizerBand;
@@ -53,6 +54,7 @@ public class Equalizer extends Tabable {
         Buttons = new VBox(newToggleButton());
         Sliders.getChildren().add(Buttons);
         getRoot().getChildren().add(Sliders);
+        this.childId = Sliders.toString();
 
     }
 

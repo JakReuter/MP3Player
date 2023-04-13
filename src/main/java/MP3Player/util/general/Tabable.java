@@ -25,6 +25,7 @@ public abstract class Tabable extends Stage{
     public String getTabName() {
         return tabName;
     }
+    public String childId = "";
 
     private String tabName;
     private AnchorPane root;
@@ -35,7 +36,7 @@ public abstract class Tabable extends Stage{
     }
 
     public Tabable(String name, Node toTabable){
-
+        childId = toTabable.toString();
         root = new AnchorPane(toTabable);
         tabName = name;
     }
@@ -44,7 +45,12 @@ public abstract class Tabable extends Stage{
         Tab outTab = new Tab("", root);
         Label label = new Label(tabName);
         outTab.setGraphic(label);
-
+        //if(root.getChildren().size()>0) {
+        //    childId = root.getChildren().get(0).toString();
+        //}
+        if(childId.contains("AnchorPane")){
+            System.out.println("oh no!");
+        }
         label.setOnDragDetected(event -> {
             Dragboard dragboard = label.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent cB = new ClipboardContent();
@@ -53,6 +59,7 @@ public abstract class Tabable extends Stage{
             dragTabProp.set(outTab);
             event.consume();
         });
+
 
         return outTab;
     }

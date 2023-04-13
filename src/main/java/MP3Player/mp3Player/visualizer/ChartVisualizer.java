@@ -40,6 +40,9 @@ public class ChartVisualizer extends Visualizer {
     public ChartVisualizer(int bands, Window stage) {
         super(bands,"Chart");
         curves = new ArrayList<>();
+        //setXAxis(new Axis(0,1,bands,22050,(in, translate1, scale1) ->
+        //        ((Math.log((double)in*scale1)/Math.log(2))*100+translate1))
+        //);
         xAxis = getXAxis();
         yAxis = getYAxis();
 
@@ -59,6 +62,7 @@ public class ChartVisualizer extends Visualizer {
         mainPath.getElements().addAll(curves);
         canvas.getChildren().add(mainPath);
         borderPane = new BorderPane(canvas, null, null, null, null );
+        this.childId = borderPane.toString();
         //canvas.heightProperty().addListener((observable, oldValue, newValue) -> );
         this.getRoot().getChildren().add(borderPane);
     }
