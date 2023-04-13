@@ -2,6 +2,7 @@ package MP3Player.controllers;
 
 import MP3Player.mp3Player.equalizer.Equalizer;
 import MP3Player.mp3Player.visualizer.ChartVisualizer;
+import MP3Player.mp3Player.visualizer.CircleChart;
 import MP3Player.mp3Player.visualizer.ConeChart;
 import MP3Player.mp3Player.visualizer.core.Series;
 import MP3Player.mp3Player.visualizer.core.Visualizer;
@@ -105,7 +106,7 @@ public class MP3Player implements Initializable {
     protected ArrayList<Series> seriesArray;
     protected final double SPEC_INTERVAL = .04;
     protected final int SPEC_THRESH = -100;
-    protected final int SPEC_BANDS = 256;
+    protected final int SPEC_BANDS = 128;
 
     //used to pass audioPlayer to main application which uses it for unit tests
     public MediaPlayer getAudioPlayer()
@@ -386,10 +387,11 @@ public class MP3Player implements Initializable {
 
 
     protected MenuItem[] getVisualizers(TabHandler targetTab){
-        MenuItem[] windows = new MenuItem[3];
+        MenuItem[] windows = new MenuItem[4];
         windows[0] = new MenuItem("Basic Chart");
         windows[1] = new MenuItem("Basic Chart w/ eq");
         windows[2] = new MenuItem("Cone Chart");
+        windows[3] = new MenuItem("Circle Chart");
         windows[0].setOnAction(event -> {
             ChartVisualizer newChart = new ChartVisualizer(SPEC_BANDS, new Stage());
             seriesArray.add(newChart.getSeries());
@@ -408,6 +410,14 @@ public class MP3Player implements Initializable {
 
         windows[2].setOnAction(event -> {
             ConeChart newChart = new ConeChart(SPEC_BANDS, new Stage());
+            seriesArray.add(newChart.getSeries());
+
+            targetTab.addApp(newChart);
+            targetTab.refresh();
+        });
+
+        windows[3].setOnAction(event -> {
+            CircleChart newChart = new CircleChart(SPEC_BANDS, "circle");
             seriesArray.add(newChart.getSeries());
 
             targetTab.addApp(newChart);

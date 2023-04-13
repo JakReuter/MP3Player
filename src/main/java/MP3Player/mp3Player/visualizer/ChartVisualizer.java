@@ -30,10 +30,8 @@ public class ChartVisualizer extends Visualizer {
     protected Axis xAxis;
     protected Axis yAxis;
 
-    private XYChart.Series<Number, Number> data;
 
     private final double CURVE_SCALAR = 1.00;
-    private final int numYticks = 3;
 
 
 //TODO: clean up messy code
@@ -74,7 +72,7 @@ public class ChartVisualizer extends Visualizer {
     protected void getBindedCurve(){
 
         for(int i = 0; i<bands; i++){
-            double xRet = xAxis.getDrawPoint(i,700).doubleValue();
+            double xRet = xAxis.getDrawPoint(series.getData(i),700).doubleValue();
             double yRet = 100;
            // System.out.println("x: " + i);
             CubicCurveTo newCurve = new CubicCurveTo(xRet, yRet, xRet, yRet, xRet, yRet);

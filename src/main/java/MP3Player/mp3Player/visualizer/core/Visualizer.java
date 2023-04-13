@@ -64,7 +64,7 @@ public abstract class Visualizer extends Tabable {
     }
     protected Axis getYAxis(){
         if(YAxis==null){
-            YAxis= new Axis(-100,0,0,24,((in, translate, scale) -> -1*(in.doubleValue()*scale)));
+            YAxis= new Axis(-100,0,0,24,((in, translate, scale) -> -1*(in.getyValue().doubleValue()*scale)));
         }
         return YAxis;
     }
@@ -81,8 +81,8 @@ public abstract class Visualizer extends Tabable {
     public void changedData(Series.Data changed){
         //System.out.println("changed!");
         //System.out.println(getRoot().getWidth());
-        Number newX = XAxis.getDrawPoint(changed.getxValue(), 700);
-        Number newY = YAxis.getDrawPoint(changed.getyValue(), 400);
+        Number newX = XAxis.getDrawPoint(changed, 700);
+        Number newY = YAxis.getDrawPoint(changed, 400);
         //System.out.println("x: " +changed.getxValue()+"->"+newX.doubleValue());
         //System.out.println("y: " +changed.getyValue()+"->"+newY.doubleValue());
         //System.out.println("setting: ("+newX+", "+newY+")");

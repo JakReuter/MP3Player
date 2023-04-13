@@ -35,10 +35,10 @@ public class Axis {
      *  -2,0  -2,1  -2,2    2,0  2,1  2,2
      */
     public interface AxisFunction {
-        double valueToCoord(Number in, double translate, double scale);
+        double valueToCoord(Series.Data in, double translate, double scale);
     }
 
-    protected AxisFunction linearDefault = ((in, translate1, scale1) -> ((double)in+translate1)*scale1);
+    protected AxisFunction linearDefault = ((in, translate1, scale1) -> (in.getxValue().doubleValue()+translate1)*scale1);
 
 
     public Axis(double lowInput, double lowOutput, double highInput, double highOutput, AxisFunction function){
@@ -83,9 +83,9 @@ public class Axis {
         };
     }
 
-    public Number getDrawPoint(Number valueIn, Number windowBound){
+    public Number getDrawPoint(Series.Data valueIn, Number windowBound){
         //System.out.println("="+(windowBound.doubleValue()/highInput));
-        return function.valueToCoord(valueIn.doubleValue(), translate, windowBound.doubleValue()/(highInput+translate));/**
+        return function.valueToCoord(valueIn, translate, windowBound.doubleValue()/(highInput+translate));/**
         if(windowBound.doubleValue()==400){
             return valueIn.doubleValue()*-2;
         }
