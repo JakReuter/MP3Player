@@ -13,9 +13,7 @@ public class TestApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/TestView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 670, true);
-        PerspectiveCamera camera = new PerspectiveCamera();
-        scene.setCamera(camera);
+        Scene scene = new Scene(fxmlLoader.load(), 500, 400);
 //        Font.loadFont(getClass().getResourceAsStream("fonts/RobotoMono-Regular.ttf"), 16);
         //scene.getStylesheets().add(getClass().getResource("MP3.css").toExternalForm());
         stage.setTitle("Test");

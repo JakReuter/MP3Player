@@ -1,17 +1,24 @@
+package MP3Player.util.general;
+
+import com.example.demo2.ReadMP3Tag;
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference;
+import org.apache.tika.metadata.Metadata;
+
 import java.io.*;
 import java.util.*;
 import java.nio.*;
 
 public class ReadMP3End {
     public static void main(String[] args) {
-        try {
+		com.example.demo2.ReadMP3Tag tag = new ReadMP3Tag();
+		tag.getMetadata("C:\\Users\\Brendan Reuter\\Music\\audio.mp3");
+        /**try {
             // Open the MP3 file for reading
-            RandomAccessFile raf = new RandomAccessFile("Downloads/example.mp3", "r");
-            
+            RandomAccessFile raf = new RandomAccessFile("C:\\Users\\Brendan Reuter\\Music\\audio.mp3", "r");
+			System.out.println(raf.length());
             // Seek to the end of the file and move back 128 bytes
             long length = raf.length();
-            raf.seek(length - 128);
-            
+            raf.seek(0);
             // Read the last 128 bytes of the file
             byte[] buffer = new byte[128];
             raf.read(buffer);
@@ -25,7 +32,6 @@ public class ReadMP3End {
 	     * next 4 char = year 
 	     * next 30 char = comment
 	     * last char = genre (genre is based on number represented by last byte)
-	    */
 	    String footerType = new String(Arrays.copyOfRange(buffer,0,3));
 	    String title = new String(Arrays.copyOfRange(buffer,3,33));
 	    String artist = new String(Arrays.copyOfRange(buffer,33,63));
@@ -47,6 +53,6 @@ public class ReadMP3End {
             raf.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } **/
     }
 }

@@ -23,9 +23,10 @@ public class ReadMP3Tag{
 		try(FileInputStream fis = new FileInputStream(file)) {
 			//try {
 			fis.read(bytes);
+
 			String test = new String(Arrays.copyOfRange(bytes,0,3));
 			if (test.compareTo("ID3") == 0){
-				Scanner fileScanner = new Scanner( new File(args) );
+				Scanner fileScanner = new Scanner(String.valueOf(bytes));
 				String Line = fileScanner.nextLine();
 				album = Line.split("TIT2")[1].split("TPE2")[0];
 				artist = Line.split("TIT2")[1].split("TPE2")[1];

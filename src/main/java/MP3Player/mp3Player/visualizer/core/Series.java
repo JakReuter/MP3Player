@@ -119,6 +119,6 @@ public class Series {
                 //visualizer.changedData(dataArray[i]);
             }
         }
-        visualizer.drawRefresh();
+        //visualizer.drawRefresh();
     }
 }

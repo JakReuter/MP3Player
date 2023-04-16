@@ -16,7 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public final class Filepicker extends Application {
-    ReadMP3Tag readmusictag = new ReadMP3Tag();
+    com.example.demo2.ReadMP3Tag readmusictag = new com.example.demo2.ReadMP3Tag();
 
     @Override
     public void start(final Stage stage) {

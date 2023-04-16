@@ -50,7 +50,7 @@ public class CircleChart extends Visualizer {
 
 
     protected void getBindedDots(){
-        Circle centerCircle = new Circle(centerX,centerY,5);
+        Circle centerCircle = new Circle(centerX,centerY-100,25);
         dots.add(centerCircle);
         for(int i = 0; i<bands; i++){
             Circle circle = new Circle(1);

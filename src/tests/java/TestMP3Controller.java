@@ -6,42 +6,47 @@ import MP3Player.mp3Player.visualizer.RectangleVisualizer;
 import MP3Player.mp3Player.visualizer.XYChartVisualizer;
 import MP3Player.mp3Player.visualizer.core.Series;
 import MP3Player.util.general.TabHandler;
+import javafx.animation.Timeline;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.chart.AreaChart;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import visualizer.core.Visualizer3D;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class TestMP3Controller extends MP3Player {
 
-
+    @FXML private Slider xSlider;
+    @FXML private Slider ySlider;
+    @FXML private Slider zSlider;
+    @FXML private Slider fSlide;
     //Containers for EQ/Visualization setup
     @FXML
     private AnchorPane visDispPane;
-    @FXML
-    private AnchorPane eqDispPane;
-    @FXML
-    private AreaChart visualizerChart;
-    public AnchorPane added;
-    private RectangleVisualizer chart;
-    private XYChartVisualizer areaChart;
     ChartVisualizer chartVisualizer;
     private Series series;
     private final int BANDS = 256;
+
+    private Visualizer3D test3d;
 
     public boolean stamp;
 
     //brendan window
     @FXML
     protected void LoadWindow(){
-        stamp = false;
+        /**stamp = false;
         audioPlayer.setAudioSpectrumInterval(.1);
         audioPlayer.setAudioSpectrumThreshold(-100);
         audioPlayer.setAudioSpectrumNumBands(BANDS);
@@ -53,6 +58,7 @@ public class TestMP3Controller extends MP3Player {
         TabHandler VIStabHandler = new TabHandler();
         chartVisualizer = new ChartVisualizer(BANDS, timestamp.getScene().getWindow());
         EQtabHandler.addApp(newEQ, chart);
+         
         series = chartVisualizer.getSeries();
         VIStabHandler.addApp(chartVisualizer, areaChart);
         Window thisWindow = eqDispPane.getScene().getWindow();
@@ -78,9 +84,19 @@ public class TestMP3Controller extends MP3Player {
                    // }
                 }
 
-        });
+        }); **/
 
     }
+
+    @FXML
+    public void loadButton(){
+        if(test3d!=null) visDispPane.getChildren().remove(0);
+        test3d = new Visualizer3D(6, "3d");
+        test3d.populatePointArray(11, xSlider.getValue(),ySlider.getValue(),zSlider.getValue(), fSlide.getValue());
+        test3d.finalizeWindow();
+        visDispPane.getChildren().add(test3d.getRoot());
+    }
+
     @Override
     @FXML
     public void play_pause_audio_event() {
@@ -88,13 +104,12 @@ public class TestMP3Controller extends MP3Player {
         try {
             if (audioPlayer.getStatus().compareTo(MediaPlayer.Status.PLAYING)==0) {
                 audioPlayer.pause();
-                play_pause_btn_icon.setImage(new Image("image/play_button.png"));
-                System.out.println("trued");
-                stamp = true;
+
+//                Image playBtn = new Image(getClass().getResourceAsStream(PATH_DEFAULT + "\\src\\main\\resources\\image\\pause_button.png"));
             } else {
                 audioPlayer.play();
-                play_pause_btn_icon.setImage(new Image("image/pause_button.png"));
-                stamp = false;
+//                System.out.println(PATH_DEFAULT + "\\src\\main\\resources\\image\\play_button.png");
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,22 +117,9 @@ public class TestMP3Controller extends MP3Player {
 
     }
     @Override
-    protected void initializeWindow(){
-
+    public void initialize(URL url, ResourceBundle resourceBundle) {
     }
 
 
-    @FXML
-    protected void debugSongLoader(){
-        FileChooser fileChooser = new FileChooser();
-        //timestamp.setText("0:0");
-        File file = fileChooser.showOpenDialog(timestamp.getScene().getWindow());
-        System.out.println(file.toURI().toString());
-        audio = new Media(file.toURI().toString());
-        audioPlayer = new MediaPlayer(audio);
-        audioPlayer.currentTimeProperty().addListener(progressListener);
-        time_slider.valueProperty().addListener(slideListener); //update audioPlayer if time_slider is updated
-
-    }
 
 }

@@ -34,7 +34,7 @@ public abstract class Visualizer extends Tabable {
     public Visualizer(int bands, String name){
         super(name);
         this.bands=bands;
-        realData = new double[bands];
+        //realData = new double[bands];
         series = new Series(bands, this);
 
     }
@@ -50,10 +50,6 @@ public abstract class Visualizer extends Tabable {
     public void setEnabled(boolean enable){
         this.animationEnabled=true;
         timeline=new Timeline();
-    }
-
-    protected void logVisualizer(){
-
     }
 
     protected Axis getXAxis(){
@@ -90,9 +86,9 @@ public abstract class Visualizer extends Tabable {
         changed.setxPosition(newX);
     }
 
-    protected void setXDrawBound(Number max){
-        XAxis.setDrawBound((int)max);
-    }
+    //protected void setXDrawBound(Number max){
+     //   XAxis.setDrawBound((int)max);
+   // }
 
     protected boolean validate(int index){
         if(index>=0&&index<realData.length){
@@ -109,12 +105,4 @@ public abstract class Visualizer extends Tabable {
     abstract protected void adjustRange(int outLier);
 
 
-
-    public void drawUp(){
-
-    }
-
-    public void drawRefresh(){
-
-    }
 }
