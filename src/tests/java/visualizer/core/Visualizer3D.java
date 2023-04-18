@@ -13,12 +13,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Mesh;
 import javafx.scene.shape.Shape3D;
+import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.TreeMap;
 
 public class Visualizer3D extends Visualizer {
     private Point3d[][] points;
@@ -183,6 +185,102 @@ public class Visualizer3D extends Visualizer {
             return (focalLength/coords3d[2])*coords3d[1]+ORIGIN;
         }
 
+    }
+
+    /**
+     * Given points 0-n on the X axis, construct proportionate
+     * amount of points to extrude the given point into the z axis
+     * by means of rotation about the Y axis, i.e. rings.
+     *      //tree
+     *      addLevel(int level);                    -Forloop the addNode function with node(cos/sin(theta*i),cos/sin(theta*i), defualt_z),
+     *      ArrayList<Node> getLevel(int level);
+     *
+     *      //Node
+     *
+     * Bind all constructed points of a ring to the initial given point so
+     * that updates to the original data will be represented in the
+     * third dimension but modified in 2 dimensions.
+     *      //tree
+     *      bindLevel(int level); - sets data onChangeListener to new listener that calls and updates meshView.getPoints().set(*eachIndexOfDataArray*, newValue)
+     *
+     *      //Node
+     *      boolean isBinded;
+     *      function bind();        -someway to bind a node objects z
+     *
+     * Create faces between points for the meshview. For (x=0),
+     * create faces between the root and each of the outer points.
+     * For (x>=1), create faces between each inner point and the 3        //could ommit prev angles to preserve resources, i.e. pi/4 points on circle 1, just pi/8 points on circle 2 instead
+     * outer points nearest to it, which will give an amount of faces
+     * equal to twice the amount of inner points. Next, a face must be
+     * made between each inner node and the outer node they both share.
+     * The total amount of faces will then be 3*amount of inner points.
+     *      //Node
+     *      boolean hasMultipleParents();
+     *      Node[] parents;
+     *      arrayList<Node> children;
+     *
+     *
+     *
+     *
+     * Textures and faces should remain same as data changes. TexCoords
+     * will not use yValue and therefore will remain constant. Faces uses
+     * indices of texCoords and Points so faces will remain constant
+     *
+     *///TODO:draw out everything that we want to happen in order
+    public class RingTree {
+        private TriangleMesh triangleMesh;
+        private int entryIndex;
+        private int level;
+        private int countPerRing;
+        private ArrayList<ArrayList<TreeNode>> dataArray;
+
+        /**
+         * Amount of nodes per level =
+         * Lvl 0 = 1
+         * Lvl 1 = countPerRing
+         * lvl 2 = lvl1.nodes*2
+         * lvl 3 = lvl2.nodes*2
+         *
+         * Amount of faces per level =
+         * lvl 0 = countPerRing
+         * lvl 1 =
+         */
+        protected class TreeNode{
+            int index;
+            int level;
+
+            /**
+             * Node class should only be used to populate the faces
+             * and textures
+             * @param xValue
+             * @param level
+             */
+            protected TreeNode(double xValue, int level){
+
+            }
+
+
+        }
+
+        public RingTree(int countPerRing, int rings){
+            triangleMesh = new TriangleMesh();
+            entryIndex=0;
+            dataArray = new ArrayList<>();
+
+        }
+
+        /**
+         * Adds a new node to the tree
+         * @param level acts as x index outside of tree, i.g. for visualizer: bands 0 - 128;
+         */
+        public void add(int level){
+
+           // dataArray
+        }
+
+        public void bindChildren(){
+
+        }
     }
 
     public Visualizer3D(int bands, String name) {

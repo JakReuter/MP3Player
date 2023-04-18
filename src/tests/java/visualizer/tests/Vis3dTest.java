@@ -17,6 +17,7 @@ import sun.java2d.pipe.SpanShapeRenderer;
 import visualizer.core.Visualizer3D;
 
 import java.util.ArrayList;
+//TODO: add rings that are binded per index, having binding per ring
 
 public class Vis3dTest extends Application {
     Visualizer3D vizzy;
@@ -140,7 +141,6 @@ public class Vis3dTest extends Application {
                             i-1,i-1,i,i,j,j);
                 }
             }
-
         newMesh.getPoints().addAll(points);
         newMesh.getTexCoords().addAll(textures);
         newMesh.getFaces().addAll(faces);
