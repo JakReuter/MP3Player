@@ -1,4 +1,5 @@
-package com.example.demo2;
+package MP3Player;
+import MP3Player.database;
 import java.io.IOException;
 import org.sqlite.SQLiteConfig;
 
@@ -70,24 +71,13 @@ public class ReadMP3Tag{
 			e.printStackTrace();
 		}
 		//upload results to database
+	        
 		try {
-			Class.forName(DRIVER);
-			Connection connection = null;
-			SQLiteConfig config = new SQLiteConfig();
-			config.enforceForeignKeys(true);
-			connection = DriverManager.getConnection(DB_URL,config.toProperties());
-			String sql = "INSERT INTO Song VALUES(?,?,?,?,?,?,?)";
-			PreparedStatement stmt = connection.prepareStatement(sql);
-			stmt.setString(1, title);
-			stmt.setString(2,args);
-			stmt.setString(3, artist);
-			stmt.setString(4, album);
-			stmt.setString(5,year );
-			stmt.setString(6, "0");
-			stmt.setString(7, "0");
-			stmt.executeUpdate();
+			Database mp3db = new Database();
+	        	mp3db.connect();
+			mp3db.addNewSong(title, args, artist,album, 0)
+			
 		} catch (ClassNotFoundException | SQLException e) {
-			throw new RuntimeException(e);
 		}
 
 
