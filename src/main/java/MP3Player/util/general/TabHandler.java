@@ -1,6 +1,7 @@
 package MP3Player.util.general;
 
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Node;
@@ -32,6 +33,7 @@ public class TabHandler {
     private Stage mainStage;
     protected ObjectProperty<Tab> draggedTab;
 
+
     public TabHandler(){
         mainPane = new TabPane(new Tab("Default"));
         apps = new ArrayList<>();
@@ -40,6 +42,8 @@ public class TabHandler {
         mainPane = new TabPane(new Tab("Default"));
         apps = new ArrayList<>();
         this.draggedTab = draggedTab;
+        mainPane.setPrefSize(10,10);
+
     }
 
     public void addApp(Tabable... tApps){
@@ -59,10 +63,6 @@ public class TabHandler {
         if(tabable.isShowing()){
             tabable.close();
         }
-    }
-
-    public void tabToApp(Tab tab){
-
     }
 
     public void DisplayNewWindow(){
@@ -103,7 +103,6 @@ public class TabHandler {
         }
 
         mainPane.setMaxSize(1920,1080);
-        mainPane.setPrefSize(1920,1080);
 
         mainPane.setOnDragDropped(event -> {
            Dragboard dragged = event.getDragboard();
@@ -150,6 +149,7 @@ public class TabHandler {
             }
         });
 
+        mainPane.heightProperty().addListener((observable, oldValue, newValue) -> System.out.println("mainPane height changed to:"+newValue));
         return mainPane;
     }
 
@@ -157,13 +157,19 @@ public class TabHandler {
 
         ArrayList<Tab> temp = new ArrayList<>();
         for(int i=0; i< apps.size();i++){
+            apps.get(i).prefWidthProperty().bind(mainPane.widthProperty());
+            apps.get(i).getRoot().maxHeightProperty().bind(mainPane.heightProperty());
+            System.out.println("Width of anchorPane root of tab: "+mainPane.getWidth());
             Tab tab = apps.get(i).getTab(draggedTab);
             int finalI = i;
             tab.setOnClosed(event -> {apps.remove(finalI);});
             temp.add(tab);
+            System.out.println(apps.get(i).getRoot().getPrefWidth());
+            System.out.println(mainPane.getWidth());
 
         }
         mainPane.getTabs().setAll(temp);
+        mainPane.tabMaxWidthProperty().bind(mainPane.widthProperty());
         mainPane.getSelectionModel().select(mainPane.getTabs().size() - 1);
 
     }
@@ -191,6 +197,13 @@ public class TabHandler {
 
     public double getTabHeight(){
         return apps.get(mainPane.getSelectionModel().getSelectedIndex()).getHeight();
+    }
+
+    public DoubleProperty prefWidthProperty(){
+        return mainPane.prefWidthProperty();
+    }
+    public DoubleProperty prefHeightProperty(){
+        return mainPane.prefHeightProperty();
     }
 
 

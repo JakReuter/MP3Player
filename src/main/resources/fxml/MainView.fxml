@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player.controllers.MP3Player">
+<VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player.controllers.MP3Player" fx:id="rootVbox">
    <children>
       <MenuBar fx:id="menuBar">
         <menus>
@@ -41,20 +41,20 @@
           </Menu>
         </menus>
       </MenuBar>
-      <StackPane fx:id="root" prefHeight="1028.0" prefWidth="1440.0">
+      <StackPane fx:id="root">
          <children>
-            <AnchorPane fx:id="MasterView" prefHeight="1028.0" prefWidth="1440.0" style="-fx-background-color: #2B2B2B;">
+            <AnchorPane fx:id="MasterView" style="-fx-background-color: #2B2B2B;">
                <children>
-                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="1028.0" prefWidth="1440.0">
+                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" fx:id="splitHolderVbox">
                      <children>
-                        <SplitPane fx:id="mainSplit" dividerPositions="0.28, 0.57" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="1028.0" prefWidth="1440.0" style="-fx-background-color: #2B2B2B;" stylesheets="@../css/test.css">
+                        <SplitPane fx:id="mainSplit" dividerPositions="0.28, 0.57" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="1028.0" prefWidth="1507.0" style="-fx-background-color: #2B2B2B;" stylesheets="@../css/test.css">
                           <items>
-                            <AnchorPane fx:id="mainLeftSplit" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #F6CB27;" />
-                              <AnchorPane fx:id="mainRightSplit" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="389.0" style="-fx-background-color: #F6CB27;" />
-                            <AnchorPane fx:id="mainCenterSplit" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                            <AnchorPane fx:id="mainLeftSplit" minHeight="0.0" minWidth="0.0" style="-fx-background-color: #F6CB27;" />
+                              <AnchorPane fx:id="mainRightSplit" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" style="-fx-background-color: #F6CB27;" />
+                            <AnchorPane fx:id="mainCenterSplit" minHeight="0.0" minWidth="0.0" />
                           </items>
                         </SplitPane>
-                        <HBox alignment="BOTTOM_CENTER" maxHeight="128.0" maxWidth="1.7976931348623157E308" prefHeight="128.0" prefWidth="1440.0" style="-fx-background-color: #000000;">
+                        <HBox alignment="BOTTOM_CENTER" minHeight="128.0" maxWidth="1.7976931348623157E308" maxHeight="128.0" prefWidth="1440.0" style="-fx-background-color: #000000;">
                            <children>
                               <ImageView fx:id="audio_cover" fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

@@ -6,6 +6,7 @@ import MP3Player.mp3Player.visualizer.core.Visualizer;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.stage.Window;
 
@@ -54,10 +55,12 @@ public class ChartVisualizer extends Visualizer {
         canvas.setMaxHeight(1200);
         //System.out.println(getWindow().getWidth());
         getBindedCurve();
-        MoveTo moveTo = new MoveTo(0,yAxis.getWindowSize().get());
-        LineTo lineTo = new LineTo(0, 100);
-        mainPath.getElements().addAll(moveTo, lineTo);
+        MoveTo moveTo = new MoveTo(0,0);
+        moveTo.yProperty().bind(getRoot().maxHeightProperty());
+        moveTo.yProperty().addListener((observable, oldValue, newValue) -> System.out.println("moveTo y"+newValue));
+        mainPath.getElements().addAll(moveTo);
         mainPath.getElements().addAll(curves);
+        mainPath.setFill(Color.RED);
         canvas.getChildren().add(mainPath);
         borderPane = new BorderPane(canvas, null, null, null, null );
         this.childId = borderPane.toString();
@@ -85,6 +88,11 @@ public class ChartVisualizer extends Visualizer {
                 newCurve.controlY2Property().bind(series.getData(i+1).yPositionProperty());
                 newCurve.yProperty().bind(series.getData(i+1).yPositionProperty());
                 newCurve.xProperty().bind(series.getData(i+1).xPositionProperty());
+            } else {
+                newCurve.controlX1Property().bind(getRoot().prefWidthProperty());
+                newCurve.controlY2Property().bind(getRoot().maxHeightProperty());
+                newCurve.yProperty().bind(getRoot().maxHeightProperty());
+                newCurve.xProperty().bind(getRoot().prefWidthProperty());
             }
             curves.add(newCurve);
         }

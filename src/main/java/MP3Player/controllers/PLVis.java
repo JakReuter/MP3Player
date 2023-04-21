@@ -13,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 
 import java.awt.event.ActionListener;
 import java.net.URL;
@@ -33,6 +34,7 @@ public class PLVis {
     @FXML private TableColumn<Playlist, Integer> songCountColumn;
     @FXML private TableColumn<Playlist, String> durationColumn;
     @FXML private TableColumn<Playlist, String> descriptionColumn;
+    @FXML private VBox root;
 
     private ObservableList<Playlist> playlists;
 
@@ -50,6 +52,10 @@ public class PLVis {
     }
 
     public void initialize(){
+        nameColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));        //30% of table is names
+        songCountColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));   //20% of table is count
+        durationColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));    //20% of table is duration
+        descriptionColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));    //30% of table is descript
         this.playlists = FXCollections.observableArrayList();
         // Get all playlists from database
         ResultSet rs = Database.selectAllPlaylists();

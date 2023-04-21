@@ -1,6 +1,8 @@
 package MP3Player.util.general;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -30,6 +32,8 @@ public abstract class Tabable extends Stage{
     private String tabName;
     private AnchorPane root;
 
+    private ReadOnlyDoubleProperty parentWidthProperty;
+
     public Tabable(String name){
         root = new AnchorPane();
         tabName = name;
@@ -37,7 +41,15 @@ public abstract class Tabable extends Stage{
 
     public Tabable(String name, Node toTabable){
         childId = toTabable.toString();
-        root = new AnchorPane(toTabable);
+        root = new AnchorPane();
+        root.setPrefSize(10,10);
+        toTabable.prefWidth(root.getPrefWidth());
+        AnchorPane.setLeftAnchor(toTabable,0.0);
+        AnchorPane.setRightAnchor(toTabable,0.0);
+        AnchorPane.setTopAnchor(toTabable,0.0);
+        AnchorPane.setBottomAnchor(toTabable,0.0);
+        root.getChildren().add(toTabable);
+        System.out.println("this tabable root is:"+root.toString());
         tabName = name;
     }
 
@@ -61,6 +73,7 @@ public abstract class Tabable extends Stage{
         });
 
 
+        //root.prefWidthProperty().addListener((observable, oldValue, newValue) -> System.out.println("tabable root prefwidth changed to:"+newValue));
         return outTab;
     }
     public Stage getWindow()//pose a new stage and show it ?
@@ -78,4 +91,12 @@ public abstract class Tabable extends Stage{
         newButton.setOnAction(value);
         root.getChildren().add(newButton);
     }
+
+    public DoubleProperty prefWidthProperty(){
+        return root.prefWidthProperty();
+    }
+    public DoubleProperty prefHeightProperty(){
+        return root.prefHeightProperty();
+    }
+
 }

@@ -65,5 +65,7 @@
     <orderEntry type="library" name="junit-4.13.1-javadoc" level="project" />
     <orderEntry type="library" name="tika-app-2.7.0" level="project" />
     <orderEntry type="library" name="jid3lib-0.5.4" level="project" />
+    <orderEntry type="library" name="jogl-all" level="project" />
+    <orderEntry type="library" name="gluegen-rt" level="project" />
   </component>
 </module>

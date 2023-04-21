@@ -4,20 +4,25 @@ import MP3Player.mp3Player.visualizer.core.Series;
 import MP3Player.mp3Player.visualizer.core.Visualizer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Mesh;
-import javafx.scene.shape.Shape3D;
-import javafx.scene.shape.TriangleMesh;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
+import javafx.stage.FileChooser;
 
+import javax.swing.tree.TreeNode;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeMap;
@@ -28,8 +33,8 @@ public class Visualizer3D extends Visualizer {
     private SubScene subScene;
     private Group subSceneRoot;
     private Group objectGroup;
-    private double sceneWidth = 400;
-    private double sceneHeight = 400;
+    private double sceneWidth = 800;
+    private double sceneHeight = 800;
     //private double sceneMaxDimension = Math.sqrt((sceneWidth*sceneWidth+sceneHeight*sceneHeight)/2);
 
     private double mousePosX;
@@ -52,7 +57,7 @@ public class Visualizer3D extends Visualizer {
     private TransformableGroup cameraPlaneGroup;
     private final double CAMERA_NEAR_CLIP = 0.1;
     private final double CAMERA_FAR_CLIP = 10000;
-    private final double CAMERA_DISTANCE = -1100;
+    private final double CAMERA_DISTANCE = -100;
 
 
     protected Pane rootOfDisplay;
@@ -187,6 +192,8 @@ public class Visualizer3D extends Visualizer {
 
     }
 
+    private RingTree treeMesh;
+
     /**
      * Given points 0-n on the X axis, construct proportionate
      * amount of points to extrude the given point into the z axis
@@ -230,7 +237,7 @@ public class Visualizer3D extends Visualizer {
     public class RingTree {
         private TriangleMesh triangleMesh;
         private int entryIndex;
-        private int level;
+        private int max_level;
         private int countPerRing;
         private ArrayList<ArrayList<TreeNode>> dataArray;
 
@@ -248,6 +255,9 @@ public class Visualizer3D extends Visualizer {
         protected class TreeNode{
             int index;
             int level;
+            double xValue;
+            double yValue;
+            double zValue;
 
             /**
              * Node class should only be used to populate the faces
@@ -255,45 +265,198 @@ public class Visualizer3D extends Visualizer {
              * @param xValue
              * @param level
              */
-            protected TreeNode(double xValue, int level){
-
+            protected TreeNode(double xValue, double zValue, int level, int index){
+                this.xValue=Math.floor((xValue)*100)/100;
+                this.yValue=0;
+                this.zValue=Math.floor((zValue)*100)/100;
+                //System.out.print("   ("+this.xValue+","+this.zValue+") --> ");
+                //System.out.println("("+(this.xValue+sceneHeight*.5)+","+(float)(this.zValue+sceneWidth*.5)+")");
+                this.level=level;
+                this.index=index;
+                buildPoints((float)(this.xValue), 0f, (float)(this.zValue)); // every node creation adds the associated point to mesh
+                buildTextures((float)(this.xValue), (float)(this.zValue)); // every node creation adds the associated texture coordinate to mesh
             }
 
+            public int getIndex() {
+                return index;
+            }
 
+            public int getLevel() {
+                return level;
+            }
+
+            public void setXValue(double xValue) {
+                this.xValue = xValue;
+            }
+            public void setYValue(double yValue) {
+                this.yValue = yValue;
+            }
+            public void setZValue(double zValue) {
+                this.zValue = zValue;
+            }
+            public float getXFloat(){
+                return (float)xValue;
+            }
+            public float getYFloat(){
+                return (float)yValue;
+            }
+            public float getZFloat(){
+                return (float)zValue;
+            }
         }
 
         public RingTree(int countPerRing, int rings){
             triangleMesh = new TriangleMesh();
             entryIndex=0;
+            max_level = 0;
+            this.countPerRing=countPerRing;
             dataArray = new ArrayList<>();
 
+        }
+
+        public void addRoot(double xValue, ObjectProperty<Number> yProperty){
+            dataArray.add(0, new ArrayList<>());
+            dataArray.get(0).add(new TreeNode(xValue, yProperty.get().doubleValue(), 0,0));
+            entryIndex++;
+            Sphere testDot = new Sphere(5);
+            testDot.setTranslateX(0);
+            testDot.setTranslateY(0);
+            testDot.setTranslateZ(0);
+            objectGroup.getChildren().add(testDot);
         }
 
         /**
          * Adds a new node to the tree
          * @param level acts as x index outside of tree, i.g. for visualizer: bands 0 - 128;
          */
-        public void add(int level){
+        public void add(int level, double xValue, ObjectProperty<Number> yProperty){
+            TreeNode newNode = new TreeNode(xValue, yProperty.get().doubleValue(), level, entryIndex);
+            dataArray.add(level, new ArrayList<>());
+            dataArray.get(level).add(newNode);
+            entryIndex++;
 
-           // dataArray
+            populateLevel(level);
+            yProperty.addListener(getRingListener(level));
+            // bind children
         }
 
-        public void bindChildren(){
+        public void populateLevel(int level){
+            double theta_delta = (2*Math.PI)/(countPerRing*Math.pow(2,(level-1)));
+            double amplitude =  dataArray.get(level).get(0).xValue;
+            ArrayList<TreeNode> levelArray = dataArray.get(level);
+            for(int i=1; i<(countPerRing*Math.pow(2,(level-1))); i++){
+                levelArray.add(new TreeNode(amplitude*Math.cos(i*theta_delta), amplitude*Math.sin(i*theta_delta), level, entryIndex));
+                entryIndex++;
+            }
+        }
+
+        public ChangeListener<Number> getRingListener(int level){
+            ChangeListener<Number> newListener = (observable, oldValue, newValue) -> {
+                ArrayList<TreeNode> levelArray = dataArray.get(level);
+                for(TreeNode node : levelArray){
+                    node.setYValue(newValue.doubleValue());
+                    triangleMesh.getPoints().set(node.index*3+1, node.getYFloat());
+                }
+            };
+            return newListener;
+        }
+
+        /**
+         * potentially perform function on points here
+         * i.e. scaling output for scene size
+         * @param in 1 to n complete vector coords [x1,y1,z1,...,xn,yn,zn]
+         */
+        public void buildPoints(float... in){
+           /** for(int i = 0; i<in.length; i+=3){
+                Sphere testDot = new Sphere(5);
+                testDot.setTranslateX(in[0]);
+                testDot.setTranslateY(in[1]);
+                testDot.setTranslateZ(in[2]);
+                objectGroup.getChildren().add(testDot);
+            }**/
+            triangleMesh.getPoints().addAll(in);
+        }
+        public void buildTextures(float... in){
+            float[] newTexCoords = new float[in.length];                    //         0
+            for(int i = 0; i<newTexCoords.length;i++){                      //1     2     3     4
+                newTexCoords[i]=(float)((in[i])/sceneHeight);//5  6  7  8  9 10 11 12
+            }
+            triangleMesh.getTexCoords().addAll(newTexCoords);
+        }
+        public void buildFaces(){
+            max_level=dataArray.size();
+
+            ArrayList<TreeNode> currentLevel = dataArray.get(1);
+            ArrayList<TreeNode> parentLevel = dataArray.get(0);
+
+            int parentId = parentLevel.get(0).getIndex();
+            int childId = currentLevel.get(0).getIndex();
+
+            for(int i = 0; i<currentLevel.size()-1; i++){
+                triangleMesh.getFaces().addAll(parentId,parentId,childId,childId,childId+1,childId+1);
+                childId = currentLevel.get(i+1).getIndex();
+            }
+            triangleMesh.getFaces().addAll(parentId,parentId,childId,childId,1,1); //add face between last element of array and first.
+
+            /**
+             * Expected Faces with 4 ring size
+             * (1,5) [12,5,1],    [4,12,1],   [5,6,1]
+             * (2,7) [6,7,2],     [1,6,2],    [7,8,2]
+             * (3,9) [8,9,3],     [2,8,3],    [9,10,3]
+             * (4,11)[10,11,4]    [3,10,4]    [11,12,4]
+             */
+            for(int i = 2; i<max_level; i++) {
+                parentLevel = currentLevel;
+                currentLevel = dataArray.get(i);
+                for(int j = 0; j<parentLevel.size(); j++){
+                    parentId = parentLevel.get(j).getIndex(); //1 2 3 4
+                                                                //5 7 9 11
+                    childId = currentLevel.get(j*2).getIndex(); //0, 2, 4, 6... center child of parent
+                    if(j==0){
+                        triangleMesh.getFaces().addAll(childId+currentLevel.size()-1,childId+currentLevel.size()-1,childId,childId,parentId,parentId); //Left child, center child, parent
+                        triangleMesh.getFaces().addAll(parentId+parentLevel.size()-1,parentId+parentLevel.size()-1,childId+currentLevel.size()-1,childId+currentLevel.size()-1,parentId,parentId); //Left Parent, shared center child, Right Parent
+
+                    } else {
+                        triangleMesh.getFaces().addAll(childId-1,childId-1,childId,childId,parentId,parentId);//Left child, center child, parent
+                        triangleMesh.getFaces().addAll(parentId-1,parentId-1,childId-1,childId-1,parentId,parentId);//Left Parent, shared center child, Right Parent
+
+                    }
+                    triangleMesh.getFaces().addAll(childId,childId,childId+1,childId+1,parentId,parentId); //Center child, right child, parent  // all points should be calculable like this here.
+                }
+            }
 
         }
+        public TriangleMesh getTriangleMesh(){
+            if(triangleMesh.getFaces().size()<entryIndex)buildFaces();
+            return triangleMesh;
+        }
+    }
+
+    public RingTree createRingTree(int countPerRing, int rings){
+        return (treeMesh=new RingTree(countPerRing, rings));
+    }
+
+    public RingTree getRingTree(){
+        return treeMesh;
+    }
+
+    public void displayRingTree(){
+        MeshView meshView = new MeshView(treeMesh.getTriangleMesh());
+        meshView.setMaterial(new PhongMaterial(Color.FIREBRICK));
+        objectGroup.getChildren().add(meshView);
     }
 
     public Visualizer3D(int bands, String name) {
         super(bands,name);
         rootOfDisplay = new Pane();
         objectGroup = new Group();
+
     }
 
     @Override
     protected void adjustRange(int outLier) {
 
     }
-
 
     public Scene buildScene() {
         Scene mainScene = new Scene(rootOfDisplay, sceneWidth, sceneHeight);
@@ -303,7 +466,7 @@ public class Visualizer3D extends Visualizer {
 
     public void buildSubScene() {
         subSceneRoot = new Group();
-        subScene = new SubScene(subSceneRoot, sceneWidth, sceneHeight, true, SceneAntialiasing.BALANCED);
+        subScene = new SubScene(subSceneRoot, sceneWidth, sceneHeight, true, SceneAntialiasing.DISABLED);
         subSceneRoot.getChildren().addAll(objectGroup);
         buildCamera();
         rootOfDisplay.getChildren().addAll(subScene);
@@ -325,7 +488,7 @@ public class Visualizer3D extends Visualizer {
         camera.setFarClip(CAMERA_FAR_CLIP);
         camera.setTranslateZ(CAMERA_DISTANCE);
         cameraPlaneGroup.ry.setAngle(0);
-        cameraPlaneGroup.rx.setAngle(0);
+        cameraPlaneGroup.rx.setAngle(45);
     }
     /**
      * Sets up mouse handlers for various mouse triggered events.
@@ -393,6 +556,9 @@ public class Visualizer3D extends Visualizer {
         objectGroup.getChildren().addAll(list);
     }
 
+    public void addNode(Node newNode){
+        objectGroup.getChildren().add(newNode);
+    }
 
 
     //test

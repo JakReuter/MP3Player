@@ -17,6 +17,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -62,6 +63,10 @@ public class MP3Player implements Initializable {
     FXMLLoader playListSongsLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/playlistSongs.fxml"));
     FXMLLoader playListsLoader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/playlists.fxml"));
 
+    @FXML VBox rootVbox;
+    @FXML AnchorPane MasterView;
+    @FXML VBox splitHolderVbox;
+
     //Thomas's test thing, please ignore
     //private final String PATH_MAMA = PATH_DEFAULT+"/out/production/AnotherMp3Test/TestFiles/NotLegit.mp3";
 
@@ -106,7 +111,7 @@ public class MP3Player implements Initializable {
     protected ArrayList<Series> seriesArray;
     protected final double SPEC_INTERVAL = .04;
     protected final int SPEC_THRESH = -100;
-    protected final int SPEC_BANDS = 128;
+    protected final int SPEC_BANDS = 256;
 
     //used to pass audioPlayer to main application which uses it for unit tests
     public MediaPlayer getAudioPlayer()
@@ -127,7 +132,7 @@ public class MP3Player implements Initializable {
         }
     };
 
-    int queueNumber = 1;
+    int queueNumber = 0;
 
 
     /**
@@ -329,7 +334,10 @@ public class MP3Player implements Initializable {
             e.printStackTrace();
         }
 
-
+        root.prefWidthProperty().bind(rootVbox.widthProperty());
+        MasterView.prefWidthProperty().bind(root.widthProperty());
+        splitHolderVbox.prefWidthProperty().bind(rootVbox.widthProperty());
+        splitHolderVbox.prefHeightProperty().bind(rootVbox.heightProperty());
 
 
         leftTabPane = new TabHandler(tabToDrag);
@@ -349,11 +357,22 @@ public class MP3Player implements Initializable {
         centerTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(centerTabPane)));
         rightTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(rightTabPane)));
 
+
         //TODO: Bind width of anchor pane with corresponding tabPane
 
         mainLeftSplit.getChildren().add(leftTabPane.getPane());
         mainCenterSplit.getChildren().add(centerTabPane.getPane());
         mainRightSplit.getChildren().add(rightTabPane.getPane());
+
+        leftTabPane.prefWidthProperty().bind(mainLeftSplit.widthProperty());
+        leftTabPane.prefHeightProperty().bind(mainLeftSplit.heightProperty());
+        centerTabPane.prefWidthProperty().bind(mainCenterSplit.widthProperty());
+        centerTabPane.prefHeightProperty().bind(mainCenterSplit.heightProperty());
+        rightTabPane.prefWidthProperty().bind(mainRightSplit.widthProperty());
+        rightTabPane.prefHeightProperty().bind(mainRightSplit.heightProperty());
+
+        //mainCenterSplit.widthProperty().addListener((observable, oldValue, newValue) -> System.out.println("mainRightSplit width changed to:"+newValue));
+
 
 
     }

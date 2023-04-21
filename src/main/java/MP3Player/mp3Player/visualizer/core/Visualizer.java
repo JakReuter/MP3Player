@@ -54,7 +54,7 @@ public abstract class Visualizer extends Tabable {
 
     protected Axis getXAxis(){
         if(XAxis==null){
-            XAxis= new Axis(0,1,bands,22050,null);
+            XAxis= new Axis(0,1,bands-1,22050,null);
         }
         return XAxis;
     }
@@ -75,13 +75,8 @@ public abstract class Visualizer extends Tabable {
     //Animate here
     //change to pass data into xvalue
     public void changedData(Series.Data changed){
-        //System.out.println("changed!");
-        //System.out.println(getRoot().getWidth());
-        Number newX = XAxis.getDrawPoint(changed, 700);
-        Number newY = YAxis.getDrawPoint(changed, 400);
-        //System.out.println("x: " +changed.getxValue()+"->"+newX.doubleValue());
-        //System.out.println("y: " +changed.getyValue()+"->"+newY.doubleValue());
-        //System.out.println("setting: ("+newX+", "+newY+")");
+        Number newX = XAxis.getDrawPoint(changed, getRoot().getPrefWidth());
+        Number newY = YAxis.getDrawPoint(changed, getRoot().getMaxHeight());
         changed.setyPosition(newY);
         changed.setxPosition(newX);
     }
