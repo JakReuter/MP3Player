@@ -1,6 +1,7 @@
 package UnitTests;
 
 import MP3Player.application.MP3Application;
+import MP3Player.util.general.FileErrorHandler;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.media.Media;
@@ -16,7 +17,7 @@ import java.nio.file.Path;
 public class FileTypeTests
 {
     MP3Application mp3Application = new MP3Application();
-    private String PATH_DEFAULT = new File(System.getProperty("user.dir")).toURI().toString();
+    private String PATH_DEFAULT = new File(System.getProperty("user.dir")).toString(); //.toURI().toString();
 
     @Before
     //ok so I don't really understand this part, but it's what's needed to get the application open for unit testing
@@ -60,6 +61,9 @@ public class FileTypeTests
 
         //set media
         String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/Legit.mp3";
+
+        FileErrorHandler.fileCheck(path);
+
         mp3Application.setMediaPlayer(path);
 
         String actual = mp3Application.getMediaPlayer().getStatus().toString();
