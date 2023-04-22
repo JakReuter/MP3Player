@@ -17,7 +17,8 @@ import java.nio.file.Path;
 public class FileTypeTests
 {
     MP3Application mp3Application = new MP3Application();
-    private String PATH_DEFAULT = new File(System.getProperty("user.dir")).toString(); //.toURI().toString();
+    private String PATH_DEFAULT = new File(System.getProperty("user.dir")).toURI().toString();
+    private String PATH_DEFAULT_NOT_URI = new File(System.getProperty("user.dir")).toString();
 
     @Before
     //ok so I don't really understand this part, but it's what's needed to get the application open for unit testing
@@ -60,11 +61,14 @@ public class FileTypeTests
         String expected = "READY";
 
         //set media
-        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/Legit.mp3";
+        String path = "/out/production/AnotherMp3Test/TestFiles/Legit.mp3";
 
-        FileErrorHandler.fileCheck(path);
+        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        {
+            Assert.fail("File path or type not accepted");
+        }
 
-        mp3Application.setMediaPlayer(path);
+        mp3Application.setMediaPlayer(PATH_DEFAULT + path);
 
         String actual = mp3Application.getMediaPlayer().getStatus().toString();
 
@@ -78,8 +82,14 @@ public class FileTypeTests
         String expected = "READY";
 
         //set media
-        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/NotLegit.mp3";
-        mp3Application.setMediaPlayer(path);
+        String path = "/out/production/AnotherMp3Test/TestFiles/NotLegit.mp3";
+
+        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        {
+            Assert.fail("File path or type not accepted");
+        }
+
+        mp3Application.setMediaPlayer(PATH_DEFAULT + path);
 
         String actual = mp3Application.getMediaPlayer().getStatus().toString();
 
@@ -92,8 +102,14 @@ public class FileTypeTests
         String expected = "READY";
 
         //set media
-        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/video.mp4";
-        mp3Application.setMediaPlayer(path);
+        String path = "/out/production/AnotherMp3Test/TestFiles/video.mp4";
+
+        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        {
+            Assert.fail("File path or type not accepted");
+        }
+
+        mp3Application.setMediaPlayer(PATH_DEFAULT + path);
 
         String actual = mp3Application.getMediaPlayer().getStatus().toString();
 
@@ -104,43 +120,40 @@ public class FileTypeTests
     @Test
     public void exe()
     {
-        String expected = "UNKOWN";
+        //this FileErrorHandler.fileCheck() method needs to be called when file paths are accepted, this is just checking if it works
 
-        //set media
-        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/executable.exe";
-        mp3Application.setMediaPlayer(path);
+        String path = "/out/production/AnotherMp3Test/TestFiles/executable.exe";
 
-        String actual = mp3Application.getMediaPlayer().getStatus().toString();
-
-        Assert.assertEquals(expected, actual);
+        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
+        {
+            Assert.fail("File path or type should not be accepted");
+        }
     }
 
     @Test
     public void jpeg()
     {
-        String expected = "UNKOWN";
+        //this FileErrorHandler.fileCheck() method needs to be called when file paths are accepted, this is just checking if it works
 
-        //set media
-        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/image.jpeg";
-        mp3Application.setMediaPlayer(path);
+        String path = "/out/production/AnotherMp3Test/TestFiles/image.jpeg";
 
-        String actual = mp3Application.getMediaPlayer().getStatus().toString();
-
-        Assert.assertEquals(expected, actual);
+        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
+        {
+            Assert.fail("File path or type should not be accepted");
+        }
     }
 
     @Test
     public void invalidPath()
     {
-        String expected = "UNKOWN";
+        //this FileErrorHandler.fileCheck() method needs to be called when file paths are accepted, this is just checking if it works
 
-        //set media
-        String path = PATH_DEFAULT + "lolNope";
-        mp3Application.setMediaPlayer(path);
+        String path = "lolNope";
 
-        String actual = mp3Application.getMediaPlayer().getStatus().toString();
-
-        Assert.assertEquals(expected, actual);
+        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
+        {
+            Assert.fail("File path or type should not be accepted");
+        }
     }
 
     @Test
@@ -149,8 +162,14 @@ public class FileTypeTests
         String expected = "READY";
 
         //set media
-        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/legit2.m4a";
-        mp3Application.setMediaPlayer(path);
+        String path = "/out/production/AnotherMp3Test/TestFiles/legit2.m4a";
+
+        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        {
+            Assert.fail("File path or type not accepted");
+        }
+
+        mp3Application.setMediaPlayer(PATH_DEFAULT + path);
 
         String actual = mp3Application.getMediaPlayer().getStatus().toString();
 
@@ -163,8 +182,14 @@ public class FileTypeTests
         String expected = "READY";
 
         //set media
-        String path = PATH_DEFAULT + "/out/production/AnotherMp3Test/TestFiles/audioBook.mp3";
-        mp3Application.setMediaPlayer(path);
+        String path = "/out/production/AnotherMp3Test/TestFiles/audioBook.mp3";
+
+        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        {
+            Assert.fail("File path or type not accepted");
+        }
+
+        mp3Application.setMediaPlayer(PATH_DEFAULT + path);
 
         String actual = mp3Application.getMediaPlayer().getStatus().toString();
 
