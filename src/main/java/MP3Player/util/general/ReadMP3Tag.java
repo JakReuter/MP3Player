@@ -2,6 +2,7 @@ package MP3Player.util.general;
 import java.io.IOException;
 import MP3Player.database.Database;
 import org.sqlite.SQLiteConfig;
+import java.util.regex.Pattern;
 import java.sql.*;
 import java.io.*;
 import java.util.*;
@@ -29,8 +30,10 @@ public class ReadMP3Tag{
 				String Line = fileScanner.nextLine();
 				album = Line.split("TIT2")[1].split("TPE2")[0];
 				artist = Line.split("TIT2")[1].split("TPE2")[1];
-				//System.out.println(artist);
-				//System.out.println(album);
+				String cleaned_album = album.replaceAll("[^\\x20-\\x7E]+", "");
+				String cleaned_artist = artist.replaceAll("[^\\x20-\\x7E]+", "");
+				album = cleaned_album;
+				artist = cleaned_artist;
 			}else{
 				RandomAccessFile raf = new RandomAccessFile(args, "r");
 				long length = raf.length();
