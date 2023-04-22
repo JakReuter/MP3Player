@@ -9,8 +9,6 @@ import java.util.*;
 import java.nio.*;
 
 public class ReadMP3Tag{
-	String DB_URL = "jdbc:sqlite:c:/Users/steve/Documents/webtests/monday_Test/mp3db.db";
-	String DRIVER = "org.sqlite.JDBC";
 	String footerType ;
 	String title = "";
 	String artist = "" ;
