@@ -65,5 +65,23 @@
     <orderEntry type="library" name="junit-4.13.1-javadoc" level="project" />
     <orderEntry type="library" name="tika-app-2.7.0" level="project" />
     <orderEntry type="library" name="jid3lib-0.5.4" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/dep/jid3lib-0.5.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/dep/tika-app-2.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

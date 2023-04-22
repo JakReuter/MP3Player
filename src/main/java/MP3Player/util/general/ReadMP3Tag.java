@@ -1,8 +1,7 @@
-package MP3Player;
-import MP3Player.database;
+package MP3Player.util.general;
 import java.io.IOException;
+import MP3Player.database.Database;
 import org.sqlite.SQLiteConfig;
-
 import java.sql.*;
 import java.io.*;
 import java.util.*;
@@ -71,14 +70,10 @@ public class ReadMP3Tag{
 			e.printStackTrace();
 		}
 		//upload results to database
-	        
-		try {
+
 			Database mp3db = new Database();
 	        	mp3db.connect();
-			mp3db.addNewSong(title, args, artist,album, 0)
-			
-		} catch (ClassNotFoundException | SQLException e) {
-		}
+			mp3db.addNewSong(title, args, artist,album, 0);
 
 
 	}
