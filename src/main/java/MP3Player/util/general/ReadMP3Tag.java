@@ -1,3 +1,4 @@
+/*
 package MP3Player;
 import MP3Player.database;
 import java.io.IOException;
@@ -44,7 +45,8 @@ public class ReadMP3Tag{
 				String tag = new String(buffer);
 				if(tag.compareTo("ID3") ==0 ){
 
-					/* structure of footer
+					*/
+/* structure of footer
 					 * first 3 char = Tag
 					 * next 30 char = title
 					 * next 30 char = artist
@@ -52,7 +54,8 @@ public class ReadMP3Tag{
 					 * next 4 char = year
 					 * next 30 char = comment
 					 * last char = genre (genre is based on number represented by last byte)
-					 */
+					 *//*
+
 					String footerType = new String(Arrays.copyOfRange(buffer,0,3));
 					String title = new String(Arrays.copyOfRange(buffer,3,33));
 					artist = new String(Arrays.copyOfRange(buffer,33,63));
@@ -75,7 +78,7 @@ public class ReadMP3Tag{
 		try {
 			Database mp3db = new Database();
 	        	mp3db.connect();
-			mp3db.addNewSong(title, args, artist,album, 0)
+			mp3db.addNewSong(title, args, artist,album, 0);
 			
 		} catch (ClassNotFoundException | SQLException e) {
 		}
@@ -104,3 +107,4 @@ public class ReadMP3Tag{
 	}
 
 }
+*/

@@ -38,6 +38,17 @@ public class MSongs {
     @FXML private TableColumn<Song, String> durationColumn;
     private ObservableList<Song> songs;
 
+    public ObservableList<Song> getQueue() {
+        return queue;
+    }
+
+    public void setQueue(ObservableList<Song> queue) {
+        this.queue = queue;
+    }
+
+    private ObservableList<Song> queue;
+
+
     //add event  variable here
     ActionListener refreshListener;
 
@@ -56,6 +67,7 @@ public class MSongs {
             while (rs.next()) {
                 this.songs.add(new Song(
                         (String) rs.getObject("name"),
+                        (String) rs.getObject("path"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
                         rs.getObject("duration").toString()
@@ -128,6 +140,11 @@ public class MSongs {
         refreshSendEvent();
     }
 
+    @FXML
+    public void addToQueue(){
+        queue.add(songs.get(tableView.getSelectionModel().getSelectedIndex()));
+    }
+
     /**
      * Called to refresh the information in the UI
      * When database is updated
@@ -142,6 +159,7 @@ public class MSongs {
             while (rs.next()) {
                 this.songs.add(i,new Song(
                         (String) rs.getObject("name"),
+                        (String) rs.getObject("path"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
                         rs.getObject("duration").toString()

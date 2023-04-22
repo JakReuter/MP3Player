@@ -16,7 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public final class Filepicker extends Application {
-    ReadMP3Tag readmusictag = new ReadMP3Tag();
+//    ReadMP3Tag readmusictag = new ReadMP3Tag();
 
     @Override
     public void start(final Stage stage) {
@@ -33,7 +33,7 @@ public final class Filepicker extends Application {
                     public void handle(final ActionEvent e) {
                         File file = fileChooser.showOpenDialog(stage);
                         if (file != null) {
-                            readmusictag.getMetadata(file.getPath());
+//                            readmusictag.getMetadata(file.getPath());
                             System.out.println(file.getPath());
                         }
                     }
@@ -47,7 +47,7 @@ public final class Filepicker extends Application {
                                 fileChooser.showOpenMultipleDialog(stage);
                         if (list != null) {
                             for (File file : list) {
-                                readmusictag.getMetadata(file.getPath());
+//                                readmusictag.getMetadata(file.getPath());
                                 System.out.println(file.getPath());
                             }
                         }

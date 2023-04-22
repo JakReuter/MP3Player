@@ -666,7 +666,10 @@ public class Database {
      */
     public static void main(String[] args) {
         connect();
-        //addNewSong("testsong", "testpath", "testauthor", "testalbum", 15);
+        String testPath = "C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\MeAndYourMama.mp3";
+        addNewSong("testsong3", testPath, "testauthor", "testalbum", 618);
+        addSongToPlaylist("testplaylist", "testsong3");
+//        removeSongFromPlaylist("testplaylist", "testsong");
         //removePlaylist("testplaylist");
         //createNewPlaylist("testplaylist", "test description");
         //addSongToPlaylist("testplaylist", "testapple");

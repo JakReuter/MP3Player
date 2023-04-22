@@ -1,6 +1,7 @@
 package MP3Player.controllers;
 
 import MP3Player.mp3Player.equalizer.Equalizer;
+import MP3Player.mp3Player.song.Song;
 import MP3Player.mp3Player.visualizer.ChartVisualizer;
 import MP3Player.mp3Player.visualizer.CircleChart;
 import MP3Player.mp3Player.visualizer.ConeChart;
@@ -39,7 +40,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.floor;
 
@@ -96,6 +100,8 @@ public class MP3Player implements Initializable {
     //Holds the content of a tab when draggin between tabPanes
     ObjectProperty<Tab> tabToDrag;
 
+    @FXML TableView tableView;
+
     protected Media audio;
     protected MediaPlayer audioPlayer;
     protected TimeControl timeControl;
@@ -120,14 +126,13 @@ public class MP3Player implements Initializable {
     }
 
     //TODO: make default queue a playlist or have playlist hold arraylist?
-    ArrayList<File> queue = new ArrayList<File>(){
-        {
-            add(new File(PATH_MAMA));
-            add(new File(PATH_MVMT));
-        }
-    };
+    public ArrayList<Song> playlistQueue;
+    public Queue<Song> audioQueue = new LinkedList<>();
+    PLSongs plSongs;
 
-    int queueNumber = 1;
+
+
+    int playlistNum = 0;
 
 
     /**
@@ -137,18 +142,24 @@ public class MP3Player implements Initializable {
     protected AudioSpectrumListener VisualizeListener;
     protected ChangeListener<Number> slideListener;
 
+
     @FXML
     protected void prev_audio_event() {
-        //TODO: slider dragger dissapears (bug)
-        System.out.println("prev_audio_event");
         try{
             //go to beginning of song if more than 5 seconds in
-            if(audioPlayer.getCurrentTime().toSeconds() > 5 || 0 == queueNumber){
+            if(audioPlayer.getCurrentTime().toSeconds() > 5 || 0 == playlistNum){
                 audioPlayer.seek(Duration.millis(0));
-            }else if (audioPlayer.getCurrentTime().toSeconds() <= 5 && queueNumber > 0){
-                queueNumber--;
+            }else if(playlistWithSongsUI.getSongs().size() == 0){
+                //todo: make into error or something
+                System.out.println("No previous song");
+            } else if (audioPlayer.getCurrentTime().toSeconds() <= 5 && playlistNum > 0){
+                playlistNum--;
                 audioPlayer.stop();
+                if(playlistNum == 0)
+                    playlistNum = playlistWithSongsUI.getSongs().size() - 1;
+                else playlistNum -= 1;
                 initializeAudioPlayer();
+                endOfMedia();
 
 
                 //keep playing status
@@ -162,26 +173,18 @@ public class MP3Player implements Initializable {
 
     @FXML
     protected void next_audio_event() {
-        //TODO: slider dragger dissapears (bug)
-
-        //Go to next song
-        if(queueNumber < queue.size() - 1){
-            queueNumber++;
-            //go to first song if at the end of the queue
-        }else{
-            queueNumber = 0;
+        if(playlistWithSongsUI.getSongs().size() != 0){
+            audioPlayer.stop();
+            initializeAudioPlayer();
+            endOfMedia();
+            //keep playing status
+            if(audioPlaying)
+                audioPlayer.play();
+        }else {
+            //todo: make into error or something
+            System.out.println("No next song");
         }
 
-        audioPlayer.stop();
-        initializeAudioPlayer();
-//        audio = new Media(queue.get(queueNumber).toURI().toString());
-//        audioPlayer = new MediaPlayer(audio);
-//        initializeListeners();
-
-        //keep playing status
-        if(audioPlaying)
-            audioPlayer.play();
-        System.out.println("next_audio_event");
     }
 
     @FXML
@@ -191,14 +194,11 @@ public class MP3Player implements Initializable {
             if (audioPlayer.getStatus().compareTo(MediaPlayer.Status.PLAYING)==0) {
                 audioPlayer.pause();
 
-                System.out.println(PATH_DEFAULT + "/src/main/resources/image/pause_button.png");
-//                Image playBtn = new Image(getClass().getResourceAsStream(PATH_DEFAULT + "\\src\\main\\resources\\image\\pause_button.png"));
                 play_pause_btn_icon.setImage(playBtn);
                 audioPlaying = false;
             } else {
-                audioPlayer.play();
-//                System.out.println(PATH_DEFAULT + "\\src\\main\\resources\\image\\play_button.png");
 
+                audioPlayer.play();
                 play_pause_btn_icon.setImage(pauseBtn);
                 System.out.println(play_pause_btn_icon.getImage().toString());
                 audioPlaying = true;
@@ -210,10 +210,31 @@ public class MP3Player implements Initializable {
     }
 
 
+    protected File getNewFile(){
+        if(audioQueue.size() > 0){
+            return new File(audioQueue.remove().getPath());
+        }else{
+
+            try{
+                if(playlistNum > playlistWithSongsUI.getSongs().size() - 1)
+                    playlistNum = 0;
+                System.out.println(playlistWithSongsUI.getSongs().get(playlistNum).getPath());
+                System.out.printf("%d | %d\n",playlistNum, playlistWithSongsUI.getSongs().size() - 1);
+                return new File(playlistWithSongsUI.getSongs().get(playlistNum++).getPath());
+            } catch (NullPointerException e){
+                System.out.println("No Playlist Selected");
+                return null;
+            }
+
+        }
+    }
+
+    protected void endOfMedia(){
+
+    }
     protected void initializeAudioPlayer() {
         try {
-
-            File file = queue.get(queueNumber);
+            File file = getNewFile();
             MP3File mp3File = new MP3File(file);
             mp3File.seekMP3Frame();
             System.out.println(file.getName() + ": "+mp3File.getFrequency()+" kHz");
@@ -233,7 +254,9 @@ public class MP3Player implements Initializable {
             audioPlayer.setAudioSpectrumNumBands(SPEC_BANDS);
 
             audioPlayer.setOnEndOfMedia(() -> {
-                //TODO: queue next song
+                System.out.println("END OF SONGNGNGNGNGNGNGNNNNNNN");
+                initializeAudioPlayer();
+                audioPlayer.play();
             });
 
             audioPlayer.setAudioSpectrumListener((double timestamp, double duration, float[] magnitudes, float[] phases) ->{
@@ -246,14 +269,20 @@ public class MP3Player implements Initializable {
                 }
             });
         } catch (Exception e) {
-            System.out.println("Exception in initalizeAudioPlayer");
+            System.out.println("Exception in initializeAudioPlayer");
             e.printStackTrace();
         }
     }
 
+    //may be useless
+    protected void initializeQueue(){
+        System.out.println("Playlist SET.");
 
+        playlistQueue = (ArrayList<Song>) playlistWithSongsUI.getSongs();
+
+    }
     /**
-     * helper function to determin if the player can recieve ui commands
+     * helper function to determine if the player can receive ui commands
      * @return
      */
     protected boolean isPlayerActive(){
@@ -262,6 +291,14 @@ public class MP3Player implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        audioQueue.add(new Song(
+                "Iko Iko",
+                "C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\Iko_Iko_From__Alvin_And_The_Chipmunks__The_Road_Chip__Soundtrack.mp3",
+                "Alvin and the Chipmunks",
+                "Iko Iko Album",
+                "1"
+
+        ));
         prev_btn = new Button();
         next_btn = new Button();
 //        play_pause_btn = new Button();
@@ -272,7 +309,10 @@ public class MP3Player implements Initializable {
         initializeWindow();
         initializeListeners();
         initializeAudioPlayer();
+        endOfMedia();
     }
+
+
 
     protected void initializeListeners(){
         slideListener = (observableValue, oldDuration, newDuration) -> {
@@ -292,6 +332,7 @@ public class MP3Player implements Initializable {
         viewToggle.setOnAction( event -> {
             toggleMasterView();
         });
+
 
     }
 
