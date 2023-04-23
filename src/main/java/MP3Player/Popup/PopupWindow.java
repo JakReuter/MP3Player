@@ -165,7 +165,7 @@ public class PopupWindow extends Application {
         s = stage;
         Database.connect();
         BorderPane borderPane = new BorderPane();
-        Song song = new Song("testsong", "testauthor", "testalbum", "15", "tesPath");
+        Song song = new Song("testsong", "testauthor", "testalbum", "15", "testPath");
         Button button = new Button("Test popup");
         button.setOnAction(event -> {
             try {

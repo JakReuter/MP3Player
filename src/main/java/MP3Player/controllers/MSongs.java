@@ -28,8 +28,7 @@ public class MSongs {
 
     @FXML
     private Button removeButton;
-    @FXML private Button upButton;
-    @FXML private Button downButton;
+    @FXML private Button newButton;
     @FXML private Button addButton;
     @FXML private TableView<Song> tableView;
     @FXML private TableColumn<Song, String> nameColumn;
@@ -104,7 +103,8 @@ public class MSongs {
         File inFile;
         AbstractID3v2 tags = null;
         try {
-            inFile = fileChooser.showOpenDialog(upButton.getScene().getWindow());
+            System.out.println("HERE");
+            inFile = fileChooser.showOpenDialog(newButton.getScene().getWindow());
             //For reading  from folders
             //if inFile.isDirectory { for(File f : inFile.subFiles ) {
             MP3File mp3File = new MP3File(inFile);
