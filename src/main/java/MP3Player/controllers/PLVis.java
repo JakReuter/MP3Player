@@ -81,7 +81,7 @@ public class PLVis {
         // code to handle new button click
         if (textField.isVisible()) {
             Database.createNewPlaylist(textField.getText(), "");
-            refreshSendEvent();
+            refreshInformation();
             textField.setVisible(false);
             textField.clear();
         } else {
@@ -93,14 +93,15 @@ public class PLVis {
     private void handleRemoveButton(ActionEvent event) {
         // code to handle remove button click
         Database.removePlaylist(tableView.getSelectionModel().getSelectedItem().getName());
-        refreshSendEvent();
+        refreshInformation();
     }
 
     @FXML
     private void handleRenameButton(ActionEvent event) {
         // code to handle rename button click
         if(textField.isVisible()) {
-            playlists.get(tableView.getSelectionModel().getSelectedIndex()).setName(textField.getText());
+            //Database.editPlaylistName(tableView.getSelectionModel().getSelectedItem().getName(), textField.getText());
+            refreshInformation();
             tableView.refresh();
             textField.setVisible(false);
             textField.clear();
@@ -114,7 +115,8 @@ public class PLVis {
     private void handleDescriptionButton(ActionEvent event) {
         // code to handle description button click
         if(textField.isVisible()) {
-            playlists.get(tableView.getSelectionModel().getSelectedIndex()).setDescription(textField.getText());
+            Database.editPlaylist(tableView.getSelectionModel().getSelectedItem().getName(), textField.getText());
+            refreshInformation();
             tableView.refresh();
             textField.setVisible(false);
             textField.clear();
@@ -157,6 +159,8 @@ public class PLVis {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+        tableView.setItems(this.playlists);
+        tableView.refresh();
 
     }
 

@@ -15,6 +15,7 @@ import org.w3c.dom.ls.LSOutput;
 
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /*
  * Playlist song list controller. Upon initialization, create the list to display
@@ -45,17 +46,38 @@ public class PLSongs {
 
     @FXML
     private void handleUpButton(ActionEvent event) {
+        try {
+            int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
 
+            Database.moveSongInPlaylist(currentPL, tableView.getSelectionModel().getSelectedItem().getName(),
+                    Database.getSongInfo(tableView.getSelectionModel().getSelectedItem().getName()).getInt("position") - 1);
+            Database.moveSongInPlaylist(currentPL, tableView.getItems().get(selectedIndex + 1).getName() ,
+                    Database.getSongInfo(tableView.getItems().get(selectedIndex + 1).getName()).getInt("position"));
+            refreshInformation();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @FXML
     private void handleRemoveButton(ActionEvent event) {
-
+        Database.removeSongFromPlaylist(currentPL, tableView.getSelectionModel().getSelectedItem().getName());
+        refreshInformation();
     }
 
     @FXML
     private void handleDownButton(ActionEvent event) {
+        try {
+            int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
 
+            Database.moveSongInPlaylist(currentPL, tableView.getSelectionModel().getSelectedItem().getName(),
+                    Database.getSongInfo(tableView.getSelectionModel().getSelectedItem().getName()).getInt("position") + 1);
+            Database.moveSongInPlaylist(currentPL, tableView.getItems().get(selectedIndex - 1).getName() ,
+                    Database.getSongInfo(tableView.getItems().get(selectedIndex - 1).getName()).getInt("position"));
+            refreshInformation();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     // Called by PLVis, when a new playlist is selected, to populate the list here.
@@ -112,6 +134,8 @@ public class PLSongs {
                 System.out.println(ex.getMessage());
             }
         }
+        tableView.setItems(this.songs);
+        tableView.refresh();
 
     }
 
