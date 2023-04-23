@@ -17,6 +17,7 @@ import java.nio.file.Path;
 public class FileTypeTests
 {
     MP3Application mp3Application = new MP3Application();
+    FileErrorHandler fileErrorHandler = null;
     private String PATH_DEFAULT = new File(System.getProperty("user.dir")).toURI().toString();
     private String PATH_DEFAULT_NOT_URI = new File(System.getProperty("user.dir")).toString();
 
@@ -36,7 +37,8 @@ public class FileTypeTests
                     @Override
                     public void run() {
                         try {
-                            mp3Application.start(new Stage()); // Create and
+                            mp3Application.start(new Stage());
+                            fileErrorHandler = new FileErrorHandler(mp3Application.getAlert());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -63,7 +65,7 @@ public class FileTypeTests
         //set media
         String path = "/out/production/AnotherMp3Test/TestFiles/Legit.mp3";
 
-        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        if(fileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
         {
             Assert.fail("File path or type not accepted");
         }
@@ -84,7 +86,7 @@ public class FileTypeTests
         //set media
         String path = "/out/production/AnotherMp3Test/TestFiles/NotLegit.mp3";
 
-        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        if(fileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
         {
             Assert.fail("File path or type not accepted");
         }
@@ -104,7 +106,7 @@ public class FileTypeTests
         //set media
         String path = "/out/production/AnotherMp3Test/TestFiles/video.mp4";
 
-        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        if(fileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
         {
             Assert.fail("File path or type not accepted");
         }
@@ -124,7 +126,7 @@ public class FileTypeTests
 
         String path = "/out/production/AnotherMp3Test/TestFiles/executable.exe";
 
-        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
+        if(fileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
         {
             Assert.fail("File path or type should not be accepted");
         }
@@ -137,7 +139,7 @@ public class FileTypeTests
 
         String path = "/out/production/AnotherMp3Test/TestFiles/image.jpg";
 
-        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
+        if(fileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
         {
             Assert.fail("File path or type should not be accepted");
         }
@@ -150,7 +152,7 @@ public class FileTypeTests
 
         String path = "lolNope";
 
-        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
+        if(fileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
         {
             Assert.fail("File path or type should not be accepted");
         }
@@ -164,7 +166,7 @@ public class FileTypeTests
         //set media
         String path = "/out/production/AnotherMp3Test/TestFiles/legit2.m4a";
 
-        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        if(fileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
         {
             Assert.fail("File path or type not accepted");
         }
@@ -184,7 +186,7 @@ public class FileTypeTests
         //set media
         String path = "/out/production/AnotherMp3Test/TestFiles/audioBook.mp3";
 
-        if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
+        if(fileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) != 0)
         {
             Assert.fail("File path or type not accepted");
         }

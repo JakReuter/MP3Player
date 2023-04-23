@@ -1,27 +1,37 @@
 package MP3Player.util.general;
 
+import MP3Player.application.MP3Application;
+import javafx.scene.control.Alert;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 
 public class FileErrorHandler
 {
-    private static String validationResponse = "somethings wrong, try a quick restart";
+    Alert alert = null;
 
-    public static int fileCheck(String filePath)
+    public FileErrorHandler(Alert mainAlert)
+    {
+        alert = mainAlert;
+    }
+
+    private String validationResponse = "somethings wrong, try a quick restart";
+
+    public int fileCheck(String filePath)
     {
         //System.out.println(filePath);
 
         //check file path
         if(validateFilePath(filePath) != 0)
         {
-            //System.out.println(validationResponse);
+            System.out.println(validationResponse);
+            showError(alert);
             return 1;
         } else validationResponse = "Filepath found, checking the type now...";
 
         //check file type
         if(validateFileType(filePath) != 0)
         {
-            //System.out.println(validationResponse);
+            System.out.println(validationResponse);
             return 1;
         } validationResponse = "The file type is supported, please enjoy your song!";
 
@@ -31,7 +41,7 @@ public class FileErrorHandler
     }
 
     //checks if the file type is accepted
-    private static int validateFileType(String filePath)
+    private int validateFileType(String filePath)
     {
         //maybe make an array to store valid file types to allow users to add ones they know work?
         //would then loop through the array checking instead of switch
@@ -88,7 +98,7 @@ public class FileErrorHandler
     }
 
     //checks if the file path can be found
-    private static int validateFilePath(String filePath)
+    private int validateFilePath(String filePath)
     {
         try
         {
@@ -107,5 +117,13 @@ public class FileErrorHandler
         }
 
         return 0;
+    }
+
+
+    private void showError(Alert errorAlert)
+    {
+        errorAlert.setHeaderText("Input not valid");
+        errorAlert.setContentText(validationResponse);
+        errorAlert.showAndWait();
     }
 }
