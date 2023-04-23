@@ -22,7 +22,7 @@ public class PLVis {
     @FXML private Button renameButton;
     @FXML private TextField textField;
     @FXML private Button descriptionButton;
-    @FXML private TableView<Playlist> tableView;
+    @FXML public TableView<Playlist> tableView;
     @FXML private TableColumn<Playlist, String> nameColumn;
     @FXML private TableColumn<Playlist, Integer> songCountColumn;
     @FXML private TableColumn<Playlist, String> durationColumn;
@@ -81,7 +81,8 @@ public class PLVis {
     private void handleNewButton(ActionEvent event) {
         // code to handle new button click
         if (textField.isVisible()) {
-            playlists.add(new Playlist(textField.getText(),0,"00:00:00",""));
+            Database.createNewPlaylist(textField.getText(), "");
+            refreshInformation();
             textField.setVisible(false);
             textField.clear();
         } else {
@@ -92,14 +93,17 @@ public class PLVis {
     @FXML
     private void handleRemoveButton(ActionEvent event) {
         // code to handle remove button click
-        playlists.remove(tableView.getSelectionModel().getSelectedItem());
+        Database.removePlaylist(tableView.getSelectionModel().getSelectedItem().getName());
+        refreshInformation();
+        refreshSendEvent();
     }
 
     @FXML
     private void handleRenameButton(ActionEvent event) {
         // code to handle rename button click
         if(textField.isVisible()) {
-            playlists.get(tableView.getSelectionModel().getSelectedIndex()).setName(textField.getText());
+            Database.editPlaylistName(tableView.getSelectionModel().getSelectedItem().getName(), textField.getText());
+            refreshInformation();
             tableView.refresh();
             textField.setVisible(false);
             textField.clear();
@@ -113,7 +117,8 @@ public class PLVis {
     private void handleDescriptionButton(ActionEvent event) {
         // code to handle description button click
         if(textField.isVisible()) {
-            playlists.get(tableView.getSelectionModel().getSelectedIndex()).setDescription(textField.getText());
+            Database.editPlaylist(tableView.getSelectionModel().getSelectedItem().getName(), textField.getText());
+            refreshInformation();
             tableView.refresh();
             textField.setVisible(false);
             textField.clear();
@@ -156,6 +161,8 @@ public class PLVis {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+        tableView.setItems(this.playlists);
+        tableView.refresh();
 
     }
 

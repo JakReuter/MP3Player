@@ -27,10 +27,10 @@ import java.sql.SQLException;
 
 public class MSongs {
 
+
     @FXML private VBox rootSongs;
     @FXML private Button removeButton;
-    @FXML private Button upButton;
-    @FXML private Button downButton;
+    @FXML private Button newButton;
     @FXML private Button addButton;
     @FXML private TableView<Song> tableView;
     @FXML private TableColumn<Song, String> nameColumn;
@@ -38,6 +38,18 @@ public class MSongs {
     @FXML private TableColumn<Song, String> albumColumn;
     @FXML private TableColumn<Song, String> durationColumn;
     private ObservableList<Song> songs;
+    private PLVis plVis;
+
+    public ObservableList<Song> getQueue() {
+        return queue;
+    }
+
+    public void setQueue(ObservableList<Song> queue) {
+        this.queue = queue;
+    }
+
+    private ObservableList<Song> queue;
+
 
     //add event  variable here
     ActionListener refreshListener;
@@ -46,9 +58,14 @@ public class MSongs {
 
     }
 
+    public void setPLVis(PLVis plVis) {
+        this.plVis = plVis;
+    }
+
     //What if we made table view dragdetectable in fxml?
     public void initialize() {
         this.songs = FXCollections.observableArrayList();
+        queue = FXCollections.observableArrayList();
 
         //Bind table columns to the width of table
         nameColumn.prefWidthProperty().bind(rootSongs.widthProperty().multiply(.3));        //30% of table is names
@@ -64,9 +81,11 @@ public class MSongs {
             while (rs.next()) {
                 this.songs.add(new Song(
                         (String) rs.getObject("name"),
+                        (String) rs.getObject("path"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
-                        rs.getObject("duration").toString()
+                        rs.getObject("duration").toString(),
+                        rs.getObject("filepath").toString()
                 ));
 
                 i++;
@@ -82,11 +101,6 @@ public class MSongs {
     }
 
     @FXML
-    private void handleUpButton(ActionEvent event) {
-
-    }
-
-    @FXML
     private void handleRemoveButton(ActionEvent event) {
         Song toRemove = null;
         if((toRemove = tableView.getSelectionModel().getSelectedItem())!=null){
@@ -98,14 +112,11 @@ public class MSongs {
         }
     }
 
-    @FXML
-    private void handleDownButton(ActionEvent event) {
-
-    }
-
     // Adds the selected song to the selected playlist. Just add it in database, Maybe update the other two UIs
     @FXML
     private void handleAddButton(ActionEvent event)  {
+        Database.addSongToPlaylist(plVis.tableView.getSelectionModel().getSelectedItem().getName(), tableView.getSelectionModel().getSelectedItem().getName());
+        refreshSendEvent();
     }
 
     @FXML
@@ -116,8 +127,8 @@ public class MSongs {
         int dur;
         String title = "",artist = "",album = "";
         try {
-            inFile = fileChooser.showOpenDialog(upButton.getScene().getWindow());
-
+            //System.out.println("HERE");
+            inFile = fileChooser.showOpenDialog(newButton.getScene().getWindow());
             //For reading  from folders
             //if inFile.isDirectory { for(File f : inFile.subFiles ) {
             MP3File mp3File = new MP3File(inFile);
@@ -145,7 +156,12 @@ public class MSongs {
         ResultSet rs = Database.getSongInfo(title);
 
         System.out.println(rs.getObject(1));
-        refreshSendEvent();
+        refreshSendEvent(); // does this refresh PLVis??
+    }
+
+    @FXML
+    public void addToQueue(){
+        queue.add(songs.get(tableView.getSelectionModel().getSelectedIndex()));
     }
 
     /**
@@ -162,9 +178,11 @@ public class MSongs {
             while (rs.next()) {
                 this.songs.add(i,new Song(
                         (String) rs.getObject("name"),
+                        (String) rs.getObject("filepath"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
-                        rs.getObject("duration").toString()
+                        rs.getObject("duration").toString(),
+                        rs.getObject("filepath").toString()
                 ));
                 i++;
             }

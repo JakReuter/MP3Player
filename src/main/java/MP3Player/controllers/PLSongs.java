@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /*
  * Playlist song list controller. Upon initialization, create the list to display
@@ -33,6 +34,10 @@ public class PLSongs {
     private String currentPL;
     private ActionListener refreshListener;
 
+    MP3Player mp3Player;
+    public ObservableList<Song> getSongs() {
+        return songs;
+    }
 
     public PLSongs(){
     }
@@ -51,17 +56,38 @@ public class PLSongs {
 
     @FXML
     private void handleUpButton(ActionEvent event) {
+        try {
+            int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
 
+            Database.moveSongInPlaylist(currentPL, tableView.getSelectionModel().getSelectedItem().getName(),
+                    Database.getSongInfo(tableView.getSelectionModel().getSelectedItem().getName()).getInt("position") - 1);
+            Database.moveSongInPlaylist(currentPL, tableView.getItems().get(selectedIndex + 1).getName() ,
+                    Database.getSongInfo(tableView.getItems().get(selectedIndex + 1).getName()).getInt("position"));
+            refreshInformation();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @FXML
     private void handleRemoveButton(ActionEvent event) {
-
+        Database.removeSongFromPlaylist(currentPL, tableView.getSelectionModel().getSelectedItem().getName());
+        refreshInformation();
     }
 
     @FXML
     private void handleDownButton(ActionEvent event) {
+        try {
+            int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
 
+            Database.moveSongInPlaylist(currentPL, tableView.getSelectionModel().getSelectedItem().getName(),
+                    Database.getSongInfo(tableView.getSelectionModel().getSelectedItem().getName()).getInt("position") + 1);
+            Database.moveSongInPlaylist(currentPL, tableView.getItems().get(selectedIndex - 1).getName() ,
+                    Database.getSongInfo(tableView.getItems().get(selectedIndex - 1).getName()).getInt("position"));
+            refreshInformation();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     // Called by PLVis, when a new playlist is selected, to populate the list here.
@@ -74,9 +100,11 @@ public class PLSongs {
             while (rs.next()) {
                 songs.add(new Song(
                         (String) rs.getObject("name"),
+                        (String) rs.getObject("filepath"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
-                        rs.getObject("duration").toString()
+                        rs.getObject("duration").toString(),
+                        rs.getObject("filepath").toString()
                 ));
                 i++;
             }
@@ -86,9 +114,14 @@ public class PLSongs {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+
+
         tableView.setItems(songs);
+
+//        this.mp3Player.initializeQueue();
         tableView.refresh();
     }
+
 
     /**
      * Called to refresh the information in the UI
@@ -103,9 +136,11 @@ public class PLSongs {
                 while (rs.next()) {
                     songs.add(new Song(
                             (String) rs.getObject("name"),
+                            (String) rs.getObject("filepath"),
                             (String) rs.getObject("author"),
                             (String) rs.getObject("album"),
-                            rs.getObject("duration").toString()
+                            rs.getObject("duration").toString(),
+                            rs.getObject("filepath").toString()
                     ));
                     i++;
                 }
@@ -116,6 +151,8 @@ public class PLSongs {
                 System.out.println(ex.getMessage());
             }
         }
+        tableView.setItems(this.songs);
+        tableView.refresh();
 
     }
 

@@ -1,6 +1,7 @@
 package MP3Player.controllers;
 
 import MP3Player.mp3Player.equalizer.Equalizer;
+import MP3Player.mp3Player.song.Song;
 import MP3Player.mp3Player.visualizer.ChartVisualizer;
 import MP3Player.mp3Player.visualizer.CircleChart;
 import MP3Player.mp3Player.visualizer.ConeChart;
@@ -41,7 +42,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.floor;
 
@@ -103,6 +107,8 @@ public class MP3Player implements Initializable {
     //Holds the content of a tab when draggin between tabPanes
     ObjectProperty<Tab> tabToDrag;
 
+    @FXML TableView tableView;
+
     protected Media audio;
     protected MediaPlayer audioPlayer;
     protected TimeControl timeControl;
@@ -127,14 +133,13 @@ public class MP3Player implements Initializable {
     }
 
     //TODO: make default queue a playlist or have playlist hold arraylist?
-    ArrayList<File> queue = new ArrayList<File>(){
-        {
-            add(new File(PATH_MAMA));
-            add(new File(PATH_MVMT));
-        }
-    };
+    public ArrayList<Song> playlistQueue;
+    public Queue<Song> audioQueue = new LinkedList<>();
+    PLSongs plSongs;
 
-    int queueNumber = 0;
+
+
+    int playlistNum = 0;
 
 
     /**
@@ -144,18 +149,24 @@ public class MP3Player implements Initializable {
     protected AudioSpectrumListener VisualizeListener;
     protected ChangeListener<Number> slideListener;
 
+
     @FXML
     protected void prev_audio_event() {
-        //TODO: slider dragger dissapears (bug)
-        System.out.println("prev_audio_event");
         try{
             //go to beginning of song if more than 5 seconds in
-            if(audioPlayer.getCurrentTime().toSeconds() > 5 || 0 == queueNumber){
+            if(audioPlayer.getCurrentTime().toSeconds() > 5 || 0 == playlistNum){
                 audioPlayer.seek(Duration.millis(0));
-            }else if (audioPlayer.getCurrentTime().toSeconds() <= 5 && queueNumber > 0){
-                queueNumber--;
+            }else if(playlistWithSongsUI.getSongs().size() == 0){
+                //todo: make into error or something
+                System.out.println("No previous song");
+            } else if (audioPlayer.getCurrentTime().toSeconds() <= 5 && playlistNum > 0){
+                playlistNum--;
                 audioPlayer.stop();
+                if(playlistNum == 0)
+                    playlistNum = playlistWithSongsUI.getSongs().size() - 1;
+                else playlistNum -= 1;
                 initializeAudioPlayer();
+                endOfMedia();
 
 
                 //keep playing status
@@ -169,43 +180,35 @@ public class MP3Player implements Initializable {
 
     @FXML
     protected void next_audio_event() {
-        //TODO: slider dragger dissapears (bug)
-
-        //Go to next song
-        if(queueNumber < queue.size() - 1){
-            queueNumber++;
-            //go to first song if at the end of the queue
-        }else{
-            queueNumber = 0;
+        if(playlistWithSongsUI.getSongs().size() > 1 || masterSongUI.getQueue().size() > 0){
+            audioPlayer.stop();
+            initializeAudioPlayer();
+            endOfMedia();
+            //keep playing status
+            if(audioPlaying)
+                audioPlayer.play();
+        }else {
+            //todo: make into error or something
+            System.out.println("No next song");
         }
 
-        audioPlayer.stop();
-        initializeAudioPlayer();
-//        audio = new Media(queue.get(queueNumber).toURI().toString());
-//        audioPlayer = new MediaPlayer(audio);
-//        initializeListeners();
-
-        //keep playing status
-        if(audioPlaying)
-            audioPlayer.play();
-        System.out.println("next_audio_event");
     }
 
     @FXML
     public void play_pause_audio_event() {
 
         try {
+            if(audioPlayer == null){
+                initializeAudioPlayer();
+            }
             if (audioPlayer.getStatus().compareTo(MediaPlayer.Status.PLAYING)==0) {
                 audioPlayer.pause();
 
-                System.out.println(PATH_DEFAULT + "/src/main/resources/image/pause_button.png");
-//                Image playBtn = new Image(getClass().getResourceAsStream(PATH_DEFAULT + "\\src\\main\\resources\\image\\pause_button.png"));
                 play_pause_btn_icon.setImage(playBtn);
                 audioPlaying = false;
             } else {
-                audioPlayer.play();
-//                System.out.println(PATH_DEFAULT + "\\src\\main\\resources\\image\\play_button.png");
 
+                audioPlayer.play();
                 play_pause_btn_icon.setImage(pauseBtn);
                 System.out.println(play_pause_btn_icon.getImage().toString());
                 audioPlaying = true;
@@ -217,10 +220,43 @@ public class MP3Player implements Initializable {
     }
 
 
+    protected File getNewFile(){
+//        try {
+        if(masterSongUI == null ){
+//            throw new RuntimeException("Master Song UI is not open");
+            System.out.println("Master Song UI is not open");
+        }else{
+            if (masterSongUI.getQueue().size() > 0) {
+//                audioQueue.size() > 0){
+                return new File(masterSongUI.getQueue().remove(0).getPath());
+            }
+        }
+
+        if(playlistWithSongsUI == null){
+            System.out.println("Open a playlist first");
+        }else {
+            if(playlistWithSongsUI.getSongs().size() == 0)
+                return null;
+            if (playlistNum > playlistWithSongsUI.getSongs().size() - 1)
+                playlistNum = 0;
+            System.out.println(playlistWithSongsUI.getSongs().get(playlistNum).getPath());
+            System.out.printf("%d | %d\n", playlistNum, playlistWithSongsUI.getSongs().size() - 1);
+            return new File(playlistWithSongsUI.getSongs().get(playlistNum++).getPath());
+        }
+        return null;
+
+//        }catch (NullPointerException ex){
+//            System.out.println("Please open the All songs tab");
+//            ex.printStackTrace();
+//        }
+    }
+
+    protected void endOfMedia(){
+
+    }
     protected void initializeAudioPlayer() {
         try {
-
-            File file = queue.get(queueNumber);
+            File file = getNewFile();
             MP3File mp3File = new MP3File(file);
             mp3File.seekMP3Frame();
             System.out.println(file.getName() + ": "+mp3File.getFrequency()+" kHz");
@@ -251,7 +287,9 @@ public class MP3Player implements Initializable {
             audioPlayer.setAudioSpectrumNumBands(SPEC_BANDS);
 
             audioPlayer.setOnEndOfMedia(() -> {
-                //TODO: queue next song
+                System.out.println("END OF SONGNGNGNGNGNGNGNNNNNNN");
+                initializeAudioPlayer();
+                audioPlayer.play();
             });
 
             audioPlayer.setAudioSpectrumListener((double timestamp, double duration, float[] magnitudes, float[] phases) ->{
@@ -262,7 +300,7 @@ public class MP3Player implements Initializable {
                 }
             });
         } catch (Exception e) {
-            System.out.println("Exception in initalizeAudioPlayer");
+            System.out.println("Exception in initializeAudioPlayer");
             e.printStackTrace();
         }
     }
@@ -345,10 +383,7 @@ public class MP3Player implements Initializable {
             e.printStackTrace();
         }
 
-        root.prefWidthProperty().bind(rootVbox.widthProperty());
-        MasterView.prefWidthProperty().bind(root.widthProperty());
-        splitHolderVbox.prefWidthProperty().bind(rootVbox.widthProperty());
-        splitHolderVbox.prefHeightProperty().bind(rootVbox.heightProperty());
+
 
 
         leftTabPane = new TabHandler(tabToDrag);
@@ -363,36 +398,16 @@ public class MP3Player implements Initializable {
         mainVisualizer = new ChartVisualizer(SPEC_BANDS, new Stage());
         //Load each tabpane with right click context menu
 
-        ContextMenu test1 = new ContextMenu(getWindowsMenu(leftTabPane));
-        ContextMenu test2 = new ContextMenu(getWindowsMenu(centerTabPane));
-        ContextMenu test3 = new ContextMenu(getWindowsMenu(rightTabPane));
-        System.out.println(test1);
-        System.out.println(test2);
-        System.out.println(test3);
 
-
-        leftTabPane.getPane().setContextMenu(test1/**new ContextMenu(getWindowsMenu(leftTabPane))**/);
-        centerTabPane.getPane().setContextMenu(test2/**new ContextMenu(getWindowsMenu(centerTabPane))**/);
-        rightTabPane.getPane().setContextMenu(test3/**new ContextMenu(getWindowsMenu(rightTabPane))**/);
-
-
+        leftTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(leftTabPane)));
+        centerTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(centerTabPane)));
+        rightTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(rightTabPane)));
 
         //TODO: Bind width of anchor pane with corresponding tabPane
 
         mainLeftSplit.getChildren().add(leftTabPane.getPane());
         mainCenterSplit.getChildren().add(centerTabPane.getPane());
         mainRightSplit.getChildren().add(rightTabPane.getPane());
-
-        leftTabPane.prefWidthProperty().bind(mainLeftSplit.widthProperty());
-        leftTabPane.prefHeightProperty().bind(mainLeftSplit.heightProperty());
-        centerTabPane.prefWidthProperty().bind(mainCenterSplit.widthProperty());
-        centerTabPane.prefHeightProperty().bind(mainCenterSplit.heightProperty());
-        rightTabPane.prefWidthProperty().bind(mainRightSplit.widthProperty());
-        rightTabPane.prefHeightProperty().bind(mainRightSplit.heightProperty());
-
-
-        //mainCenterSplit.widthProperty().addListener((observable, oldValue, newValue) -> System.out.println("mainRightSplit width changed to:"+newValue));
-
 
 
     }
@@ -433,8 +448,6 @@ public class MP3Player implements Initializable {
         windows[3] = new MenuItem("Circle Chart");
         windows[0].setOnAction(event -> {
             ChartVisualizer newChart = new ChartVisualizer(SPEC_BANDS, new Stage());
-            newChart.setAnimationDuration(new Duration(SPEC_INTERVAL*1000));
-            newChart.setAnimationEnabled(true);
             seriesArray.add(newChart.getSeries());
 
             targetTab.addApp(newChart);
@@ -458,9 +471,7 @@ public class MP3Player implements Initializable {
         });
 
         windows[3].setOnAction(event -> {
-            CircleChart newChart = new CircleChart(SPEC_BANDS, "circle", 4);
-            newChart.setAnimationDuration(new Duration(SPEC_INTERVAL*1000));
-            newChart.setAnimationEnabled(true);
+            CircleChart newChart = new CircleChart(SPEC_BANDS, "circle");
             seriesArray.add(newChart.getSeries());
 
             targetTab.addApp(newChart);

@@ -16,16 +16,6 @@
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </HBox.margin>
          </Button>
-         <Button fx:id="upButton" mnemonicParsing="false" onAction="#handleUpButton" prefHeight="24.0" prefWidth="84.0" text="Move Up">
-            <HBox.margin>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </HBox.margin>
-         </Button>
-         <Button fx:id="downButton" mnemonicParsing="false" onAction="#handleDownButton" prefHeight="24.0" prefWidth="101.0" text="Move Down">
-            <HBox.margin>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </HBox.margin>
-         </Button>
          <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddButton" prefHeight="24.0" prefWidth="101.0" text="Add To Playlist">
             <HBox.margin>
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -38,7 +28,7 @@
          </Button>
       </children>
    </HBox>
-   <TableView fx:id="tableView" prefHeight="861.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <TableView fx:id="tableView" onKeyPressed="#addToQueue" prefHeight="861.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
       <columns>
          <TableColumn fx:id="nameColumn" prefWidth="182.0" text="Name">
             <cellValueFactory>

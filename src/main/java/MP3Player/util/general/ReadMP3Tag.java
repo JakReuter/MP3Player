@@ -1,15 +1,14 @@
-package com.example.demo2;
+package MP3Player.util.general;
 import java.io.IOException;
+import MP3Player.database.Database;
 import org.sqlite.SQLiteConfig;
-
+import java.util.regex.Pattern;
 import java.sql.*;
 import java.io.*;
 import java.util.*;
 import java.nio.*;
 
 public class ReadMP3Tag{
-	String DB_URL = "jdbc:sqlite:c:/Users/steve/Documents/webtests/monday_Test/mp3db.db";
-	String DRIVER = "org.sqlite.JDBC";
 	String footerType ;
 	String title = "";
 	String artist = "" ;
@@ -30,8 +29,10 @@ public class ReadMP3Tag{
 				String Line = fileScanner.nextLine();
 				album = Line.split("TIT2")[1].split("TPE2")[0];
 				artist = Line.split("TIT2")[1].split("TPE2")[1];
-				//System.out.println(artist);
-				//System.out.println(album);
+				String cleaned_album = album.replaceAll("[^\\x20-\\x7E]+", "");
+				String cleaned_artist = artist.replaceAll("[^\\x20-\\x7E]+", "");
+				album = cleaned_album;
+				artist = cleaned_artist;
 			}else{
 				RandomAccessFile raf = new RandomAccessFile(args, "r");
 				long length = raf.length();
@@ -71,25 +72,10 @@ public class ReadMP3Tag{
 			e.printStackTrace();
 		}
 		//upload results to database
-		try {
-			Class.forName(DRIVER);
-			Connection connection = null;
-			SQLiteConfig config = new SQLiteConfig();
-			config.enforceForeignKeys(true);
-			connection = DriverManager.getConnection(DB_URL,config.toProperties());
-			String sql = "INSERT INTO Song VALUES(?,?,?,?,?,?,?)";
-			PreparedStatement stmt = connection.prepareStatement(sql);
-			stmt.setString(1, title);
-			stmt.setString(2,args);
-			stmt.setString(3, artist);
-			stmt.setString(4, album);
-			stmt.setString(5,year );
-			stmt.setString(6, "0");
-			stmt.setString(7, "0");
-			stmt.executeUpdate();
-		} catch (ClassNotFoundException | SQLException e) {
-			throw new RuntimeException(e);
-		}
+
+			Database mp3db = new Database();
+	        	mp3db.connect();
+			mp3db.addNewSong(title, args, artist,album, 0);
 
 
 	}
