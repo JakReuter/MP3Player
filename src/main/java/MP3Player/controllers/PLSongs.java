@@ -70,7 +70,8 @@ public class PLSongs {
                         (String) rs.getObject("name"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
-                        rs.getObject("duration").toString()
+                        rs.getObject("duration").toString(),
+                        rs.getObject("filepath").toString()
                 ));
                 i++;
             }
@@ -99,7 +100,8 @@ public class PLSongs {
                             (String) rs.getObject("name"),
                             (String) rs.getObject("author"),
                             (String) rs.getObject("album"),
-                            rs.getObject("duration").toString()
+                            rs.getObject("duration").toString(),
+                            rs.getObject("filepath").toString()
                     ));
                     i++;
                 }

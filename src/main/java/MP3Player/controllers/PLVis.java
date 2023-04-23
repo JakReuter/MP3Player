@@ -28,7 +28,7 @@ public class PLVis {
     @FXML private Button renameButton;
     @FXML private TextField textField;
     @FXML private Button descriptionButton;
-    @FXML private TableView<Playlist> tableView;
+    @FXML public TableView<Playlist> tableView;
     @FXML private TableColumn<Playlist, String> nameColumn;
     @FXML private TableColumn<Playlist, Integer> songCountColumn;
     @FXML private TableColumn<Playlist, String> durationColumn;
@@ -80,7 +80,8 @@ public class PLVis {
     private void handleNewButton(ActionEvent event) {
         // code to handle new button click
         if (textField.isVisible()) {
-            playlists.add(new Playlist(textField.getText(),0,"00:00:00",""));
+            Database.createNewPlaylist(textField.getText(), "");
+            refreshSendEvent();
             textField.setVisible(false);
             textField.clear();
         } else {
@@ -91,7 +92,8 @@ public class PLVis {
     @FXML
     private void handleRemoveButton(ActionEvent event) {
         // code to handle remove button click
-        playlists.remove(tableView.getSelectionModel().getSelectedItem());
+        Database.removePlaylist(tableView.getSelectionModel().getSelectedItem().getName());
+        refreshSendEvent();
     }
 
     @FXML

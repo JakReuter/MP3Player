@@ -325,6 +325,7 @@ public class MP3Player implements Initializable {
             playlistWithSongsUI.setOnRefresh(refresher);
             playlistsUI.setOnRefresh(refresher);
             playlistsUI.setPLSongs(playlistWithSongsUI);
+            masterSongUI.setPLVis(playlistsUI);
         } catch (Exception e){
             e.printStackTrace();
         }

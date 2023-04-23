@@ -37,12 +37,17 @@ public class MSongs {
     @FXML private TableColumn<Song, String> albumColumn;
     @FXML private TableColumn<Song, String> durationColumn;
     private ObservableList<Song> songs;
+    private PLVis plVis;
 
     //add event  variable here
     ActionListener refreshListener;
 
     public MSongs(){
 
+    }
+
+    public void setPLVis(PLVis plVis) {
+        this.plVis = plVis;
     }
 
     //What if we made table view dragdetectable in fxml?
@@ -58,7 +63,8 @@ public class MSongs {
                         (String) rs.getObject("name"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
-                        rs.getObject("duration").toString()
+                        rs.getObject("duration").toString(),
+                        rs.getObject("filepath").toString()
                 ));
 
                 i++;
@@ -74,11 +80,6 @@ public class MSongs {
     }
 
     @FXML
-    private void handleUpButton(ActionEvent event) {
-
-    }
-
-    @FXML
     private void handleRemoveButton(ActionEvent event) {
         Song toRemove = null;
         if((toRemove = tableView.getSelectionModel().getSelectedItem())!=null){
@@ -90,14 +91,11 @@ public class MSongs {
         }
     }
 
-    @FXML
-    private void handleDownButton(ActionEvent event) {
-
-    }
-
     // Adds the selected song to the selected playlist. Just add it in database, Maybe update the other two UIs
     @FXML
     private void handleAddButton(ActionEvent event)  {
+        Database.addSongToPlaylist(plVis.tableView.getSelectionModel().getSelectedItem().getName(), tableView.getSelectionModel().getSelectedItem().getName());
+        refreshSendEvent();
     }
 
     @FXML
@@ -125,7 +123,7 @@ public class MSongs {
         ResultSet rs = Database.getSongInfo(tags.getSongTitle());
 
         System.out.println(rs.getObject(1));
-        refreshSendEvent();
+        refreshSendEvent(); // does this refresh PLVis??
     }
 
     /**
@@ -144,7 +142,8 @@ public class MSongs {
                         (String) rs.getObject("name"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
-                        rs.getObject("duration").toString()
+                        rs.getObject("duration").toString(),
+                        rs.getObject("filepath").toString()
                 ));
                 i++;
             }
