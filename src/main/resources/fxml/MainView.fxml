@@ -41,7 +41,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <StackPane fx:id="root" prefHeight="1028.0" prefWidth="1440.0">
+      <StackPane fx:id="root" prefHeight="1028.0" prefWidth="1440.0" VBox.vgrow="ALWAYS">
          <children>
             <AnchorPane fx:id="MasterView" prefHeight="1028.0" prefWidth="1440.0" style="-fx-background-color: #2B2B2B;">
                <children>
@@ -54,14 +54,14 @@
                             <AnchorPane fx:id="mainCenterSplit" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
                           </items>
                         </SplitPane>
-                        <HBox alignment="BOTTOM_CENTER" maxHeight="128.0" maxWidth="1.7976931348623157E308" prefHeight="128.0" prefWidth="1440.0" style="-fx-background-color: #000000;">
+                        <HBox alignment="BOTTOM_CENTER" maxHeight="128.0" maxWidth="1.7976931348623157E308" prefHeight="128.0" prefWidth="1440.0" style="-fx-background-color: #000000;" VBox.vgrow="ALWAYS">
                            <children>
                               <ImageView fx:id="audio_cover" fitHeight="128.0" fitWidth="128.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../image/meAndUrMama.png" />
                                  </image>
                               </ImageView>
-                              <VBox maxHeight="-Infinity" prefHeight="128.0">
+                              <VBox maxHeight="-Infinity" prefHeight="128.0" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Slider fx:id="time_slider" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" />
                                     <HBox maxWidth="1.7976931348623157E308" prefHeight="123.0" prefWidth="1627.0">

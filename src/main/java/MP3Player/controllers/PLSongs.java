@@ -34,6 +34,10 @@ public class PLSongs {
     private String currentPL;
     private ActionListener refreshListener;
 
+    MP3Player mp3Player;
+    public ObservableList<Song> getSongs() {
+        return songs;
+    }
 
     public PLSongs(){
     }
@@ -90,6 +94,7 @@ public class PLSongs {
             while (rs.next()) {
                 songs.add(new Song(
                         (String) rs.getObject("name"),
+                        (String) rs.getObject("filepath"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
                         rs.getObject("duration").toString(),
@@ -103,9 +108,14 @@ public class PLSongs {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+
+
         tableView.setItems(songs);
+
+//        this.mp3Player.initializeQueue();
         tableView.refresh();
     }
+
 
     /**
      * Called to refresh the information in the UI
@@ -120,6 +130,7 @@ public class PLSongs {
                 while (rs.next()) {
                     songs.add(new Song(
                             (String) rs.getObject("name"),
+                            (String) rs.getObject("filepath"),
                             (String) rs.getObject("author"),
                             (String) rs.getObject("album"),
                             rs.getObject("duration").toString(),
