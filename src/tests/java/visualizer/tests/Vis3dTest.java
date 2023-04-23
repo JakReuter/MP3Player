@@ -25,9 +25,6 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.poi.hpsf.CustomProperties;
-import org.checkerframework.checker.units.qual.K;
-import sun.java2d.pipe.SpanShapeRenderer;
 import visualizer.core.Visualizer3D;
 
 import java.io.File;

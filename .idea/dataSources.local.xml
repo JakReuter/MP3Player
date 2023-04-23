@@ -13,9 +13,5 @@
         </introspection-scope>
       </schema-mapping>
     </data-source>
-    <data-source name="mp3db [2]" uuid="2302ea30-8204-4c3d-ad9b-64430a5a71c7">
-      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="SQLITE" exact-version="0" />
-      <schema-mapping />
-    </data-source>
   </component>
 </project>

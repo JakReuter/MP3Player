@@ -257,9 +257,10 @@ public class MP3Player implements Initializable {
     protected void initializeAudioPlayer() {
         try {
             File file = getNewFile();
-            MP3File mp3File = new MP3File(file);
-            mp3File.seekMP3Frame();
-            System.out.println(file.getName() + ": "+mp3File.getFrequency()+" kHz");
+            //File file = new File(PATH_MVMT);
+            //MP3File mp3File = new MP3File(file);
+            //mp3File.seekMP3Frame();
+            //System.out.println(file.getName() + ": "+mp3File.getFrequency()+" kHz");
             audio = new Media(file.toURI().toString());
             audioPlayer = new MediaPlayer(audio);
 
@@ -270,10 +271,6 @@ public class MP3Player implements Initializable {
 
             timestamp.setText("0:0");
 
-            time_slider =new ColorSlider();
-            time_slider.applyColor("#EAF028");
-            time_slider.enableColorChangeOnValue();
-            forTimeSlider.getChildren().add(0,time_slider);
 
             time_slider.setValue(0);
 
@@ -379,11 +376,15 @@ public class MP3Player implements Initializable {
             playlistWithSongsUI.setOnRefresh(refresher);
             playlistsUI.setOnRefresh(refresher);
             playlistsUI.setPLSongs(playlistWithSongsUI);
+            masterSongUI.setPLVis(playlistsUI);
         } catch (Exception e){
             e.printStackTrace();
         }
 
-
+        root.prefWidthProperty().bind(rootVbox.widthProperty());
+        MasterView.prefWidthProperty().bind(root.widthProperty());
+        splitHolderVbox.prefWidthProperty().bind(rootVbox.widthProperty());
+        splitHolderVbox.prefHeightProperty().bind(rootVbox.heightProperty());
 
 
         leftTabPane = new TabHandler(tabToDrag);
@@ -408,6 +409,21 @@ public class MP3Player implements Initializable {
         mainLeftSplit.getChildren().add(leftTabPane.getPane());
         mainCenterSplit.getChildren().add(centerTabPane.getPane());
         mainRightSplit.getChildren().add(rightTabPane.getPane());
+
+        leftTabPane.prefWidthProperty().bind(mainLeftSplit.widthProperty());
+        leftTabPane.prefHeightProperty().bind(mainLeftSplit.heightProperty());
+        centerTabPane.prefWidthProperty().bind(mainCenterSplit.widthProperty());
+        centerTabPane.prefHeightProperty().bind(mainCenterSplit.heightProperty());
+        rightTabPane.prefWidthProperty().bind(mainRightSplit.widthProperty());
+        rightTabPane.prefHeightProperty().bind(mainRightSplit.heightProperty());
+
+
+        time_slider =new ColorSlider();
+        time_slider.applyColor("#EAF028");
+        time_slider.enableColorChangeOnValue();
+        forTimeSlider.getChildren().add(0,time_slider);
+        //mainCenterSplit.widthProperty().addListener((observable, oldValue, newValue) -> System.out.println("mainRightSplit width changed to:"+newValue));
+
 
 
     }
@@ -448,6 +464,8 @@ public class MP3Player implements Initializable {
         windows[3] = new MenuItem("Circle Chart");
         windows[0].setOnAction(event -> {
             ChartVisualizer newChart = new ChartVisualizer(SPEC_BANDS, new Stage());
+            newChart.setAnimationDuration(new Duration(SPEC_INTERVAL*1000));
+            newChart.setAnimationEnabled(true);
             seriesArray.add(newChart.getSeries());
 
             targetTab.addApp(newChart);
@@ -471,7 +489,9 @@ public class MP3Player implements Initializable {
         });
 
         windows[3].setOnAction(event -> {
-            CircleChart newChart = new CircleChart(SPEC_BANDS, "circle");
+            CircleChart newChart = new CircleChart(SPEC_BANDS, "circle", 4);
+            newChart.setAnimationDuration(new Duration(SPEC_INTERVAL*1000));
+            newChart.setAnimationEnabled(true);
             seriesArray.add(newChart.getSeries());
 
             targetTab.addApp(newChart);

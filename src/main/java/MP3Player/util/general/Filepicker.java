@@ -16,9 +16,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public final class Filepicker extends Application {
-    com.example.demo2.ReadMP3Tag readmusictag = new com.example.demo2.ReadMP3Tag();
 
+public final class Filepicker extends Application {
+    //com.example.demo2.ReadMP3Tag readmusictag = new com.example.demo2.ReadMP3Tag();
+    ReadMP3Tag readmusictag = new ReadMP3Tag();
     @Override
     public void start(final Stage stage) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

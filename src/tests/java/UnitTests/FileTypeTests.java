@@ -7,7 +7,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
 import javafx.scene.media.Media;
 import javafx.stage.Stage;
-import org.checkerframework.checker.units.qual.A;
+//import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
