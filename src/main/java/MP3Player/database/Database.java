@@ -1,5 +1,6 @@
 package MP3Player.database;
 
+import MP3Player.Popup.PopupWindow;
 import org.sqlite.SQLiteConfig;
 
 import java.io.File;
@@ -76,6 +77,8 @@ public class Database {
             stmt.setString(2, description);
             stmt.executeUpdate();
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error creating the playlist. Please close and reopen the application");
             System.out.println(ex.getMessage());
         }
     }
@@ -102,6 +105,8 @@ public class Database {
             stmt.executeUpdate();
             //ResultSet rs = stmt.executeQuery(sql);
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error adding the song. Please close and reopen the application");
             System.out.println(ex.getMessage());
         }
     }
@@ -155,6 +160,8 @@ public class Database {
                 updatePlaylist(playlistName, songName, 1);
             }
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error adding the song to the playlist. Please close and reopen the application");
             System.out.println(ex.getMessage());
         }
     }
@@ -180,6 +187,8 @@ public class Database {
                 updatePlaylist(playlistName, songName, 1);
             }
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error adding the song to the playlist. Please close and reopen the application");
             System.out.println(ex.getMessage());
         }
     }
@@ -195,7 +204,9 @@ public class Database {
     public static void moveSongInPlaylist(String playlistName, String songName, int newPosition) {
         int count = checkPosition(playlistName,newPosition);
         if (0 == count){
-            throw new IndexOutOfBoundsException("This position is not valid");
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("This position is not valid");
+            //throw new IndexOutOfBoundsException("This position is not valid");
         }
         String sqlstart = "SELECT position FROM Songs_In_Playlist WHERE playlist_name = ? AND song_name = ?";
         String sqlpreset = "UPDATE Songs_In_Playlist SET position = ? WHERE playlist_name = ? AND song_name = ?";
@@ -236,6 +247,8 @@ public class Database {
             stmt = conn.prepareStatement(sqlflip);
             stmt.executeUpdate();
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error moving the song. Please close and reopen the application");
             System.out.println(ex.getMessage());
         }
     }
@@ -279,6 +292,8 @@ public class Database {
                 updatePlaylist(playlistName, songName, -1);
             }
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error removing the song from the playlist. Please close and reopen the application");
             System.out.println(ex.getMessage());
         }
     }
@@ -297,6 +312,8 @@ public class Database {
             stmt.setString(1, name);
             stmt.executeUpdate();
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error removing the song. Please close and reopen the application");
             System.out.println(ex.getMessage());
         }
     }
@@ -314,6 +331,8 @@ public class Database {
             stmt.setString(1, name);
             stmt.executeUpdate();
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error removing the playlist. Please close and reopen the application");
             System.out.println(ex.getMessage());
         }
     }
@@ -330,6 +349,8 @@ public class Database {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error. Please close and reopen the application");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -349,6 +370,8 @@ public class Database {
             ResultSet rs = stmt.executeQuery();
             return rs;
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error. Please close and reopen the application");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -378,6 +401,8 @@ public class Database {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error. Please close and reopen the application");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -397,6 +422,8 @@ public class Database {
             ResultSet rs = stmt.executeQuery();
             return rs;
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error getting your Song information. Most likely, the song you are trying to edit does not exist. Please try again.");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -431,6 +458,9 @@ public class Database {
             stmt.setString(4, name);
             stmt.executeUpdate();
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error changing your Song information. Most likely, the song you are trying to edit does not exist. Please try again.");
+            //System.out.println("editSong failed");
             System.out.println(ex.getMessage());
         }
     }
@@ -443,6 +473,9 @@ public class Database {
             stmt.setString(2, oldName);
             stmt.executeUpdate();
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error changing the Song Name. Please try again.");
+            //System.out.println("editSongName failed");
             System.out.println(ex.getMessage());
         }
     }
@@ -456,6 +489,24 @@ public class Database {
             stmt.setString(3, name);
             stmt.executeUpdate();
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("The playlist you tried to edit does not appear to exist. Please try again.");
+            System.out.println("editPlaylist failed");
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public static void editPlaylistName(String oldName, String newName) {
+        String sql = "UPDATE Playlist SET name = ? WHERE name = ?";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, newName);
+            stmt.setString(2, oldName);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error changing the Playlist Name. Please try again.");
+            //System.out.println("editSongName failed");
             System.out.println(ex.getMessage());
         }
     }
@@ -470,6 +521,9 @@ public class Database {
             stmt.setString(4, playlistName);
             stmt.executeUpdate();
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error. Please close the application");
+            System.out.println("updatePlaylist failed");
             System.out.println(ex.getMessage());
         }
     }
@@ -492,6 +546,9 @@ public class Database {
                 i++;
             }
         } catch (Exception ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error. Please close the application");
+            System.out.println("operationCheck failed");
             System.out.println(ex.getMessage());
         }
         return i;
@@ -505,6 +562,9 @@ public class Database {
             stmt.setString(2, name);
             stmt.executeUpdate();
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error. Please close the application");
+            System.out.println("changeSongActiveStatus failed");
             System.out.println(ex.getMessage());
         }
     }
@@ -522,6 +582,9 @@ public class Database {
             }
             return 1;
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error. Please close the application");
+            System.out.println("checkPosition failed");
             System.out.println(ex.getMessage());
         }
         return 0;
@@ -542,6 +605,9 @@ public class Database {
                 }
             }
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error. Please close the application");
+            System.out.println("verifyAllSongs failed");
             System.out.println(ex.getMessage());
         }
     }
@@ -558,6 +624,9 @@ public class Database {
             ResultSet rs = stmt.executeQuery(sql);
             return rs;
         } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error. Please close the application");
+            System.out.println("getTables failed");
             System.out.println(ex.getMessage());
             return null;
         }
@@ -682,23 +751,27 @@ public class Database {
             stmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-        }*/
+        }*//*
         addNewSong("4th Mvmt", "C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\4th Mvmt.mp3", "testauthor", "testalbum", 20);
         addNewSong("Alvin", "C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\Iko_Iko_From__Alvin_And_The_Chipmunks__The_Road_Chip__Soundtrack.mp3", "testauthor", "testalbum", 20);
         addNewSong("MeAndYourMama", "C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\MeAndYourMama.mp3", "testauthor", "testalbum", 20);
         changeSongActiveStatus("Alvin", 0);
         changeSongActiveStatus("MeAndYourMama", 0);
         verifyAllSongs();
-        testing("Song");
-        System.out.println();
-        testing("Both");
-        System.out.println();
-        testing("Playlist");
+
         File file = new File("C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song", "4th Mvmt.mp3");
         System.out.println("CanExecute: " + file.canExecute());
         removeSong("4th Mvmt");
         removeSong("Alvin");
         removeSong("MeAndYourMama");
+*/
+        //addNewSong("test_song_name", "", "", "", 0);
+        //editSong("test_song_name", null, "", "");
+        testing("Song");
+        System.out.println();
+        testing("Both");
+        System.out.println();
+        testing("Playlist");
         close();
     }
 }
