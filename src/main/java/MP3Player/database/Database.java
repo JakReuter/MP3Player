@@ -736,6 +736,7 @@ public class Database {
     public static void main(String[] args) {
         connect();
         //addNewSong("testsong", "testpath", "testauthor", "testalbum", 15);
+        addNewSong("Me and your mama1", "C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\MeAndYourMama.mp3", "Childish Gambino", "I don't know", 618);
         //removePlaylist("testplaylist");
         //createNewPlaylist("testplaylist", "test description");
         //addSongToPlaylist("testplaylist", "testapple");
