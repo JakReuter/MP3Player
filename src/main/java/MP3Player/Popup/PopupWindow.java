@@ -37,6 +37,7 @@ public class PopupWindow extends Application {
     private final TableColumn<Song, String> artistColumn;// = new TableColumn<>("Song Artist");
     private final TableColumn<Song, String> albumColumn;// = new TableColumn<>("Song Album");
     private final TableColumn<Song, String> durationColumn;// = new TableColumn<>("Song Duration");
+    private final TableColumn<Song, String> filepathColumn;
 
     public PopupWindow() {
         dialog = new Dialog<String>();
@@ -45,6 +46,7 @@ public class PopupWindow extends Application {
         artistColumn = new TableColumn<>("Song Artist");
         albumColumn = new TableColumn<>("Song Album");
         durationColumn = new TableColumn<>("Song Duration");
+        filepathColumn = new TableColumn<>("Filepath");
     }
 
     public void SQLError(String text) {
@@ -110,7 +112,7 @@ public class PopupWindow extends Application {
 
 
         TableView<Song> table = new TableView<>();
-        table.getColumns().addAll(nameColumn,artistColumn,albumColumn,durationColumn);
+        table.getColumns().addAll(nameColumn,artistColumn,albumColumn,durationColumn, filepathColumn);
 
         this.songs.add(new Song(song.getName(), song.getArtist(), song.getAlbum(), song.getDuration(), song.filePath));
 
@@ -169,7 +171,7 @@ public class PopupWindow extends Application {
         Button button = new Button("Test popup");
         button.setOnAction(event -> {
             try {
-                ResultSet rs = Database.getSongInfo(song.getName());
+                ResultSet rs = Database.getSongInfo("Soul smile");
                 Song songa = new Song(rs.getString("name"), rs.getString("author"), rs.getString("album"), rs.getString("duration"), rs.getString("filepath"));
                 editSong(songa);
             } catch (SQLException e) {

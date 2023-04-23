@@ -8,6 +8,7 @@ package MP3Player.controllers;
 
 import MP3Player.database.Database;
 import MP3Player.mp3Player.song.Song;
+import MP3Player.util.general.ReadMP3Tag;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import org.farng.mp3.MP3File;
 import org.farng.mp3.id3.AbstractID3v2;
+import org.farng.mp3.id3.ID3v2_2;
 
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -113,7 +115,67 @@ public class MSongs {
 
             //Calculating duration
             int dur = (int)inFile.length()*8 / (mp3File.getBitRate()*1000);
+            ReadMP3Tag readMP3Tag = new ReadMP3Tag();
+            try {
+                readMP3Tag.getMetadata(inFile.getPath());
+            }catch (Exception e){
 
+            }
+            if (null == tags){
+                tags = new ID3v2_2();
+                if ("".equals(readMP3Tag.getTitle())){
+                    String path = inFile.getPath();
+                    String[] parray = path.split("/");
+                    if (parray.length==1){
+                        parray = path.split("\\\\");
+                    }
+                    String p = parray[parray.length-1];
+                    tags.setSongTitle(p);
+                }else {
+                    tags.setSongTitle(readMP3Tag.getTitle());
+                }
+
+                if ("".equals(readMP3Tag.getartist())){
+                    tags.setLeadArtist("");
+                }else {
+                    tags.setLeadArtist(readMP3Tag.getartist());
+                }
+
+                if ("".equals(readMP3Tag.getalbum())){
+                    tags.setAlbumTitle("");
+                }else {
+                    tags.setAlbumTitle(readMP3Tag.getalbum());
+                }
+            }else {
+                if ("".equals(tags.getSongTitle())){
+                    if ("".equals(readMP3Tag.getTitle())){
+                        String path = inFile.getPath();
+                        String[] parray = path.split("/");
+                        if (parray.length==1){
+                            parray = path.split("\\\\");
+                        }
+                        String p = parray[parray.length-1];
+                        tags.setSongTitle(p);
+                    }else {
+                        tags.setSongTitle(readMP3Tag.getTitle());
+                    }
+                }
+
+                if ("".equals(tags.getLeadArtist())) {
+                    if ("".equals(readMP3Tag.getartist())) {
+                        tags.setLeadArtist("");
+                    } else {
+                        tags.setLeadArtist(readMP3Tag.getartist());
+                    }
+                }
+                if ("".equals(tags.getAlbumTitle())) {
+                    if ("".equals(readMP3Tag.getalbum())) {
+                        tags.setAlbumTitle("");
+                    } else {
+                        tags.setAlbumTitle(readMP3Tag.getalbum());
+                    }
+                }
+            }
             Database.addNewSong(tags.getSongTitle(), inFile.getPath(), tags.getLeadArtist(), tags.getAlbumTitle(), dur);
 
         } catch (Exception e) {

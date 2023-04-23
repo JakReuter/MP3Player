@@ -767,6 +767,7 @@ public class Database {
 */
         //addNewSong("test_song_name", "", "", "", 0);
         //editSong("test_song_name", null, "", "");
+        //removeSong("Iko_Iko_From__Alvin_And_The_Chipmunks__The_Road_Chip__Soundtrack.mp3");
         testing("Song");
         System.out.println();
         testing("Both");

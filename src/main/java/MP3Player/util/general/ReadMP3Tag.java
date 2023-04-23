@@ -1,6 +1,7 @@
 package MP3Player.util.general;
 import java.io.IOException;
 import MP3Player.database.Database;
+import org.farng.mp3.id3.ID3v2_2;
 import org.sqlite.SQLiteConfig;
 import java.util.regex.Pattern;
 import java.sql.*;
@@ -72,9 +73,9 @@ public class ReadMP3Tag{
 		}
 		//upload results to database
 
-			Database mp3db = new Database();
-	        	mp3db.connect();
-			mp3db.addNewSong(title, args, artist,album, 0);
+			//Database mp3db = new Database();
+	        	//mp3db.connect();
+			//mp3db.addNewSong(title, args, artist,album, 0);
 
 
 	}
