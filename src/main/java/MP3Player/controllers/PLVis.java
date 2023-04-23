@@ -2,23 +2,16 @@ package MP3Player.controllers;
 
 import MP3Player.database.Database;
 import MP3Player.mp3Player.playlist.Playlist;
-import MP3Player.mp3Player.song.Song;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.sql.ResultSet;
-import java.util.ResourceBundle;
 
 
 // TODO: Connect buttons to database
@@ -34,7 +27,7 @@ public class PLVis {
     @FXML private TableColumn<Playlist, Integer> songCountColumn;
     @FXML private TableColumn<Playlist, String> durationColumn;
     @FXML private TableColumn<Playlist, String> descriptionColumn;
-    @FXML private VBox root;
+    @FXML private VBox rootPlaylist;
 
     private ObservableList<Playlist> playlists;
 
@@ -53,10 +46,10 @@ public class PLVis {
 
     public void initialize(){
         //Bind table columns to the width of table
-        nameColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));        //30% of table is names
-        songCountColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));   //20% of table is count
-        durationColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));    //20% of table is duration
-        descriptionColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));    //30% of table is descript
+        nameColumn.prefWidthProperty().bind(rootPlaylist.widthProperty().multiply(.3));        //30% of table is names
+        songCountColumn.prefWidthProperty().bind(rootPlaylist.widthProperty().multiply(.2));   //20% of table is count
+        durationColumn.prefWidthProperty().bind(rootPlaylist.widthProperty().multiply(.2));    //20% of table is duration
+        descriptionColumn.prefWidthProperty().bind(rootPlaylist.widthProperty().multiply(.3));    //30% of table is descript
 
         this.playlists = FXCollections.observableArrayList();
         // Get all playlists from database

@@ -10,9 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.ls.LSOutput;
 
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
@@ -22,7 +20,7 @@ import java.sql.ResultSet;
  */
 public class PLSongs {
 
-    @FXML private VBox root;
+    @FXML private VBox rootPlSongs;
     @FXML private Button removeButton;
     @FXML private Button upButton;
     @FXML private Button downButton;
@@ -45,10 +43,10 @@ public class PLSongs {
         tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         //Bind table columns to the width of table
-        nameColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));        //30% of table is names
-        artistColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));   //20% of table is count
-        albumColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));
-        durationColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));
+        nameColumn.prefWidthProperty().bind(rootPlSongs.widthProperty().multiply(.3));        //30% of table is names
+        artistColumn.prefWidthProperty().bind(rootPlSongs.widthProperty().multiply(.3));   //20% of table is count
+        albumColumn.prefWidthProperty().bind(rootPlSongs.widthProperty().multiply(.2));
+        durationColumn.prefWidthProperty().bind(rootPlSongs.widthProperty().multiply(.2));
     }
 
     @FXML

@@ -20,6 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import MP3Player.util.general.ColorSlider?>
 <VBox xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MP3Player.controllers.MP3Player" fx:id="rootVbox">
    <children>
       <MenuBar fx:id="menuBar">
@@ -61,9 +62,8 @@
                                     <Image url="@../image/meAndUrMama.png" />
                                  </image>
                               </ImageView>
-                              <VBox maxHeight="-Infinity" prefHeight="128.0">
+                              <VBox maxHeight="-Infinity" prefHeight="128.0" fx:id="forTimeSlider">
                                  <children>
-                                    <Slider fx:id="time_slider" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="5.0" />
                                     <HBox maxWidth="1.7976931348623157E308" prefHeight="123.0" prefWidth="1627.0">
                                        <children>
                                           <VBox minHeight="50.0" prefHeight="123.0" prefWidth="398.0">

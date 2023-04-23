@@ -6,6 +6,7 @@ import MP3Player.mp3Player.visualizer.CircleChart;
 import MP3Player.mp3Player.visualizer.ConeChart;
 import MP3Player.mp3Player.visualizer.core.Series;
 import MP3Player.mp3Player.visualizer.core.Visualizer;
+import MP3Player.util.general.ColorSlider;
 import MP3Player.util.general.TabHandler;
 import MP3Player.util.general.Tabable;
 import javafx.animation.KeyFrame;
@@ -76,11 +77,12 @@ public class MP3Player implements Initializable {
     @FXML Label isTesting;
     @FXML protected Label timestamp;
     @FXML protected ImageView play_pause_btn_icon;
-    @FXML protected Slider time_slider;
+     protected ColorSlider time_slider;
     @FXML Button prev_btn;
     @FXML Button next_btn;
     @FXML Button play_pause_btn;
     @FXML StackPane root;
+    @FXML VBox forTimeSlider;
 
     @FXML MenuItem viewToggle;
     @FXML BorderPane playView;
@@ -231,6 +233,12 @@ public class MP3Player implements Initializable {
             centerTabPane.setEqualizer(equalizer);
 
             timestamp.setText("0:0");
+
+            time_slider =new ColorSlider();
+            time_slider.applyColor("#EAF028");
+            time_slider.enableColorChangeOnValue();
+            forTimeSlider.getChildren().add(0,time_slider);
+
             time_slider.setValue(0);
 
             timeControl = new TimeControl(audioPlayer);

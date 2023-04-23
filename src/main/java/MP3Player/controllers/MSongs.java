@@ -27,7 +27,7 @@ import java.sql.SQLException;
 
 public class MSongs {
 
-    @FXML private VBox root;
+    @FXML private VBox rootSongs;
     @FXML private Button removeButton;
     @FXML private Button upButton;
     @FXML private Button downButton;
@@ -51,10 +51,10 @@ public class MSongs {
         this.songs = FXCollections.observableArrayList();
 
         //Bind table columns to the width of table
-        nameColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));        //30% of table is names
-        artistColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));   //20% of table is count
-        albumColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));
-        durationColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));
+        nameColumn.prefWidthProperty().bind(rootSongs.widthProperty().multiply(.3));        //30% of table is names
+        artistColumn.prefWidthProperty().bind(rootSongs.widthProperty().multiply(.3));   //20% of table is count
+        albumColumn.prefWidthProperty().bind(rootSongs.widthProperty().multiply(.2));
+        durationColumn.prefWidthProperty().bind(rootSongs.widthProperty().multiply(.2));
 
         // Get all playlists from database
         ResultSet rs = Database.selectAllSongs();
@@ -113,24 +113,36 @@ public class MSongs {
         FileChooser fileChooser = new FileChooser();
         File inFile;
         AbstractID3v2 tags = null;
+        int dur;
+        String title = "",artist = "",album = "";
         try {
             inFile = fileChooser.showOpenDialog(upButton.getScene().getWindow());
+
             //For reading  from folders
             //if inFile.isDirectory { for(File f : inFile.subFiles ) {
             MP3File mp3File = new MP3File(inFile);
             mp3File.seekMP3Frame();
-            tags= mp3File.getID3v2Tag();
+            if((tags= mp3File.getID3v2Tag())==null){
+                title = inFile.getName();
+                artist = "not detected";
+                album = "not detected";
+            } else {
+                title = tags.getSongTitle();
+                artist = tags.getLeadArtist();
+                album = tags.getAlbumTitle();
+            }
+
 
             //Calculating duration
-            int dur = (int)inFile.length()*8 / (mp3File.getBitRate()*1000);
+            dur = (int)inFile.length()*8 / (mp3File.getBitRate()*1000);
 
-            Database.addNewSong(tags.getSongTitle(), inFile.getPath(), tags.getLeadArtist(), tags.getAlbumTitle(), dur);
+            Database.addNewSong(title, inFile.getPath(), artist, album, dur);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         //Test
-        ResultSet rs = Database.getSongInfo(tags.getSongTitle());
+        ResultSet rs = Database.getSongInfo(title);
 
         System.out.println(rs.getObject(1));
         refreshSendEvent();

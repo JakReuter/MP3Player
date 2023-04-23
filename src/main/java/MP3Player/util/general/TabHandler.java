@@ -151,7 +151,9 @@ public class TabHandler {
             Tab tab = apps.get(i).getTab(draggedTab);
             if(apps.get(i) instanceof Visualizer){
                 Visualizer visualizer = (Visualizer) apps.get(i);
-                mainPane.getContextMenu().getItems().add(getEqItem(visualizer.getRoot().getChildren()));
+                MenuItem eqItemm = getEqItem(visualizer.getRoot().getChildren());
+                if(mainPane.getContextMenu().getItems().size()>4) mainPane.getContextMenu().getItems().remove(4);
+                mainPane.getContextMenu().getItems().add(eqItemm);
             }
             int finalI = i;
             tab.setOnClosed(event -> {apps.remove(finalI);});
@@ -195,7 +197,12 @@ public class TabHandler {
     public MenuItem getEqItem(ObservableList<Node> toAdd){
         MenuItem out = new MenuItem("Show Equalizer");
         out.setOnAction(event -> {
-            toAdd.add(equalizer.getRoot());
+            if(toAdd.contains(equalizer.getRoot())){
+                toAdd.remove(equalizer.getRoot());
+            } else {
+                toAdd.add(equalizer.getRoot());
+                equalizer.prefWidthProperty().bind(this.prefWidthProperty());
+            }
         });
         return out;
     }

@@ -1,5 +1,6 @@
 package MP3Player.mp3Player.equalizer;
 
+import MP3Player.util.general.ColorSlider;
 import MP3Player.util.general.Tabable;
 import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
@@ -10,10 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tab;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.media.AudioEqualizer;
 import javafx.scene.media.EqualizerBand;
 
@@ -40,20 +38,28 @@ public class Equalizer extends Tabable {
         EQ = mediaEQ;
         Sliders = new HBox();
         Sliders.setPrefSize(500,200);
-        Sliders.setAlignment(Pos.valueOf("CENTER"));
+        Sliders.setAlignment(Pos.CENTER);
+        Sliders.widthProperty().addListener((observable, oldValue, newValue) -> System.out.println(newValue));
 
         sliderArrayList = new ArrayList<>();
 
         for(int i = 0; i<EQBANDS; i++){
-            Slider newSlider = new Slider(-24, 24, 0);
+            ColorSlider newSlider = new ColorSlider(-24, 24, 0);
             newSlider.valueProperty().bindBidirectional(EQ.getBands().get(i).gainProperty());
             newSlider.setOrientation(Orientation.VERTICAL);
+            newSlider.setPrefWidth(1000);
+            HBox.setHgrow(newSlider, Priority.ALWAYS);
+            newSlider.applyColor("#FF0000");
+            newSlider.enableColorChangeOnValue();
             sliderArrayList.add(newSlider);
         }
         Sliders.getChildren().addAll(sliderArrayList);
-        Buttons = new VBox(newToggleButton());
+        Buttons = new VBox(newToggleButton("on"));
         Sliders.getChildren().add(Buttons);
+        AnchorPane.setLeftAnchor(Sliders,0.0);
+        AnchorPane.setRightAnchor(Sliders,0.0);
         getRoot().getChildren().add(Sliders);
+        getRoot().widthProperty().addListener((observable, oldValue, newValue) -> System.out.println("root:"+newValue));
         this.childId = Sliders.toString();
 
     }
@@ -63,8 +69,8 @@ public class Equalizer extends Tabable {
         EQ.setEnabled(!EQ.isEnabled());
     }
 
-    protected Button newToggleButton(){
-        Button button = new Button("Toggle");
+    protected Button newToggleButton(String name){
+        Button button = new Button(name);
         button.setOnAction(event -> toggleEQ());
         return button;
     }
@@ -75,6 +81,7 @@ public class Equalizer extends Tabable {
         }
 
     }
+
 
 
 }
