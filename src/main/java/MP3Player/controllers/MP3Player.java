@@ -173,7 +173,7 @@ public class MP3Player implements Initializable {
 
     @FXML
     protected void next_audio_event() {
-        if(playlistWithSongsUI.getSongs().size() != 0){
+        if(playlistWithSongsUI.getSongs().size() > 1 || masterSongUI.getQueue().size() > 0){
             audioPlayer.stop();
             initializeAudioPlayer();
             endOfMedia();
@@ -191,6 +191,9 @@ public class MP3Player implements Initializable {
     public void play_pause_audio_event() {
 
         try {
+            if(audioPlayer == null){
+                initializeAudioPlayer();
+            }
             if (audioPlayer.getStatus().compareTo(MediaPlayer.Status.PLAYING)==0) {
                 audioPlayer.pause();
 
@@ -211,22 +214,34 @@ public class MP3Player implements Initializable {
 
 
     protected File getNewFile(){
-        if(audioQueue.size() > 0){
-            return new File(audioQueue.remove().getPath());
+//        try {
+        if(masterSongUI == null ){
+//            throw new RuntimeException("Master Song UI is not open");
+            System.out.println("Master Song UI is not open");
         }else{
-
-            try{
-                if(playlistNum > playlistWithSongsUI.getSongs().size() - 1)
-                    playlistNum = 0;
-                System.out.println(playlistWithSongsUI.getSongs().get(playlistNum).getPath());
-                System.out.printf("%d | %d\n",playlistNum, playlistWithSongsUI.getSongs().size() - 1);
-                return new File(playlistWithSongsUI.getSongs().get(playlistNum++).getPath());
-            } catch (NullPointerException e){
-                System.out.println("No Playlist Selected");
-                return null;
+            if (masterSongUI.getQueue().size() > 0) {
+//                audioQueue.size() > 0){
+                return new File(masterSongUI.getQueue().remove(0).getPath());
             }
-
         }
+
+        if(playlistWithSongsUI == null){
+            System.out.println("Open a playlist first");
+        }else {
+            if(playlistWithSongsUI.getSongs().size() == 0)
+                return null;
+            if (playlistNum > playlistWithSongsUI.getSongs().size() - 1)
+                playlistNum = 0;
+            System.out.println(playlistWithSongsUI.getSongs().get(playlistNum).getPath());
+            System.out.printf("%d | %d\n", playlistNum, playlistWithSongsUI.getSongs().size() - 1);
+            return new File(playlistWithSongsUI.getSongs().get(playlistNum++).getPath());
+        }
+        return null;
+
+//        }catch (NullPointerException ex){
+//            System.out.println("Please open the All songs tab");
+//            ex.printStackTrace();
+//        }
     }
 
     protected void endOfMedia(){
@@ -363,6 +378,7 @@ public class MP3Player implements Initializable {
             playlistsUI = playListsLoader.getController();
 
             masterSongUI.setOnRefresh(refresher);
+            masterSongUI.refreshInformation();
             playlistWithSongsUI.setOnRefresh(refresher);
             playlistsUI.setOnRefresh(refresher);
             playlistsUI.setPLSongs(playlistWithSongsUI);

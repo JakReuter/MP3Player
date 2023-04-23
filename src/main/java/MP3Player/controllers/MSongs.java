@@ -59,6 +59,7 @@ public class MSongs {
     //What if we made table view dragdetectable in fxml?
     public void initialize() {
         this.songs = FXCollections.observableArrayList();
+        queue = FXCollections.observableArrayList();
         // Get all playlists from database
         ResultSet rs = Database.selectAllSongs();
         // Loop through all playlists, adding them to the observableArrayList (getting the appropriate values from the database)
@@ -159,7 +160,7 @@ public class MSongs {
             while (rs.next()) {
                 this.songs.add(i,new Song(
                         (String) rs.getObject("name"),
-                        (String) rs.getObject("path"),
+                        (String) rs.getObject("filepath"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
                         rs.getObject("duration").toString()

@@ -534,6 +534,7 @@ public class Database {
                 String path = (String) rs.getObject("filepath");
                 String name = (String) rs.getObject("name");
                 File file = new File(path);
+                System.out.printf("Name: %s | Path: %s\n", name, path);
 
                 if(file.canExecute()){
                     changeSongActiveStatus(name, 1);
@@ -666,9 +667,9 @@ public class Database {
      */
     public static void main(String[] args) {
         connect();
-        String testPath = "C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\MeAndYourMama.mp3";
-        addNewSong("testsong3", testPath, "testauthor", "testalbum", 618);
-        addSongToPlaylist("testplaylist", "testsong3");
+//        String testPath = "C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\MeAndYourMama.mp3";
+//        addNewSong("testsong3", testPath, "testauthor", "testalbum", 618);
+//        addSongToPlaylist("testplaylist", "testsong3");
 //        removeSongFromPlaylist("testplaylist", "testsong");
         //removePlaylist("testplaylist");
         //createNewPlaylist("testplaylist", "test description");
@@ -686,22 +687,23 @@ public class Database {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }*/
-        addNewSong("4th Mvmt", "C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\4th Mvmt.mp3", "testauthor", "testalbum", 20);
-        addNewSong("Alvin", "C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\Iko_Iko_From__Alvin_And_The_Chipmunks__The_Road_Chip__Soundtrack.mp3", "testauthor", "testalbum", 20);
-        addNewSong("MeAndYourMama", "C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\MeAndYourMama.mp3", "testauthor", "testalbum", 20);
-        changeSongActiveStatus("Alvin", 0);
-        changeSongActiveStatus("MeAndYourMama", 0);
+        addNewSong("4th Mvmt", "C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\4th Mvmt.mp3", "testauthor", "testalbum", 20);
+        addNewSong("Soul Smile", "C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\resources\\Soul smile.mp3", "testauthor", "testalbum", 20);
+        addNewSong("MeAndYourMama", "C:\\Users\\aidan\\IdeaProjects\\MP3Player\\src\\main\\resources\\song\\MeAndYourMama.mp3", "testauthor", "testalbum", 20);
+//        changeSongActiveStatus("Alvin", 0);
+//        changeSongActiveStatus("MeAndYourMama", 0);
+//        removeSong("4th Mvmt");
+//        removeSong("Alvin");
+//        removeSong("MeAndYourMama");
         verifyAllSongs();
-        testing("Song");
-        System.out.println();
-        testing("Both");
-        System.out.println();
-        testing("Playlist");
-        File file = new File("C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song", "4th Mvmt.mp3");
-        System.out.println("CanExecute: " + file.canExecute());
-        removeSong("4th Mvmt");
-        removeSong("Alvin");
-        removeSong("MeAndYourMama");
+//        testing("Song");
+//        System.out.println();
+//        testing("Both");
+//        System.out.println();
+//        testing("Playlist");
+//        File file = new File("C:\\Users\\21shu\\IdeaProjects\\MP3Player\\src\\main\\resources\\song", "4th Mvmt.mp3");
+//        System.out.println("CanExecute: " + file.canExecute());
+
         close();
     }
 }
