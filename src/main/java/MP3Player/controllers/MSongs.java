@@ -25,6 +25,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import MP3Player.Popup.PopupWindow;
+
 
 public class MSongs {
 
@@ -199,6 +201,15 @@ public class MSongs {
         System.out.println(rs.getObject(1));
         refreshSendEvent(); // does this refresh PLVis??
     }
+    
+    @FXML
+	private void handleEditSongButton(ActionEvent event) {
+		PopupWindow window = new PopupWindow();
+		window.editSong(tableView.getSelectionModel().getSelectedIndex());
+		refreshSendEvent();
+		refreshInformation();
+
+	}
 
     @FXML
     public void addToQueue(){
