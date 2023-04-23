@@ -37,7 +37,8 @@ public final class Filepicker extends Application {
                     public void handle(final ActionEvent e) {
                         File file = fileChooser.showOpenDialog(stage);
                         if (file != null) {
-                            fileErrorHandler.fileCheck(file.getPath());
+                            if(fileErrorHandler.fileCheck(file.getPath()) != 0)
+                                return;
                             readmusictag.getMetadata(file.getPath());
                             System.out.println(file.getPath());
                         }
@@ -52,7 +53,8 @@ public final class Filepicker extends Application {
                                 fileChooser.showOpenMultipleDialog(stage);
                         if (list != null) {
                             for (File file : list) {
-                                fileErrorHandler.fileCheck(file.getPath());
+                                if(fileErrorHandler.fileCheck(file.getPath()) != 0)
+                                    return;
                                 readmusictag.getMetadata(file.getPath());
                                 System.out.println(file.getPath());
                             }
