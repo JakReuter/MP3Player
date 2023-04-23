@@ -81,7 +81,6 @@ public class MSongs {
             while (rs.next()) {
                 this.songs.add(new Song(
                         (String) rs.getObject("name"),
-                        (String) rs.getObject("path"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
                         rs.getObject("duration").toString(),
@@ -178,7 +177,6 @@ public class MSongs {
             while (rs.next()) {
                 this.songs.add(i,new Song(
                         (String) rs.getObject("name"),
-                        (String) rs.getObject("filepath"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
                         rs.getObject("duration").toString(),
