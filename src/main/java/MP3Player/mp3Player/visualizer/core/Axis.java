@@ -17,11 +17,11 @@ public class Axis {
     private SimpleDoubleProperty WindowSize;
     private double f_xOut;
     private double lowInput;
-    private double highInput;
+    protected double highInput;
     private double lowOutput;
     private double highOutput;
     private double range;
-    private AxisFunction function;
+    protected AxisFunction function;
     private double translate;
     private double scale;
 

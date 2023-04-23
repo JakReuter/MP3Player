@@ -111,7 +111,7 @@ public class MP3Player implements Initializable {
     protected ArrayList<Series> seriesArray;
     protected final double SPEC_INTERVAL = .04;
     protected final int SPEC_THRESH = -100;
-    protected final int SPEC_BANDS = 256;
+    protected final int SPEC_BANDS = 512;
 
     //used to pass audioPlayer to main application which uses it for unit tests
     public MediaPlayer getAudioPlayer()
@@ -225,6 +225,11 @@ public class MP3Player implements Initializable {
             audio = new Media(file.toURI().toString());
             audioPlayer = new MediaPlayer(audio);
 
+            Equalizer equalizer = new Equalizer(audioPlayer.getAudioEqualizer());
+            leftTabPane.setEqualizer(equalizer);
+            rightTabPane.setEqualizer(equalizer);
+            centerTabPane.setEqualizer(equalizer);
+
             timestamp.setText("0:0");
             time_slider.setValue(0);
 
@@ -244,9 +249,7 @@ public class MP3Player implements Initializable {
             audioPlayer.setAudioSpectrumListener((double timestamp, double duration, float[] magnitudes, float[] phases) ->{
                 if(seriesArray!=null) {
                     for(Series s : seriesArray) {
-                        for (int i = 0; i < audioPlayer.getAudioSpectrumNumBands(); i++) {
-                            s.change(i, magnitudes[i]);
-                        }
+                            s.change(magnitudes);
                     }
                 }
             });
@@ -352,10 +355,18 @@ public class MP3Player implements Initializable {
         mainVisualizer = new ChartVisualizer(SPEC_BANDS, new Stage());
         //Load each tabpane with right click context menu
 
+        ContextMenu test1 = new ContextMenu(getWindowsMenu(leftTabPane));
+        ContextMenu test2 = new ContextMenu(getWindowsMenu(centerTabPane));
+        ContextMenu test3 = new ContextMenu(getWindowsMenu(rightTabPane));
+        System.out.println(test1);
+        System.out.println(test2);
+        System.out.println(test3);
 
-        leftTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(leftTabPane)));
-        centerTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(centerTabPane)));
-        rightTabPane.getPane().setContextMenu(new ContextMenu(getWindowsMenu(rightTabPane)));
+
+        leftTabPane.getPane().setContextMenu(test1/**new ContextMenu(getWindowsMenu(leftTabPane))**/);
+        centerTabPane.getPane().setContextMenu(test2/**new ContextMenu(getWindowsMenu(centerTabPane))**/);
+        rightTabPane.getPane().setContextMenu(test3/**new ContextMenu(getWindowsMenu(rightTabPane))**/);
+
 
 
         //TODO: Bind width of anchor pane with corresponding tabPane
@@ -370,6 +381,7 @@ public class MP3Player implements Initializable {
         centerTabPane.prefHeightProperty().bind(mainCenterSplit.heightProperty());
         rightTabPane.prefWidthProperty().bind(mainRightSplit.widthProperty());
         rightTabPane.prefHeightProperty().bind(mainRightSplit.heightProperty());
+
 
         //mainCenterSplit.widthProperty().addListener((observable, oldValue, newValue) -> System.out.println("mainRightSplit width changed to:"+newValue));
 
@@ -413,6 +425,8 @@ public class MP3Player implements Initializable {
         windows[3] = new MenuItem("Circle Chart");
         windows[0].setOnAction(event -> {
             ChartVisualizer newChart = new ChartVisualizer(SPEC_BANDS, new Stage());
+            newChart.setAnimationDuration(new Duration(SPEC_INTERVAL*1000));
+            newChart.setAnimationEnabled(true);
             seriesArray.add(newChart.getSeries());
 
             targetTab.addApp(newChart);
@@ -436,7 +450,9 @@ public class MP3Player implements Initializable {
         });
 
         windows[3].setOnAction(event -> {
-            CircleChart newChart = new CircleChart(SPEC_BANDS, "circle");
+            CircleChart newChart = new CircleChart(SPEC_BANDS, "circle", 4);
+            newChart.setAnimationDuration(new Duration(SPEC_INTERVAL*1000));
+            newChart.setAnimationEnabled(true);
             seriesArray.add(newChart.getSeries());
 
             targetTab.addApp(newChart);

@@ -52,10 +52,12 @@ public class PLVis {
     }
 
     public void initialize(){
+        //Bind table columns to the width of table
         nameColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));        //30% of table is names
         songCountColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));   //20% of table is count
         durationColumn.prefWidthProperty().bind(root.widthProperty().multiply(.2));    //20% of table is duration
         descriptionColumn.prefWidthProperty().bind(root.widthProperty().multiply(.3));    //30% of table is descript
+
         this.playlists = FXCollections.observableArrayList();
         // Get all playlists from database
         ResultSet rs = Database.selectAllPlaylists();

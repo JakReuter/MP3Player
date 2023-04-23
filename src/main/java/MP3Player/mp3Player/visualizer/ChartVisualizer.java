@@ -39,9 +39,20 @@ public class ChartVisualizer extends Visualizer {
     public ChartVisualizer(int bands, Window stage) {
         super(bands,"Chart");
         curves = new ArrayList<>();
-        //setXAxis(new Axis(0,1,bands,22050,(in, translate1, scale1) ->
-        //        ((Math.log((double)in*scale1)/Math.log(2))*100+translate1))
-        //);
+
+
+        /**
+        setXAxis(new Axis(0,1,bands,22050,(in, translate1, scale1) ->
+                ((Math.log10(in.getxValue().doubleValue()+1))*100))
+                 {
+                     @Override
+                     public Number getDrawPoint(Series.Data valueIn, Number windowBound){
+                         //System.out.println("="+(windowBound.doubleValue()/highInput));
+                         return function.valueToCoord(valueIn, 0, windowBound.doubleValue()/Math.log10(highInput+1));
+                     }
+                 }
+        ); **/
+
         xAxis = getXAxis();
         yAxis = getYAxis();
 
@@ -68,13 +79,10 @@ public class ChartVisualizer extends Visualizer {
         this.getRoot().getChildren().add(borderPane);
     }
 
-    public void initGraphic(){
-
-    }
 
     protected void getBindedCurve(){
 
-        for(int i = 0; i<bands; i++){
+        for(int i = 0; i<cutOffIndex; i++){
             double xRet = xAxis.getDrawPoint(series.getData(i),700).doubleValue();
             double yRet = 100;
            // System.out.println("x: " + i);
@@ -83,7 +91,7 @@ public class ChartVisualizer extends Visualizer {
             newCurve.controlY1Property().bind(series.getData(i).yPositionProperty());
             newCurve.controlX2Property().bind(series.getData(i).xPositionProperty());
 
-            if(i+1<bands){
+            if(i+1<cutOffIndex){
                 newCurve.controlX1Property().bind(series.getData(i+1).xPositionProperty());
                 newCurve.controlY2Property().bind(series.getData(i+1).yPositionProperty());
                 newCurve.yProperty().bind(series.getData(i+1).yPositionProperty());

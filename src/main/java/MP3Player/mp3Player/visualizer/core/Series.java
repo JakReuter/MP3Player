@@ -97,19 +97,26 @@ public class Series {
         return dataArray[index];
     }
 
-    //TODO: undo multiple series attempt
     public void change(int index, Number y){
         dataArray[index].setyValue(y);
-        if(visualizers==null) {
-            visualizer.changedData(dataArray[index]);
-        } else {
-            for(Visualizer v : visualizers){
-                v.changedData(dataArray[index]);
-            }
-            System.out.println(visualizers.size());
-        }
-
+        visualizer.changedData(dataArray[index]);
     }
+    public void change(Number[] arrayIn){
+        for(int i = 0; i<dataArray.length; i++) {
+            Number y = arrayIn[i];
+            dataArray[i].setyValue(y);
+        }
+        visualizer.changedData(dataArray);
+    }
+
+    public void change(float[] arrayIn){
+        for(int i = 0; i<dataArray.length; i++) {
+            Number y = arrayIn[i];
+            dataArray[i].setyValue(y);
+        }
+        visualizer.changedData(dataArray);
+    }
+
 
     public void updateAll(Number[] array){
         if(bucket>0){

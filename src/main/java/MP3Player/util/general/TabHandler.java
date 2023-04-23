@@ -1,15 +1,15 @@
 package MP3Player.util.general;
 
 
+import MP3Player.mp3Player.equalizer.Equalizer;
+import MP3Player.mp3Player.visualizer.core.Visualizer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -32,6 +32,7 @@ public class TabHandler {
     private ArrayList<Tabable> apps;
     private Stage mainStage;
     protected ObjectProperty<Tab> draggedTab;
+    protected Equalizer equalizer;
 
 
     public TabHandler(){
@@ -64,21 +65,8 @@ public class TabHandler {
             tabable.close();
         }
     }
-
-    public void DisplayNewWindow(){
-        if(mainStage==null){
-            mainStage = new Stage();
-            mainStage.setTitle("Main");
-        }
-        Tab[] temp = new Tab[apps.size()];
-        for(int i=0; i< apps.size();i++){
-            temp[i]=apps.get(i).getTab(draggedTab);
-        }
-
-        mainPane = new TabPane(temp);
-
-        mainStage.setScene(new Scene(mainPane,250, 250));
-        mainStage.show();
+    public void setEqualizer(Equalizer newEqualizer){
+        this.equalizer=newEqualizer;
     }
 
     public void setDraggingTabProperty(ObjectProperty<Tab> draggingTabProperty){
@@ -161,6 +149,10 @@ public class TabHandler {
             apps.get(i).getRoot().maxHeightProperty().bind(mainPane.heightProperty());
             System.out.println("Width of anchorPane root of tab: "+mainPane.getWidth());
             Tab tab = apps.get(i).getTab(draggedTab);
+            if(apps.get(i) instanceof Visualizer){
+                Visualizer visualizer = (Visualizer) apps.get(i);
+                mainPane.getContextMenu().getItems().add(getEqItem(visualizer.getRoot().getChildren()));
+            }
             int finalI = i;
             tab.setOnClosed(event -> {apps.remove(finalI);});
             temp.add(tab);
@@ -176,7 +168,7 @@ public class TabHandler {
 
     /**
      * called to remove any duplicates on refresh.
-     * TODO:Rename to remove as it no longer refreshes
+     *
      * @param childID
      */
     public boolean refresh(String childID){
@@ -189,12 +181,6 @@ public class TabHandler {
         return false;
     }
 
-    public void testApps(){
-        System.out.println(
-                //mainPane.getTabs().get(0).getContent().getParent()
-        );
-    }
-
     public double getTabHeight(){
         return apps.get(mainPane.getSelectionModel().getSelectedIndex()).getHeight();
     }
@@ -204,6 +190,14 @@ public class TabHandler {
     }
     public DoubleProperty prefHeightProperty(){
         return mainPane.prefHeightProperty();
+    }
+
+    public MenuItem getEqItem(ObservableList<Node> toAdd){
+        MenuItem out = new MenuItem("Show Equalizer");
+        out.setOnAction(event -> {
+            toAdd.add(equalizer.getRoot());
+        });
+        return out;
     }
 
 
