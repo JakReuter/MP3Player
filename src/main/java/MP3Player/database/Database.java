@@ -496,6 +496,21 @@ public class Database {
         }
     }
 
+    public static void editPlaylistName(String oldName, String newName) {
+        String sql = "UPDATE Playlist SET name = ? WHERE name = ?";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, newName);
+            stmt.setString(2, oldName);
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            PopupWindow popupWindow = new PopupWindow();
+            popupWindow.SQLError("There has been an error changing the Playlist Name. Please try again.");
+            //System.out.println("editSongName failed");
+            System.out.println(ex.getMessage());
+        }
+    }
+
     private static void updatePlaylist(String playlistName, String songName, int direction) {
         String sql = "UPDATE Playlist SET duration = (duration + (SELECT duration FROM Song WHERE Song.name = ?))*?, num_songs = num_songs + ? WHERE name = ?";
         try {
