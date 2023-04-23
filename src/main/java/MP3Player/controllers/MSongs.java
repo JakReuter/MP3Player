@@ -205,7 +205,7 @@ public class MSongs {
     @FXML
 	private void handleEditSongButton(ActionEvent event) {
 		PopupWindow window = new PopupWindow();
-		window.editSong(tableView.getSelectionModel().getSelectedIndex());
+		window.editSong(tableView.getSelectionModel().getSelectedItem());
 		refreshSendEvent();
 		refreshInformation();
 
