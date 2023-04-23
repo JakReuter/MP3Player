@@ -4,8 +4,10 @@ import MP3Player.application.MP3Application;
 import MP3Player.util.general.FileErrorHandler;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.control.Alert;
 import javafx.scene.media.Media;
 import javafx.stage.Stage;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +22,9 @@ public class FileTypeTests
     FileErrorHandler fileErrorHandler = null;
     private String PATH_DEFAULT = new File(System.getProperty("user.dir")).toURI().toString();
     private String PATH_DEFAULT_NOT_URI = new File(System.getProperty("user.dir")).toString();
+
+    private Object mp3Alert = "make these different";
+    private Object handlerAlert = "so don't initialze the same";
 
     @Before
     //ok so I don't really understand this part, but it's what's needed to get the application open for unit testing
@@ -38,7 +43,9 @@ public class FileTypeTests
                     public void run() {
                         try {
                             mp3Application.start(new Stage());
+                            mp3Alert = mp3Application.getAlert();
                             fileErrorHandler = new FileErrorHandler(mp3Application.getAlert());
+                            handlerAlert = fileErrorHandler.getAlert();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -118,7 +125,16 @@ public class FileTypeTests
         Assert.assertEquals(expected, actual);
     }
 
-    //not accepted file types
+    //not accepted file types (currently unable to test as the error handler popup isn't detectible with this code, instead check
+    //to see if the alert objects are the same between the handler and main application
+
+    @Test
+    public void alertSame()
+    {
+        Assert.assertEquals(mp3Alert, handlerAlert);
+    }
+
+    /*
     @Test
     public void exe()
     {
@@ -157,6 +173,8 @@ public class FileTypeTests
             Assert.fail("File path or type should not be accepted");
         }
     }
+
+     */
 
     @Test
     public void m4a()

@@ -7,7 +7,12 @@ import java.io.File;
 
 public class FileErrorHandler
 {
-    Alert alert = null;
+    private Alert alert = null;
+
+    public Alert getAlert()
+    {
+        return alert;
+    }
 
     public FileErrorHandler(Alert mainAlert)
     {
