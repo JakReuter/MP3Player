@@ -94,13 +94,14 @@ public class PLVis {
         // code to handle remove button click
         Database.removePlaylist(tableView.getSelectionModel().getSelectedItem().getName());
         refreshInformation();
+        refreshSendEvent();
     }
 
     @FXML
     private void handleRenameButton(ActionEvent event) {
         // code to handle rename button click
         if(textField.isVisible()) {
-            //Database.editPlaylistName(tableView.getSelectionModel().getSelectedItem().getName(), textField.getText());
+            Database.editPlaylistName(tableView.getSelectionModel().getSelectedItem().getName(), textField.getText());
             refreshInformation();
             tableView.refresh();
             textField.setVisible(false);

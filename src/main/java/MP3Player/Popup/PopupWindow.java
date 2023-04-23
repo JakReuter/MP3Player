@@ -112,7 +112,7 @@ public class PopupWindow extends Application {
         TableView<Song> table = new TableView<>();
         table.getColumns().addAll(nameColumn,artistColumn,albumColumn,durationColumn);
 
-        this.songs.add(new Song(song.getName(), song.getArtist(), song.getAlbum(), song.getDuration()));
+        this.songs.add(new Song(song.getName(), song.getArtist(), song.getAlbum(), song.getDuration(), song.filePath));
 
         table.setItems(songs);
         table.setEditable(true);
@@ -165,12 +165,12 @@ public class PopupWindow extends Application {
         s = stage;
         Database.connect();
         BorderPane borderPane = new BorderPane();
-        Song song = new Song("testsong", "testauthor", "testalbum", "15");
+        Song song = new Song("testsong", "testauthor", "testalbum", "15", "tesPath");
         Button button = new Button("Test popup");
         button.setOnAction(event -> {
             try {
                 ResultSet rs = Database.getSongInfo(song.getName());
-                Song songa = new Song(rs.getString("name"), rs.getString("author"), rs.getString("album"), rs.getString("duration"));
+                Song songa = new Song(rs.getString("name"), rs.getString("author"), rs.getString("album"), rs.getString("duration"), rs.getString("filepath"));
                 editSong(songa);
             } catch (SQLException e) {
                 e.printStackTrace();

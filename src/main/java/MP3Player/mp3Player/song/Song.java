@@ -8,7 +8,7 @@ public class Song {
     private SimpleStringProperty artist;
     private SimpleStringProperty album;
     private SimpleStringProperty duration;
-    private String filePath;
+    public String filePath;
 
     public Song(String name, String artist, String album, String duration, String filePath) {
         this.name = new SimpleStringProperty(name);
