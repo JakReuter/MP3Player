@@ -135,7 +135,7 @@ public class FileTypeTests
     {
         //this FileErrorHandler.fileCheck() method needs to be called when file paths are accepted, this is just checking if it works
 
-        String path = "/out/production/AnotherMp3Test/TestFiles/image.jpeg";
+        String path = "/out/production/AnotherMp3Test/TestFiles/image.jpg";
 
         if(FileErrorHandler.fileCheck(PATH_DEFAULT_NOT_URI + path) == 0)
         {

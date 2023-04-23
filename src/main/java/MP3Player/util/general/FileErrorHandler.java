@@ -5,33 +5,33 @@ import java.io.FileNotFoundException;
 
 public class FileErrorHandler
 {
-    static String validationResponse = "somethings wrong, try a quick restart";
+    private static String validationResponse = "somethings wrong, try a quick restart";
 
     public static int fileCheck(String filePath)
     {
-        System.out.println(filePath);
+        //System.out.println(filePath);
 
         //check file path
         if(validateFilePath(filePath) != 0)
         {
-            System.out.println(validationResponse);
+            //System.out.println(validationResponse);
             return 1;
         } else validationResponse = "Filepath found, checking the type now...";
 
         //check file type
         if(validateFileType(filePath) != 0)
         {
-            System.out.println(validationResponse);
+            //System.out.println(validationResponse);
             return 1;
         } validationResponse = "The file type is supported, please enjoy your song!";
 
         //file is all good
-        System.out.println(validationResponse);
+        //System.out.println(validationResponse);
         return 0;
     }
 
     //checks if the file type is accepted
-    public static int validateFileType(String filePath)
+    private static int validateFileType(String filePath)
     {
         //maybe make an array to store valid file types to allow users to add ones they know work?
         //would then loop through the array checking instead of switch
@@ -58,7 +58,7 @@ public class FileErrorHandler
             case ".exe":
                 validity = 1;
                 break;
-            case "jpeg":
+            case ".jpg":
                 validity = 1;
                 break;
             case ".png":
@@ -88,7 +88,7 @@ public class FileErrorHandler
     }
 
     //checks if the file path can be found
-    public static int validateFilePath(String filePath)
+    private static int validateFilePath(String filePath)
     {
         try
         {
