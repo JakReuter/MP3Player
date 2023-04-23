@@ -23,7 +23,7 @@ public class FileErrorHandler
         //check file path
         if(validateFilePath(filePath) != 0)
         {
-            System.out.println(validationResponse);
+            //System.out.println(validationResponse);
             showError(alert);
             return 1;
         } else validationResponse = "Filepath found, checking the type now...";
@@ -31,7 +31,8 @@ public class FileErrorHandler
         //check file type
         if(validateFileType(filePath) != 0)
         {
-            System.out.println(validationResponse);
+            //System.out.println(validationResponse);
+            showError(alert);
             return 1;
         } validationResponse = "The file type is supported, please enjoy your song!";
 
