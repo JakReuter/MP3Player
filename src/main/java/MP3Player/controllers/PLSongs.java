@@ -100,7 +100,6 @@ public class PLSongs {
             while (rs.next()) {
                 songs.add(new Song(
                         (String) rs.getObject("name"),
-                        (String) rs.getObject("filepath"),
                         (String) rs.getObject("author"),
                         (String) rs.getObject("album"),
                         rs.getObject("duration").toString(),
@@ -136,7 +135,6 @@ public class PLSongs {
                 while (rs.next()) {
                     songs.add(new Song(
                             (String) rs.getObject("name"),
-                            (String) rs.getObject("filepath"),
                             (String) rs.getObject("author"),
                             (String) rs.getObject("album"),
                             rs.getObject("duration").toString(),
