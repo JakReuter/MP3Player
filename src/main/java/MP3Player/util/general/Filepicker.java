@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -20,6 +21,9 @@ public final class Filepicker extends Application {
 
     @Override
     public void start(final Stage stage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        FileErrorHandler fileErrorHandler = new FileErrorHandler(alert);
+
         stage.setTitle("Choose Music file");
 
         final FileChooser fileChooser = new FileChooser();
@@ -33,6 +37,8 @@ public final class Filepicker extends Application {
                     public void handle(final ActionEvent e) {
                         File file = fileChooser.showOpenDialog(stage);
                         if (file != null) {
+                            if(fileErrorHandler.fileCheck(file.getPath()) != 0)
+                                return;
                             readmusictag.getMetadata(file.getPath());
                             System.out.println(file.getPath());
                         }
@@ -47,6 +53,8 @@ public final class Filepicker extends Application {
                                 fileChooser.showOpenMultipleDialog(stage);
                         if (list != null) {
                             for (File file : list) {
+                                if(fileErrorHandler.fileCheck(file.getPath()) != 0)
+                                    return;
                                 readmusictag.getMetadata(file.getPath());
                                 System.out.println(file.getPath());
                             }

@@ -34,6 +34,10 @@ public class PLSongs {
     private String currentPL;
     private ActionListener refreshListener;
 
+    MP3Player mp3Player;
+    public ObservableList<Song> getSongs() {
+        return songs;
+    }
 
     public PLSongs(){
     }
@@ -103,9 +107,14 @@ public class PLSongs {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+
+
         tableView.setItems(songs);
+
+//        this.mp3Player.initializeQueue();
         tableView.refresh();
     }
+
 
     /**
      * Called to refresh the information in the UI

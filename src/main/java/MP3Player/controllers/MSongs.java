@@ -40,6 +40,17 @@ public class MSongs {
     private ObservableList<Song> songs;
     private PLVis plVis;
 
+    public ObservableList<Song> getQueue() {
+        return queue;
+    }
+
+    public void setQueue(ObservableList<Song> queue) {
+        this.queue = queue;
+    }
+
+    private ObservableList<Song> queue;
+
+
     //add event  variable here
     ActionListener refreshListener;
 
@@ -54,6 +65,7 @@ public class MSongs {
     //What if we made table view dragdetectable in fxml?
     public void initialize() {
         this.songs = FXCollections.observableArrayList();
+        queue = FXCollections.observableArrayList();
         // Get all playlists from database
         ResultSet rs = Database.selectAllSongs();
         // Loop through all playlists, adding them to the observableArrayList (getting the appropriate values from the database)
@@ -186,6 +198,11 @@ public class MSongs {
 
         System.out.println(rs.getObject(1));
         refreshSendEvent(); // does this refresh PLVis??
+    }
+
+    @FXML
+    public void addToQueue(){
+        queue.add(songs.get(tableView.getSelectionModel().getSelectedIndex()));
     }
 
     /**

@@ -18,6 +18,14 @@ public class Song {
         this.filePath = filePath;
     }
 
+    public String getPath(){
+        return filePath;
+    }
+
+    public void setPath(String filePath){
+        this.filePath = filePath;
+    }
+
     public String getName() {
         return name.get();
     }
